@@ -1,5 +1,4 @@
-.PHONY: clean compile_translations coverage diff_cover docs dummy_translations \
-	extract_translations fake_translations help pull_translations push_translations \
+.PHONY: clean coverage diff_cover docs \
 	quality requirements selfcheck test test-all upgrade validate
 
 .DEFAULT_GOAL := help
@@ -49,9 +48,6 @@ upgrade: ## update the requirements/*.txt files with the latest packages satisfy
 	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
 	pip-compile --upgrade -o requirements/travis.txt requirements/travis.in
 	pip-compile --upgrade -o requirements/dev.txt requirements/dev.in
-	# Let tox control the Django version for tests
-	sed '/^[dD]jango==/d' requirements/test.txt > requirements/test.tmp
-	mv requirements/test.tmp requirements/test.txt
 
 quality: ## check coding style with pycodestyle and pylint
 	tox -e quality
@@ -66,7 +62,7 @@ test: clean ## run tests in the current virtualenv
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml
 
-test-all: ## run tests on every supported Python/Django combination
+test-all: ## run tests on every supported Python
 	tox -e quality
 	tox
 
@@ -74,29 +70,3 @@ validate: quality test ## run tests and quality checks
 
 selfcheck: ## check that the Makefile is well-formed
 	@echo "The Makefile is well-formed."
-
-## Localization targets
-
-extract_translations: ## extract strings to be translated, outputting .mo files
-	rm -rf docs/_build
-	cd code-annotations && ../manage.py makemessages -l en -v1 -d django
-	cd code-annotations && ../manage.py makemessages -l en -v1 -d djangojs
-
-compile_translations: ## compile translation files, outputting .po files for each supported language
-	cd code-annotations && ../manage.py compilemessages
-
-detect_changed_source_translations:
-	cd code-annotations && i18n_tool changed
-
-pull_translations: ## pull translations from Transifex
-	tx pull -af --mode reviewed
-
-push_translations: ## push source translation files (.po) from Transifex
-	tx push -s
-
-dummy_translations: ## generate dummy translation (.po) files
-	cd code_annotations && i18n_tool dummy
-
-build_dummy_translations: extract_translations dummy_translations compile_translations ## generate and compile dummy translation files
-
-validate_translations: build_dummy_translations detect_changed_source_translations ## validate translations

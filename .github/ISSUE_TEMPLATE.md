@@ -1,5 +1,4 @@
 * code-annotations version:
-* Django version:
 * Python version:
 * Operating System:
 

@@ -11,10 +11,9 @@ instructions.
 
 **Testing instructions:**
 
-1. Open page A
-2. Do thing B
-3. Expect C to happen
-4. If D happened instead - check failed.
+1. Do thing A
+2. Expect B to happen
+3. If C happened instead - check failed.
 
 **Reviewers:**
 - [ ] tag reviewer 

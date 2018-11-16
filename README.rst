@@ -4,19 +4,16 @@ code-annotations
 |pypi-badge| |travis-badge| |codecov-badge| |doc-badge| |pyversions-badge|
 |license-badge|
 
-The ``README.rst`` file should start with a brief description of the repository,
-which sets it in the context of other repositories under the ``edx``
-organization. It should make clear where this fits in to the overall edX
-codebase.
-
 Extensible tools for parsing annotations in codebases
 
-Overview (please modify)
-------------------------
+Overview
+--------
 
-The ``README.rst`` file should then provide an overview of the code in this
-repository, including the main components and useful entry points for starting
-to understand the code in more detail.
+This package provides configurable and extensible tools for parsing and
+summarizing annotations in a wide range of codebases. Originally intended for
+annotating code which stores personally identifiable information (PII), these
+tools are optimized for that use case but can be generalized for other types of
+annotations.
 
 Documentation
 -------------
