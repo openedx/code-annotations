@@ -21,16 +21,18 @@ idna==2.7                 # via requests
 imagesize==1.1.0          # via sphinx
 jinja2==2.10              # via sphinx
 markupsafe==1.1.0         # via jinja2
+mock==2.0.0
 more-itertools==4.3.0
 packaging==18.0           # via sphinx
-pbr==5.1.1                # via stevedore
+pbr==5.1.1
 pluggy==0.8.0
 py==1.7.0
-pygments==2.2.0           # via readme-renderer, sphinx
+pygments==2.3.0           # via readme-renderer, sphinx
 pyparsing==2.3.0          # via packaging
 pytest-cov==2.6.0
-pytest==4.0.0
+pytest==4.0.1
 pytz==2018.7
+pyyaml==3.13
 readme-renderer==24.0
 requests==2.20.1          # via sphinx
 restructuredtext-lint==1.2.1  # via doc8
