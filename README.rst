@@ -1,4 +1,4 @@
-code-annotations
+awdawdcode-annotations
 =============================
 
 |pypi-badge| |travis-badge| |codecov-badge| |doc-badge| |pyversions-badge|
