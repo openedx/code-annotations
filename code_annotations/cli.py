@@ -7,7 +7,7 @@ import click
 def cli():
     pass
 
-@cli.command()
+@cli.command('seed_safelist')
 def seed_safelist():
     """
     Subcommand to seed the initial .pii_safe_list.yaml file.

@@ -82,9 +82,9 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'code_annotations = code_annotations:cli',
+            'code_annotations = code_annotations.cli:cli',
         ],
-    }
+    },
     include_package_data=True,
     install_requires=load_requirements('requirements/base.in'),
     license="AGPL 3.0",
