@@ -4,3 +4,6 @@
 #
 #    make upgrade
 #
+click==7.0
+django==1.11.16
+pytz==2018.7              # via django

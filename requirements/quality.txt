@@ -13,9 +13,10 @@ caniusepython3==7.0.0
 certifi==2018.10.15       # via requests
 chardet==3.0.4            # via requests
 click-log==0.1.8          # via edx-lint
-click==7.0                # via click-log, edx-lint
+click==7.0
 coverage==4.5.2
 distlib==0.2.8            # via caniusepython3
+django==1.11.16
 edx-lint==0.6.0
 idna==2.7                 # via requests
 isort==4.3.4
@@ -34,6 +35,7 @@ pylint==1.7.6             # via edx-lint, pylint-celery, pylint-django, pylint-p
 pyparsing==2.3.0          # via packaging
 pytest-cov==2.6.0
 pytest==4.0.0
+pytz==2018.7
 requests==2.20.1          # via caniusepython3
 six==1.11.0
 snowballstemmer==1.2.1    # via pydocstyle
