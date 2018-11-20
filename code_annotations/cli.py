@@ -6,6 +6,7 @@ import sys
 
 import click
 import yaml
+
 from code_annotations.django_reporting_helpers import get_models_requiring_annotations
 
 DEFAULT_SAFELIST_FILE_PATH = '.pii_safe_list.yaml'

@@ -8,8 +8,9 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from click.testing import CliRunner
-from code_annotations.cli import cli
 from mock import DEFAULT, patch
+
+from code_annotations.cli import cli
 
 FAKE_SAFELIST_PATH = 'fake_safelist_path.yaml'
 
