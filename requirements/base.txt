@@ -6,5 +6,8 @@
 #
 click==7.0
 django==1.11.16
+pbr==5.1.1                # via stevedore
 pytz==2018.7              # via django
 pyyaml==3.13
+six==1.11.0               # via stevedore
+stevedore==1.30.0

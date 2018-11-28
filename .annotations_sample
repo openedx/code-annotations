@@ -1,0 +1,17 @@
+source_path: ../devstack-docker/edx-platform
+report_path: reports
+annotations:
+    pii:
+        - ".. pii::"
+        - ".. pii_types::":
+            choices: [id, name, other]
+        - ".. pii_retirement::":
+            choices: [retained, local_api, consumer_api, third_party]
+    nopii: ".. no_pii::"
+
+extensions:
+    plaintext:
+        - py
+    javascript:
+        - js
+        - jsx
