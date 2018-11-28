@@ -8,6 +8,8 @@ import click
 import yaml
 
 from code_annotations.django_reporting_helpers import get_models_requiring_annotations
+from code_annotations.find_annotations import StaticSearch
+from code_annotations.helpers import read_configuration
 
 DEFAULT_SAFELIST_FILE_PATH = '.pii_safe_list.yaml'
 
@@ -21,35 +23,32 @@ def fail(msg):
 
 
 @click.group()
+def entry_point():
+    """
+    Top level click command for the code annotation tools.
+    """
+    pass
+
+
+@entry_point.command('pii_report_django')
 @click.option(
-    '--config_file', 'config_file_path',
-    type=click.Path(exists=True, dir_okay=False),
-    help='Config file for all code annotation tools.',
+    '--config_file',
+    default='.annotations',
+    help='Path to the configuration file',
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
 )
-@click.pass_context
-def cli(ctx, config_file_path):
-    """
-    Code annotation tools.
-    """
-    # Code placed in this function runs first, before entering any subcommands.
-    ctx.ensure_object(dict)
-    with open(config_file_path) as config_file:
-        ctx.obj['config'] = yaml.load(config_file)
-    # Now, the ctx object will be passed along to subcommands as the first argument.
-
-
-@cli.command('pii_report_django')
 @click.option(
     '--seed_safelist',
     is_flag=True,
     help='Generate an initial safelist file based on the current Django environment.',
 )
-@click.pass_context
-def pii_report_django(ctx, seed_safelist):
+def pii_report_django(config_file, seed_safelist):
     """
     Subcommand for dealing with PII in Django models.
     """
-    safelist_file_path = ctx.obj['config'].get('safelist_path', DEFAULT_SAFELIST_FILE_PATH)
+    config = read_configuration(config_file)
+
+    safelist_file_path = config.get('safelist_path', DEFAULT_SAFELIST_FILE_PATH)
     if seed_safelist:
         if os.path.exists(safelist_file_path):
             fail('{} already exists, not overwriting.'.format(safelist_file_path))
@@ -73,3 +72,35 @@ def pii_report_django(ctx, seed_safelist):
         click.echo('  1) Make sure that any un-annotated models in the safelist are annotated, and')
         click.echo('  2) Annotate the local models listed above.')
         return  # this was a special function of the pii_report_django subcommand, so terminate the program here.
+
+
+@entry_point.command('static_find_annotations')
+@click.option(
+    '--config_file',
+    default='.annotations',
+    help='Path to the configuration file',
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
+)
+@click.option(
+    '--source_path',
+    default=None,
+    help='Location of the source code to search',
+    type=click.Path(exists=True, dir_okay=True, resolve_path=True)
+)
+@click.option('--report_path', default=None, help='Location to write the report')
+@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
+def static_find_annotations(config_file, source_path, report_path, verbosity):
+    """
+    Subcommand to find annotations via static file analysis.
+
+    Args:
+        config_file: Path to the configuration file
+        source_path: Location of the source code to search
+        report_path: Location to write the report
+        verbosity: Verbosity level for output
+
+    Returns:
+        None
+    """
+    searcher = StaticSearch(config_file, source_path, report_path, verbosity)
+    searcher.search()

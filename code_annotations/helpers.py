@@ -4,6 +4,7 @@ Helpers for code_annotations scripts.
 import os
 
 import click
+import yaml
 
 
 class VerboseEcho(object):
@@ -88,3 +89,17 @@ def clean_abs_path(filename_to_clean, parent_path):
         Updated path
     """
     return os.path.relpath(filename_to_clean, parent_path)
+
+
+def read_configuration(config_file_path):
+    """
+    Read the given yaml configuration file, return the results.
+
+    Args:
+        config_file_path: The path to the configuration file
+
+    Returns:
+        Results of yaml.read() on the file
+    """
+    with open(config_file_path) as config_file:
+        return yaml.load(config_file)

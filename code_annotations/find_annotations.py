@@ -5,269 +5,254 @@ import datetime
 import errno
 import os
 
-import click
 import yaml
 from stevedore import named
 
 from code_annotations.exceptions import ConfigurationException
-from code_annotations.helpers import VerboseEcho
-
-# Global logger for this script, shared with extensions
-ECHO = VerboseEcho()
+from code_annotations.helpers import VerboseEcho, read_configuration
 
 
-def load_failed_handler(*args, **kwargs):
+class StaticSearch(object):
     """
-    Handle failures to load an extension.
-
-    Dumps the error and raises an exception. By default these
-    errors just fail silently.
-
-    Args:
-        *args:
-        **kwargs:
-
-    Returns:
-        None
-
-    Raises:
-        ConfigurationException
+    Handles static code searching for annotations.
     """
-    ECHO.echo(args)
-    ECHO.echo(kwargs)
-    raise ConfigurationException('Failed to load a plugin, aborting.')
 
+    config = {}
+    mgr = None
 
-def search_extension(ext, file_handle, file_extensions_map, filename_extension):
-    """
-    Execute a search on the given file using the given extension.
+    def __init__(self, config, source_path, report_path, verbosity):
+        """
+        Initialize for StaticSearch.
 
-    Args:
-        ext: Extension to execute the search on
-        file_handle: An open file handle search
-        file_extensions_map: Dict mapping of extension names to configured filename extensions
-        filename_extension: The filename extension of the file being searched
+        Args:
+            config: Configuration file path
+            source_path: Directory to be searched for annotations
+            report_path: Directory to write the report file to
+            verbosity: Integer representing verbosity level (1-3)
+        """
+        # Global logger for this script, shared with extensions
+        self.echo = VerboseEcho()
+        self.configure(config, source_path, report_path, verbosity)
 
-    Returns:
-        Tuple of (extension name, list of found annotation dicts)
-    """
-    # Reset the read handle to the beginning of the file in case another
-    # extension already moved it
-    file_handle.seek(0)
+    def configure(self, config_file_path, source_path, report_path, verbosity):
+        """
+        Read the configuration file, and handle command line overrides.
 
-    # Only search this file if we are configured for its extension
-    if filename_extension in file_extensions_map[ext.name]:
-        ext_results = ext.obj.search(file_handle)
+        Args:
+            config_file_path: Location of the configuration file
+            source_path: Path to the code to be searched
+            report_path: Directory where the report will be generated
+            verbosity: Integer indicating the runtime verbosity level
 
-        if ext_results:
-            return ext.name, ext_results
+        Returns:
+            Configuration dict, updated with overrides
+        """
+        # TODO: Add include / exclude directories
+        self.echo.echo('Reading configuration from {}'.format(config_file_path))
 
-    return ext.name, None
+        self.config = read_configuration(config_file_path)
 
+        if not source_path and not self.config['source_path']:
+            raise ConfigurationException('source_path not given and not in configuration file')
 
-def format_file_results(all_results, results):
-    """
-    Add all extensions' search results for a file to the overall results.
+        if not report_path and not self.config['report_path']:
+            raise ConfigurationException('report_path not given and not in configuration file')
 
-    Args:
-        all_results: Aggregated results to add the results to
-        results: Results of search() on a single file
+        if source_path:
+            self.config['source_path'] = source_path
 
-    Returns:
-        None, modifies all_results
-    """
-    # _ here is the extension name, as required by Stevedore map(). Each
-    # annotation already has the extension name so we can ignore it here
-    for _, annotations in results:
-        if annotations is None:
-            continue
+        if report_path:
+            self.config['report_path'] = report_path
 
-        # TODO: The file_path should be the same for all of these results
-        # so we should be able to optimize getting file_path and making
-        # sure it exists in the dict to do this less often.
-        file_path = annotations[0]['filename']
+        # This is a runtime option, shouldn't be in the config file
+        self.config['verbosity'] = verbosity
+        self.echo.set_verbosity(verbosity)
 
-        if file_path not in all_results:
-            all_results[file_path] = []
+        self.configure_extensions()
 
-        # TODO: add support for multiple extensions in the 'found_by' key
-        # and de-dupe results
-        all_results[file_path].extend(annotations)
+        self.echo.echo_v("Verbosity level set to {}".format(self.config['verbosity']))
+        self.echo.echo_v("Configuration:")
+        self.echo.echo_v(self.config)
+        self.echo.echo(
+            "Configured for source path: {}, report path: {}".format(
+                self.config['source_path'],
+                self.config['report_path'])
+        )
 
+    def configure_extensions(self):
+        """
+        Configure the Stevedore NamedExtensionManager.
 
-def configure(config, source_path, report_path, verbosity):
-    """
-    Read the configuration file, and handle command line overrides.
+        Returns:
+            None
+        """
+        # These are the names of all of our configured extensions
+        configured_extension_names = self.config['extensions'].keys()
 
-    Args:
-        config: Location of the configuration file
-        source_path: Path to the code to be searched
-        report_path: Directory where the report will be generated
-        verbosity: Integer indicating the runtime verbosity level
+        # Load Stevedore extensions that we are configured for (and only those)
+        self.mgr = named.NamedExtensionManager(
+            names=configured_extension_names,
+            namespace='annotation_finder.searchers',
+            invoke_on_load=True,
+            on_load_failure_callback=self.load_failed_handler,
+            invoke_args=(self.config, self.echo),
+        )
 
-    Returns:
-        Configuration dict, updated with overrides
-    """
-    # TODO: Add include / exclude directories
-    ECHO.echo('Reading configuration from {}'.format(config))
+        # Output extension names listed in configuration
+        self.echo.echo_vv("Configured extension names: {}".format(" ".join(configured_extension_names)))
 
-    with open(config) as config_file:
-        config = yaml.load(config_file)
+        # Output found extension entry points (whether or not they were loaded)
+        self.echo.echo_vv("Stevedore entry points found: {}".format(str(self.mgr.list_entry_points())))
 
-    if not source_path and not config['source_path']:
-        raise ConfigurationException('source_path not given and not in configuration file')
+        # Output extensions that were actually able to load
+        self.echo.echo_v("Loaded extensions: {}".format(" ".join([x.name for x in self.mgr.extensions])))
 
-    if not report_path and not config['report_path']:
-        raise ConfigurationException('report_path not given and not in configuration file')
+    def load_failed_handler(self, *args, **kwargs):
+        """
+        Handle failures to load an extension.
 
-    if source_path:
-        config['source_path'] = source_path
+        Dumps the error and raises an exception. By default these
+        errors just fail silently.
 
-    if report_path:
-        config['report_path'] = report_path
+        Args:
+            *args:
+            **kwargs:
 
-    # This is a runtime option, shouldn't be in the config file
-    config['verbosity'] = verbosity
+        Returns:
+            None
 
-    ECHO.set_verbosity(verbosity)
-    ECHO.echo_v("Verbosity level set to {}".format(config['verbosity']))
-    ECHO.echo_v("Configuration:")
-    ECHO.echo_v(config)
+        Raises:
+            ConfigurationException
+        """
+        self.echo.echo(args)
+        self.echo.echo(kwargs)
+        raise ConfigurationException('Failed to load a plugin, aborting.')
 
-    return config
+    def search_extension(self, ext, file_handle, file_extensions_map, filename_extension):
+        """
+        Execute a search on the given file using the given extension.
 
+        Args:
+            ext: Extension to execute the search on
+            file_handle: An open file handle search
+            file_extensions_map: Dict mapping of extension names to configured filename extensions
+            filename_extension: The filename extension of the file being searched
 
-def search(mgr, config):
-    """
-    Walk the source tree, send known file types to extensions.
+        Returns:
+            Tuple of (extension name, list of found annotation dicts)
+        """
+        # Reset the read handle to the beginning of the file in case another
+        # extension already moved it
+        file_handle.seek(0)
 
-    Args:
-        mgr: Stevedore NamedExtensionManager
-        config: Configuration dict
+        # Only search this file if we are configured for its extension
+        if filename_extension in file_extensions_map[ext.name]:
+            ext_results = ext.obj.search(file_handle)
 
-    Returns:
-        Dict containing all of the search results
-    """
-    # Index the results by extension name
-    file_extensions_map = {}
-    known_extensions = set()
-    for extension_name in config['extensions']:
-        file_extensions_map[extension_name] = config['extensions'][extension_name]
-        known_extensions.update(config['extensions'][extension_name])
+            if ext_results:
+                return ext.name, ext_results
 
-    all_results = {}
+        return ext.name, None
 
-    for root, _, files in os.walk(config['source_path']):
-        for filename in files:
-            filename_extension = os.path.splitext(filename)[1][1:]
+    def format_file_results(self, all_results, results):
+        """
+        Add all extensions' search results for a file to the overall results.
 
-            if filename_extension not in known_extensions:
-                ECHO.echo_vvv("{} is not a known extension, skipping ({}).".format(filename_extension, filename))
+        Args:
+            all_results: Aggregated results to add the results to
+            results: Results of search() on a single file
+
+        Returns:
+            None, modifies all_results
+        """
+        # _ here is the extension name, as required by Stevedore map(). Each
+        # annotation already has the extension name so we can ignore it here
+        for _, annotations in results:
+            if annotations is None:
                 continue
 
-            full_name = os.path.join(root, filename)
+            # TODO: The file_path should be the same for all of these results
+            # so we should be able to optimize getting file_path and making
+            # sure it exists in the dict to do this less often.
+            file_path = annotations[0]['filename']
 
-            ECHO.echo_vvv(full_name)
+            if file_path not in all_results:
+                all_results[file_path] = []
 
-            # TODO: This should probably be a generator so we don't have to store all results in memory
-            with open(full_name, 'r') as file_handle:
-                # Call search_extension on all loaded extensions
-                results = mgr.map(search_extension, file_handle, file_extensions_map, filename_extension)
+            # TODO: add support for multiple extensions in the 'found_by' key
+            # and de-dupe results
+            all_results[file_path].extend(annotations)
 
-                # Format and add the results to our running full set
-                format_file_results(all_results, results)
+    def search(self):
+        """
+        Walk the source tree, send known file types to extensions.
 
-    return all_results
+        Returns:
+            Filename of the generated report
+        """
+        start_time = datetime.datetime.now()
 
+        # Index the results by extension name
+        file_extensions_map = {}
+        known_extensions = set()
+        for extension_name in self.config['extensions']:
+            file_extensions_map[extension_name] = self.config['extensions'][extension_name]
+            known_extensions.update(self.config['extensions'][extension_name])
 
-def report(all_results, config):
-    """
-    Genrates the YAML report of all search results.
+        all_results = {}
 
-    Args:
-        all_results: Dict of found annotations, indexed by filename
-        config: Configuration dict
+        for root, _, files in os.walk(self.config['source_path']):
+            for filename in files:
+                filename_extension = os.path.splitext(filename)[1][1:]
 
-    Returns:
-        Filename of generated report
-    """
-    ECHO.echo_vv(yaml.dump(all_results, default_flow_style=False))
+                if filename_extension not in known_extensions:
+                    self.echo.echo_vvv(
+                        "{} is not a known extension, skipping ({}).".format(filename_extension, filename)
+                    )
+                    continue
 
-    now = datetime.datetime.now()
-    report_filename = os.path.join(config['report_path'], '{}.yaml'.format(now.strftime('%Y-%d-%m-%H-%M-%S')))
+                full_name = os.path.join(root, filename)
 
-    ECHO.echo("Generating report to {}".format(report_filename))
+                self.echo.echo_vvv(full_name)
 
-    try:
-        os.makedirs(config['report_path'])
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+                # TODO: This should probably be a generator so we don't have to store all results in memory
+                with open(full_name, 'r') as file_handle:
+                    # Call search_extension on all loaded extensions
+                    results = self.mgr.map(self.search_extension, file_handle, file_extensions_map, filename_extension)
 
-    with open(report_filename, 'w+') as report_file:
-        yaml.dump(all_results, report_file, default_flow_style=False)
+                    # Format and add the results to our running full set
+                    self.format_file_results(all_results, results)
 
-    return report_filename
+        report_filename = self.report(all_results)
+        done = datetime.datetime.now()
+        elapsed = done - start_time
 
+        self.echo.echo("Report completed in {}: {}".format(elapsed, report_filename))
 
-@click.command('static_find_annotations')
-@click.option(
-    '--config_file',
-    default='.annotations',
-    help='Path to the configuration file',
-    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
-)
-@click.option(
-    '--source_path',
-    default=None,
-    help='Location of the source code to search',
-    type=click.Path(exists=True, dir_okay=True, resolve_path=True)
-)
-@click.option('--report_path', default=None, help='Location to write the report')
-@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
-def static_find_annotations(config_file, source_path, report_path, verbosity):
-    """
-    Click command to find annotations via static file analysis.
+    def report(self, all_results):
+        """
+        Genrates the YAML report of all search results.
 
-    Args:
-        config_file: Path to the configuration file
-        source_path: Location of the source code to search
-        report_path: Location to write the report
-        verbosity: Verbosity level for output
+        Args:
+            all_results: Dict of found annotations, indexed by filename
 
-    Returns:
-        None
-    """
-    now = datetime.datetime.now()
+        Returns:
+            Filename of generated report
+        """
+        self.echo.echo_vv(yaml.dump(all_results, default_flow_style=False))
 
-    config = configure(config_file, source_path, report_path, verbosity)
+        now = datetime.datetime.now()
+        report_filename = os.path.join(self.config['report_path'], '{}.yaml'.format(now.strftime('%Y-%d-%m-%H-%M-%S')))
 
-    ECHO.echo("Configured for source path: {}, report path: {}".format(config['source_path'], config['report_path']))
+        self.echo.echo("Generating report to {}".format(report_filename))
 
-    # These are the names of all of our configured extensions
-    configured_extension_names = config['extensions'].keys()
+        try:
+            os.makedirs(self.config['report_path'])
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
-    ECHO.echo_vv("Configured extension names: {}".format(" ".join(configured_extension_names)))
+        with open(report_filename, 'w+') as report_file:
+            yaml.dump(all_results, report_file, default_flow_style=False)
 
-    # Load Stevedore extensions that we are configured for (and only those)
-    mgr = named.NamedExtensionManager(
-        names=configured_extension_names,
-        namespace='annotation_finder.searchers',
-        invoke_on_load=True,
-        on_load_failure_callback=load_failed_handler,
-        invoke_args=(config, ECHO),
-    )
-
-    # Output all found extension entry points (whether or not they were loaded)
-    ECHO.echo_vv("Stevedore entry points found: {}".format(str(mgr.list_entry_points())))
-
-    # Output all extensions that were actually able to load
-    ECHO.echo_v("Loaded extensions: {}".format(" ".join([x.name for x in mgr.extensions])))
-
-    all_results = search(mgr, config)
-    report_filename = report(all_results, config)
-
-    done = datetime.datetime.now()
-    elapsed = done - now
-
-    ECHO.echo("Report completed in {}: {}".format(elapsed, report_filename))
+        return report_filename

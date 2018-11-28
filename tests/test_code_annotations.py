@@ -10,7 +10,7 @@ import os
 from click.testing import CliRunner
 from mock import DEFAULT, patch
 
-from code_annotations.cli import cli
+from code_annotations.cli import entry_point
 
 FAKE_SAFELIST_PATH = 'fake_safelist_path.yaml'
 
@@ -34,10 +34,8 @@ def _call_script(args_list, test_filesystem_cb=None):
             f.write(FAKE_CONFIG_FILE)
 
         result = runner.invoke(
-            cli,
-            args=[
-                '--config_file', 'test_config.yml',
-            ] + args_list
+            entry_point,
+            args_list
         )
         if test_filesystem_cb:
             test_filesystem_cb()
@@ -77,7 +75,7 @@ def test_seeding_safelist(**kwargs):
             assert model_id not in fake_safelist
 
     result = _call_script(
-        ['pii_report_django', '--seed_safelist'],
+        ['pii_report_django', '--config_file', 'test_config.yml', '--seed_safelist'],
         test_filesystem_cb=test_safelist_callback,
     )
     assert result.exit_code == 0

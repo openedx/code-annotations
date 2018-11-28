@@ -81,8 +81,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'code_annotations = code_annotations.cli:cli',
-            'find_annotations = code_annotations.find_annotations:static_find_annotations',
+            'code_annotations = code_annotations.cli:entry_point',
         ],
         'annotation_finder.searchers': [
             'plaintext = code_annotations.extensions.plaintext:PlaintextAnnotationExtension',
