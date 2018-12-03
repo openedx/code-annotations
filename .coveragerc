@@ -8,3 +8,4 @@ omit =
     *admin.py
     *static*
     *templates*
+    code_annotations/extensions/tests/python_test_files/*

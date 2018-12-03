@@ -90,7 +90,6 @@ def pii_report_django(config_file, seed_safelist, list_local_models):
 )
 @click.option(
     '--source_path',
-    default=None,
     help='Location of the source code to search',
     type=click.Path(exists=True, dir_okay=True, resolve_path=True)
 )
@@ -109,5 +108,8 @@ def static_find_annotations(config_file, source_path, report_path, verbosity):
     Returns:
         None
     """
-    searcher = StaticSearch(config_file, source_path, report_path, verbosity)
-    searcher.search()
+    try:
+        searcher = StaticSearch(config_file, source_path, report_path, verbosity)
+        searcher.search()
+    except Exception as exc:  # pylint: disable=broad-except
+        fail(exc)

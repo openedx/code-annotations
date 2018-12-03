@@ -13,7 +13,7 @@ def fail(msg):
     Log the message and exit.
     """
     click.echo(msg)
-    sys.exit(1)
+    sys.exit(-1)
 
 
 class VerboseEcho(object):
@@ -22,6 +22,17 @@ class VerboseEcho(object):
     """
 
     verbosity = 1
+
+    def __call__(self, output):
+        """
+        Echo the given output regardless of verbosity level.
+
+        This is just a convenience method to avoid lots of `self.echo.echo()`.
+
+        Args:
+            output: Text to output
+        """
+        self.echo(output)
 
     def set_verbosity(self, verbosity):
         """
@@ -42,9 +53,6 @@ class VerboseEcho(object):
         Args:
             output: Text to output
             verbosity_level: Only output if our verbosity level is >= this.
-
-        Returns:
-            None
         """
         if verbosity_level <= self.verbosity:
             click.echo(output)
@@ -55,9 +63,6 @@ class VerboseEcho(object):
 
         Args:
             output: Text to output
-
-        Returns:
-            None
         """
         self.echo(output, 1)
 
@@ -67,9 +72,6 @@ class VerboseEcho(object):
 
         Args:
             output: Text to output
-
-        Returns:
-            None
         """
         self.echo(output, 2)
 
@@ -79,9 +81,6 @@ class VerboseEcho(object):
 
         Args:
             output: Text to output
-
-        Returns:
-            None
         """
         self.echo(output, 3)
 
@@ -97,6 +96,10 @@ def clean_abs_path(filename_to_clean, parent_path):
     Returns:
         Updated path
     """
+    # If we are operating on only one file we don't know what to strip off here,
+    # just return the whole thing.
+    if filename_to_clean == parent_path:
+        return parent_path
     return os.path.relpath(filename_to_clean, parent_path)
 
 
