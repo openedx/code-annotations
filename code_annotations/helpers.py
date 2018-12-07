@@ -2,9 +2,18 @@
 Helpers for code_annotations scripts.
 """
 import os
+import sys
 
 import click
 import yaml
+
+
+def fail(msg):
+    """
+    Log the message and exit.
+    """
+    click.echo(msg)
+    sys.exit(1)
 
 
 class VerboseEcho(object):

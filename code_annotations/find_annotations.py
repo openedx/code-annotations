@@ -28,7 +28,7 @@ class StaticSearch(object):
             config: Configuration file path
             source_path: Directory to be searched for annotations
             report_path: Directory to write the report file to
-            verbosity: Integer representing verbosity level (1-3)
+            verbosity: Integer representing verbosity level (0-3)
         """
         # Global logger for this script, shared with extensions
         self.echo = VerboseEcho()
@@ -64,13 +64,11 @@ class StaticSearch(object):
         if report_path:
             self.config['report_path'] = report_path
 
-        # This is a runtime option, shouldn't be in the config file
-        self.config['verbosity'] = verbosity
         self.echo.set_verbosity(verbosity)
 
         self.configure_extensions()
 
-        self.echo.echo_v("Verbosity level set to {}".format(self.config['verbosity']))
+        self.echo.echo_v("Verbosity level set to {}".format(verbosity))
         self.echo.echo_v("Configuration:")
         self.echo.echo_v(self.config)
         self.echo.echo(
