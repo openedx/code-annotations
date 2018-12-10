@@ -2,24 +2,15 @@
 Command line interface for code annotation tools.
 """
 import os
-import sys
 
 import click
 import yaml
 
 from code_annotations.django_reporting_helpers import get_models_requiring_annotations
 from code_annotations.find_annotations import StaticSearch
-from code_annotations.helpers import read_configuration
+from code_annotations.helpers import fail, read_configuration
 
-DEFAULT_SAFELIST_FILE_PATH = '.pii_safe_list.yaml'
-
-
-def fail(msg):
-    """
-    Log the message and exit.
-    """
-    click.echo(msg)
-    sys.exit(1)
+DEFAULT_SAFELIST_FILE_PATH = '.pii_safe_list.yml'
 
 
 @click.group()
@@ -42,35 +33,51 @@ def entry_point():
     is_flag=True,
     help='Generate an initial safelist file based on the current Django environment.',
 )
-def pii_report_django(config_file, seed_safelist):
+@click.option(
+    '--list_local_models',
+    is_flag=True,
+    help='List all locally defined models (in the current repo) that require annotations.',
+)
+def pii_report_django(config_file, seed_safelist, list_local_models):
     """
     Subcommand for dealing with PII in Django models.
     """
-    config = read_configuration(config_file)
+    special_functions = [
+        seed_safelist,
+        list_local_models
+    ]
+    if special_functions.count(True) > 1:
+        fail('Multiple mutually-exclusive special functions were specified.')
 
-    safelist_file_path = config.get('safelist_path', DEFAULT_SAFELIST_FILE_PATH)
+    config = read_configuration(config_file)
+    config.setdefault('safelist_path', DEFAULT_SAFELIST_FILE_PATH)
+
     if seed_safelist:
-        if os.path.exists(safelist_file_path):
-            fail('{} already exists, not overwriting.'.format(safelist_file_path))
-        local_model_ids, non_local_model_ids = get_models_requiring_annotations()
-        click.echo(
-            'Listing {} local models requiring annotations:'.format(len(local_model_ids))
-        )
-        for model_id in local_model_ids:
-            click.echo('     {}'.format(model_id))
+        if os.path.exists(config['safelist_path']):
+            fail('{} already exists, not overwriting.'.format(config['safelist_path']))
+        _, non_local_model_ids = get_models_requiring_annotations()
         click.echo(
             'Found {} non-local models requiring annotations. Adding them to safelist.'.format(len(non_local_model_ids))
         )
-        click.echo(
-            'Found {} local models requiring annotations. NOT adding them to safelist.'.format(len(local_model_ids))
-        )
         safelist_data = {model_id: {} for model_id in non_local_model_ids}
-        with open(safelist_file_path, 'w') as safelist_file:
+        with open(config['safelist_path'], 'w') as safelist_file:
             yaml.dump(safelist_data, stream=safelist_file)
-        click.echo('Successfully created safelist file "{}".'.format(safelist_file_path))
+        click.echo('Successfully created safelist file "{}".'.format(config['safelist_path']))
         click.echo('Now, you need to:')
         click.echo('  1) Make sure that any un-annotated models in the safelist are annotated, and')
-        click.echo('  2) Annotate the local models listed above.')
+        click.echo('  2) Annotate any LOCAL models (see --list_local_models).')
+        return  # this was a special function of the pii_report_django subcommand, so terminate the program here.
+
+    if list_local_models:
+        local_model_ids, _ = get_models_requiring_annotations()
+        if local_model_ids:
+            click.echo(
+                'Listing {} local models requiring annotations:'.format(len(local_model_ids))
+            )
+            for model_id in local_model_ids:
+                click.echo('     {}'.format(model_id))
+        else:
+            click.echo('No local models requiring annotations.')
         return  # this was a special function of the pii_report_django subcommand, so terminate the program here.
 
 

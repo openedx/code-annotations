@@ -7,6 +7,7 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
+import pytest
 from click.testing import CliRunner
 from mock import DEFAULT, patch
 
@@ -37,10 +38,11 @@ def _call_script(args_list, test_filesystem_cb=None):
             entry_point,
             args_list
         )
+        print(result)
+        print(result.output)
+
         if test_filesystem_cb:
             test_filesystem_cb()
-    print(result)
-    print(result.output)
     return result
 
 
@@ -48,18 +50,30 @@ def _call_script(args_list, test_filesystem_cb=None):
     'code_annotations.cli',
     get_models_requiring_annotations=DEFAULT,
 )
-def test_seeding_safelist(**kwargs):
+@pytest.mark.parametrize("local_model_ids,non_local_model_ids", [
+    (
+        [
+            'fake_app_1.FakeModelA',
+            'fake_app_2.FakeModelB',
+        ],
+        [
+            'fake_app_3.FakeModelC',
+            'fake_app_4.FakeModelD',
+        ],
+    ),
+    (
+        [
+            'fake_app_1.FakeModelA',
+            'fake_app_2.FakeModelB',
+        ],
+        [],  # No non-local models to add to the safelist.
+    ),
+])
+def test_seeding_safelist(local_model_ids, non_local_model_ids, **kwargs):
     """
+    Test the success case for seeding the safelist.
     """
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
-    local_model_ids = [
-        'fake_app_1.FakeModelA',
-        'fake_app_2.FakeModelB',
-    ]
-    non_local_model_ids = [
-        'fake_app_3.FakeModelC',
-        'fake_app_4.FakeModelD',
-    ]
     mock_get_models_requiring_annotations.return_value = (
         local_model_ids,
         non_local_model_ids,
@@ -80,3 +94,45 @@ def test_seeding_safelist(**kwargs):
     )
     assert result.exit_code == 0
     assert 'Successfully created safelist file' in result.output
+
+
+@patch.multiple(
+    'code_annotations.cli',
+    get_models_requiring_annotations=DEFAULT,
+)
+@pytest.mark.parametrize("local_model_ids,non_local_model_ids", [
+    (
+        [
+            'fake_app_1.FakeModelA',
+            'fake_app_2.FakeModelB',
+        ],
+        [
+            'fake_app_3.FakeModelC',
+            'fake_app_4.FakeModelD',
+        ],
+    ),
+    (
+        [],  # No local models to print on stdout.
+        [
+            'fake_app_3.FakeModelC',
+            'fake_app_4.FakeModelD',
+        ],
+    ),
+])
+def test_listing_local_models(local_model_ids, non_local_model_ids, **kwargs):
+    """
+    Test the success case for listing local models.
+    """
+    mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
+    mock_get_models_requiring_annotations.return_value = (
+        local_model_ids,
+        non_local_model_ids,
+    )
+    result = _call_script(
+        ['pii_report_django', '--config_file', 'test_config.yml', '--list_local_models']
+    )
+    assert result.exit_code == 0
+    if not local_model_ids:
+        assert 'No local models requiring annotations.' in result.output
+    else:
+        assert 'Listing {} local models requiring annotations'.format(len(local_model_ids)) in result.output
