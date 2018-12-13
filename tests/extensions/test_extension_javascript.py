@@ -7,9 +7,9 @@ from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
 
 
 @pytest.mark.parametrize("test_file,expected_exit_code,expected_message", [
-    ('simple_success.js', EXIT_CODE_SUCCESS, "Report found 26 annotations in"),
-    ('group_ordering_1.js', EXIT_CODE_SUCCESS, "Report found 3 annotations in"),
-    ('group_ordering_2.js', EXIT_CODE_SUCCESS, "Report found 9 annotations in"),
+    ('simple_success.js', EXIT_CODE_SUCCESS, "Search found 26 annotations in"),
+    ('group_ordering_1.js', EXIT_CODE_SUCCESS, "Search found 3 annotations in"),
+    ('group_ordering_2.js', EXIT_CODE_SUCCESS, "Search found 9 annotations in"),
     ('group_failures_1.js', EXIT_CODE_FAILURE, "File finished with an incomplete group"),
     ('group_failures_2.js', EXIT_CODE_FAILURE, " .. pii_types:: is a member of a group, but"),
     ('group_failures_3.js', EXIT_CODE_FAILURE, "File finished with an incomplete group"),
@@ -33,4 +33,4 @@ def test_grouping_and_choice_failures(test_file, expected_exit_code, expected_me
     assert expected_message in result.output
 
     if expected_exit_code == EXIT_CODE_FAILURE:
-        assert "Report failed due to errors!" in result.output
+        assert "Search failed due to linting errors!" in result.output
