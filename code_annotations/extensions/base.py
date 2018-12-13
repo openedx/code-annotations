@@ -2,12 +2,14 @@
 Abstract and base classes to support plugins.
 """
 import re
+from abc import ABCMeta, abstractmethod
 
 import six
 
 from code_annotations.helpers import clean_abs_path
 
 
+@six.add_metaclass(ABCMeta)
 class AnnotationExtension(object):
     """
     Abstract base class that annotation extensions will inherit from.
@@ -41,18 +43,21 @@ class AnnotationExtension(object):
                     annotation_tokens[annotation_or_group])
                 )
 
+    @abstractmethod
     def validate(self, file_handle):  # pragma: no cover
         """
         Validate that any annotations in the given file are properly formatted.
         """
         raise NotImplementedError('validate called on base class!')
 
+    @abstractmethod
     def search(self, file_handle):  # pragma: no cover
         """
         Search for annotations in the given file.
         """
         raise NotImplementedError('search called on base class!')
 
+    @abstractmethod
     def _add_annotation_token(self, annotation):  # pragma: no cover
         """
         During initialization this method will be called for each configured annotation.
@@ -67,6 +72,7 @@ class AnnotationExtension(object):
         """
         raise NotImplementedError('_add_annotation_token called on base class!')
 
+    @abstractmethod
     def _add_annotation_group(self, annotation_group):  # pragma: no cover
         """
         During initialization this method will be called for each configured annotation group.
@@ -184,7 +190,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
                 self._add_annotation_token(annotation_name)
             else:
                 raise TypeError(
-                    '{} is an unknown type. Annotations must be strings or list/tuples.'.format(annotation_group)
+                    '{} is an unknown type. Annotation groups must be strings or dicts.'.format(annotation_group)
                 )
 
     def validate(self, file_handle):
@@ -215,27 +221,33 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
 
         # Fast out if no annotations exist in the file
         if any(anno in txt for anno in self.annotation_tokens):
+            fname = clean_abs_path(file_handle.name, self.config['source_path'])
+
             for match in re.finditer(self.comment_regex, txt):
                 # Should only be one match
                 comment_content = [item for item in match.groups() if item is not None][0]
                 for inner_match in re.finditer(self.query, comment_content):
-                    # No matter how long the regex is, there should only be 2 non-None items,
-                    # with the first being the annotation token and the 2nd being the comment.
-                    cleaned_groups = [item for item in inner_match.groups() if item is not None]
-
-                    if len(cleaned_groups) != 2:  # pragma: no cover
-                        raise Exception('Number of found items in the list is not 2, something is very wrong.')
-
-                    annotation, comment = cleaned_groups
-
                     # Get the line number by counting newlines + 1 (for the first line).
                     # Note that this is the line number of the beginning of the comment, not the
                     # annotation token itself.
                     line = txt.count('\n', 0, match.start()) + 1
 
+                    # No matter how long the regex is, there should only be 2 non-None items,
+                    # with the first being the annotation token and the 2nd being the comment.
+                    cleaned_groups = [item for item in inner_match.groups() if item is not None]
+
+                    if len(cleaned_groups) != 2:  # pragma: no cover
+                        raise Exception('{}::{}: Number of found items in the list is not 2. Found: {}'.format(
+                            fname,
+                            line,
+                            cleaned_groups
+                        ))
+
+                    annotation, comment = cleaned_groups
+
                     found_annotations.append({
                         'found_by': self.extension_name,
-                        'filename': clean_abs_path(file_handle.name, self.config['source_path']),
+                        'filename': fname,
                         'line_number': line,
                         'annotation_token': annotation.strip(),
                         'annotation_data': comment.strip()

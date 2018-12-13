@@ -6,7 +6,7 @@ import re
 
 import pytest
 
-from code_annotations.extensions.base import AnnotationExtension, SimpleRegexAnnotationExtension
+from code_annotations.extensions.base import SimpleRegexAnnotationExtension
 from code_annotations.helpers import VerboseEcho
 
 
@@ -50,7 +50,7 @@ def test_bad_annotation_type():
     }
 
     with pytest.raises(TypeError):
-        AnnotationExtension(config, None)
+        FakeExtension(config, None)
 
 
 def test_bad_annotation_group_type():
