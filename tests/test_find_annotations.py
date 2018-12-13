@@ -43,7 +43,7 @@ def test_unknown_file_extension():
     ))
     assert result.exit_code == EXIT_CODE_SUCCESS
     assert 'nothing is not a known extension, skipping' in result.output
-    assert 'Report found 0 annotations' in result.output
+    assert 'Search found 0 annotations' in result.output
 
 
 def test_file_walking():
@@ -110,4 +110,34 @@ def test_no_extension_results():
         '-v',
     ))
     assert result.exit_code == EXIT_CODE_SUCCESS
-    assert "Report found 0 annotations" in result.output
+    assert "Search found 0 annotations" in result.output
+
+
+def test_no_report():
+    result = call_script((
+        'static_find_annotations',
+        '--config_file',
+        'tests/test_configurations/.annotations_test_python_only',
+        '--source_path=tests/extensions/python_test_files/simple_success.pyt',
+        '--no_report',
+        '-v',
+    ))
+    assert result.exit_code == EXIT_CODE_SUCCESS
+    assert "Search found 20 annotations" in result.output
+    assert "Writing report..." not in result.output
+    assert "Linting passed without errors." in result.output
+
+
+def test_no_lint():
+    result = call_script((
+        'static_find_annotations',
+        '--config_file',
+        'tests/test_configurations/.annotations_test_python_only',
+        '--source_path=tests/extensions/python_test_files/simple_success.pyt',
+        '--no_lint',
+        '-v',
+    ))
+    assert result.exit_code == EXIT_CODE_SUCCESS
+    assert "Search found 20 annotations" in result.output
+    assert "Linting passed without errors." not in result.output
+    assert "Writing report..." in result.output

@@ -295,7 +295,7 @@ class StaticSearch(object):
                 )
             )
 
-    def _check_results(self, all_results):
+    def check_results(self, all_results):
         """
         Spin through all search results, confirm that they all match configuration.
 
@@ -419,8 +419,6 @@ class StaticSearch(object):
         Returns:
             Filename of the generated report
         """
-        start_time = datetime.datetime.now()
-
         # Index the results by extension name
         file_extensions_map = {}
         known_extensions = set()
@@ -438,22 +436,7 @@ class StaticSearch(object):
                     full_name = os.path.join(root, filename)
                     self._search_one_file(full_name, known_extensions, file_extensions_map, all_results)
 
-        # Check grouping and choices
-        self._check_results(all_results)
-
-        # If there are any errors, do not generate the report
-        if self.errors:
-            self.echo("{} errors:".format(len(self.errors)))
-            self.echo("---------------------------------")
-            self.echo("\n".join(self.errors))
-            self.echo("\nReport failed due to errors!")
-            exit(-1)
-
-        annotation_count, report_filename = self.report(all_results)
-        done = datetime.datetime.now()
-        elapsed = done - start_time
-
-        self.echo("Report found {} annotations in {}: {}".format(annotation_count, elapsed, report_filename))
+        return all_results
 
     def report(self, all_results):
         """
@@ -481,8 +464,4 @@ class StaticSearch(object):
         with open(report_filename, 'w+') as report_file:
             yaml.dump(all_results, report_file, default_flow_style=False)
 
-        annotation_count = 0
-        for filename in all_results:
-            annotation_count += len(all_results[filename])
-
-        return annotation_count, report_filename
+        return report_filename

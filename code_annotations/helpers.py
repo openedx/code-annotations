@@ -12,7 +12,7 @@ def fail(msg):
     """
     Log the message and exit.
     """
-    click.echo(msg)
+    click.secho(msg, fg="red")
     sys.exit(-1)
 
 

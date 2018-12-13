@@ -1,6 +1,7 @@
 """
 Command line interface for code annotation tools.
 """
+import datetime
 import os
 
 import click
@@ -95,7 +96,9 @@ def pii_report_django(config_file, seed_safelist, list_local_models):
 )
 @click.option('--report_path', default=None, help='Location to write the report')
 @click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
-def static_find_annotations(config_file, source_path, report_path, verbosity):
+@click.option('--lint/--no_lint', help='Enable or disable linting checks', default=True, show_default=True)
+@click.option('--report/--no_report', help='Enable or disable writing the report file', default=True, show_default=True)
+def static_find_annotations(config_file, source_path, report_path, verbosity, lint, report):
     """
     Subcommand to find annotations via static file analysis.
 
@@ -109,7 +112,36 @@ def static_find_annotations(config_file, source_path, report_path, verbosity):
         None
     """
     try:
+        start_time = datetime.datetime.now()
         searcher = StaticSearch(config_file, source_path, report_path, verbosity)
-        searcher.search()
+        all_results = searcher.search()
+
+        if lint:
+            click.echo("Performing linting checks...")
+            # Check grouping and choices
+            searcher.check_results(all_results)
+
+            # If there are any errors, do not generate the report
+            if searcher.errors:
+                click.secho("\nSearch failed due to linting errors!", fg="red")
+                click.secho("{} errors:".format(len(searcher.errors)), fg="red")
+                click.secho("---------------------------------", fg="red")
+                click.echo("\n".join(searcher.errors))
+                exit(-1)
+            click.echo("Linting passed without errors.")
+
+        if report:
+            click.echo("Writing report...")
+            report_filename = searcher.report(all_results)
+            click.echo("Report written to {}.".format(report_filename))
+
+        elapsed = datetime.datetime.now() - start_time
+        annotation_count = 0
+
+        for filename in all_results:
+            annotation_count += len(all_results[filename])
+
+        click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
+
     except Exception as exc:  # pylint: disable=broad-except
-        fail(exc)
+        fail(str(exc))
