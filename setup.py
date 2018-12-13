@@ -84,8 +84,8 @@ setup(
             'code_annotations = code_annotations.cli:entry_point',
         ],
         'annotation_finder.searchers': [
-            'plaintext = code_annotations.extensions.plaintext:PlaintextAnnotationExtension',
             'javascript = code_annotations.extensions.javascript:JavascriptAnnotationExtension',
+            'python = code_annotations.extensions.python:PythonAnnotationExtension',
         ],
     },
     include_package_data=True,
