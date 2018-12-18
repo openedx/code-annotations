@@ -271,7 +271,7 @@ class StaticSearch(object):
                 if choice not in self.choices[token]:
                     self._add_annotation_error(
                         annotation,
-                        '{} is not a valid choice for {}. Expected one of {}.'.format(
+                        '"{}" is not a valid choice for "{}". Expected one of {}.'.format(
                             choice,
                             token,
                             self.choices[token]
@@ -280,7 +280,7 @@ class StaticSearch(object):
                 elif choice in found_valid_choices:
                     self._add_annotation_error(
                         annotation,
-                        '{} is already present in this annotation.'.format(
+                        '"{}" is already present in this annotation.'.format(
                             choice,
                         )
                     )
@@ -289,7 +289,7 @@ class StaticSearch(object):
         else:
             self._add_annotation_error(
                 annotation,
-                'No choices found for {}. Expected one of {}.'.format(
+                'No choices found for "{}". Expected one of {}.'.format(
                     token,
                     self.choices[token]
                 )
@@ -328,7 +328,7 @@ class StaticSearch(object):
                     if token not in self.groups[current_group]:
                         self._add_annotation_error(
                             annotation,
-                            '{} is not in the group that starts with {}. Expecting one of: {}'.format(
+                            '"{}" is not in the group that starts with "{}". Expecting one of: {}'.format(
                                token,
                                current_group,
                                self.groups[current_group]
@@ -339,12 +339,12 @@ class StaticSearch(object):
                     elif token in found_group_members:
                         self._add_annotation_error(
                             annotation,
-                            '{} is already in the group that starts with {}'.format(token, current_group)
+                            '"{}" is already in the group that starts with "{}"'.format(token, current_group)
                         )
                         current_group = None
                         found_group_members = []
                     else:
-                        self.echo.echo_vv("Adding {}, line {} to group {}".format(
+                        self.echo.echo_vv('Adding "{}", line {} to group {}'.format(
                             token,
                             annotation['line_number'],
                             current_group
@@ -358,14 +358,16 @@ class StaticSearch(object):
                             found_group_members = []
                 else:
                     if token in self.groups:
-                        self.echo.echo_vv("Starting new group for {} line {}".format(token, annotation['line_number']))
+                        self.echo.echo_vv('Starting new group for "{}" line {}'.format(
+                            token, annotation['line_number'])
+                        )
                         current_group = token
                         found_group_members = []
                     else:
                         if token in group_children:
                             self._add_annotation_error(
                                 annotation,
-                                '{} is a member of a group, but no group is not started!'.format(
+                                '"{}" is a member of a group, but no group is started!'.format(
                                     token
                                 )
                             )
