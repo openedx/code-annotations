@@ -13,6 +13,12 @@ def requires_pii_annotations(model):
     """
     Return true if the given model actually requires annotations, according to PLAT-2344.
     """
+    # Anything inheriting from django.models.Model will have a ._meta attribute. Our tests
+    # inherit from object, which doesn't have it, and will fail below. This is a quick way
+    # to early out on both.
+    if not hasattr(model, '_meta'):
+        return False
+
     return issubclass(model, models.Model) \
         and not (model is models.Model) \
         and not model._meta.abstract \
@@ -72,9 +78,9 @@ def setup_django():
 
     This function is idempotent.
     """
-    if sys.path[0] != '':
+    if sys.path[0] != '':  # pragma: no cover
         sys.path.insert(0, '')
-    django.setup()  # Should be idempotent, or at least skips loading apps the second time.
+    django.setup()
 
 
 def get_models_requiring_annotations():
@@ -88,8 +94,8 @@ def get_models_requiring_annotations():
 
     Returns:
         tuple:
-            2-tuple where the first item is a set of local model IDs, and the
-            second item is a set of non-local model IDs.
+            2-tuple where the first item is a set of local models, and the
+            second item is a set of non-local models.
     """
     setup_django()
     local_models = set()
@@ -100,9 +106,8 @@ def get_models_requiring_annotations():
             heirarchy = inspect.getmro(root_model)
             for model in heirarchy:
                 if requires_pii_annotations(model):
-                    model_id = get_model_id(model)
                     if is_non_local(model):
-                        non_local_models.add(model_id)
+                        non_local_models.add(model)
                     else:
-                        local_models.add(model_id)
+                        local_models.add(model)
     return local_models, non_local_models

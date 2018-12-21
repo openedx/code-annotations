@@ -1,5 +1,6 @@
-source_path: ../devstack-docker/edx-platform
+source_path: ../
 report_path: reports
+safelist_path: .pii_safe_list.yml
 annotations:
     pii:
         - ".. pii::"
