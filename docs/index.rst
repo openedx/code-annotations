@@ -14,6 +14,9 @@ Contents:
 
    readme
    getting_started
+   writing_annotations
+   configuration
+   extensions
    testing
    modules
    changelog

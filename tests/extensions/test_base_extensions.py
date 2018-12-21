@@ -71,14 +71,6 @@ def test_bad_annotation_group_type():
         SimpleRegexAnnotationExtension(config, None)
 
 
-def test_validate():
-    """
-    Validate doesn't do anything yet, just make sure it doesn't throw any errors
-    """
-    r = FakeExtension({'annotations': []}, VerboseEcho())
-    assert r.validate(None)
-
-
 def test_nothing_found():
     """
     Make sure nothing fails when no annotation is found.

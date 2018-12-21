@@ -44,13 +44,6 @@ class AnnotationExtension(object):
                 )
 
     @abstractmethod
-    def validate(self, file_handle):  # pragma: no cover
-        """
-        Validate that any annotations in the given file are properly formatted.
-        """
-        raise NotImplementedError('validate called on base class!')
-
-    @abstractmethod
     def search(self, file_handle):  # pragma: no cover
         """
         Search for annotations in the given file.
@@ -88,6 +81,7 @@ class AnnotationExtension(object):
         raise NotImplementedError('_add_annotation_group called on base class!')
 
 
+@six.add_metaclass(ABCMeta)
 class SimpleRegexAnnotationExtension(AnnotationExtension):
     """
     Abstract base class for languages that have comments which can be reasonably searched using regular expressions.
@@ -192,18 +186,6 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
                 raise TypeError(
                     '{} is an unknown type. Annotation groups must be strings or dicts.'.format(annotation_group)
                 )
-
-    def validate(self, file_handle):
-        """
-        Validate that any annotations in the given file are properly formatted.
-
-        Args:
-            file_handle: Open file handle for the file to validate, set to beginning of the file
-
-        Returns:
-            Tuple of (success, list strings describing reasons for failure)
-        """
-        return True
 
     def search(self, file_handle):
         """
