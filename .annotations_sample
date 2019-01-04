@@ -1,6 +1,6 @@
 source_path: ../
 report_path: reports
-safelist_path: .pii_safe_list.yml
+safelist_path: .annotation_safe_list.yml
 annotations:
     pii:
         - ".. pii::"

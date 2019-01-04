@@ -18,7 +18,7 @@ def entry_point():
     pass
 
 
-@entry_point.command('pii_report_django')
+@entry_point.command('django_find_annotations')
 @click.option(
     '--config_file',
     default='.annotations',
@@ -41,9 +41,9 @@ def entry_point():
 @click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
 @click.option('--lint/--no_lint', help='Enable or disable linting checks', default=False, show_default=True)
 @click.option('--report/--no_report', help='Enable or disable writing the report', default=False, show_default=True)
-def pii_report_django(config_file, seed_safelist, list_local_models, report_path, verbosity, lint, report):
+def django_find_annotations(config_file, seed_safelist, list_local_models, report_path, verbosity, lint, report):
     """
-    Subcommand for dealing with PII in Django models.
+    Subcommand for dealing with annotations in Django models.
     """
     try:
         start_time = datetime.datetime.now()

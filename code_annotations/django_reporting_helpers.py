@@ -9,7 +9,7 @@ from django.apps import apps
 from django.db import models
 
 
-def requires_pii_annotations(model):
+def requires_annotations(model):
     """
     Return true if the given model actually requires annotations, according to PLAT-2344.
     """
@@ -105,7 +105,7 @@ def get_models_requiring_annotations():
             # getmro() includes the _entire_ inheritance closure, not just the direct inherited classes.
             heirarchy = inspect.getmro(root_model)
             for model in heirarchy:
-                if requires_pii_annotations(model):
+                if requires_annotations(model):
                     if is_non_local(model):
                         non_local_models.add(model)
                     else:

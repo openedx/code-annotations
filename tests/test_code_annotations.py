@@ -100,7 +100,7 @@ def test_seeding_safelist(local_models, non_local_models, **kwargs):
             assert get_model_id(model) not in fake_safelist
 
     result = _call_script(
-        ['pii_report_django', '--config_file', 'test_config.yml', '--seed_safelist'],
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--seed_safelist'],
         test_filesystem_cb=test_safelist_callback,
     )
     assert result.exit_code == 0
@@ -140,7 +140,7 @@ def test_listing_local_models(local_models, non_local_models, **kwargs):
         non_local_models,
     )
     result = _call_script(
-        ['pii_report_django', '--config_file', 'test_config.yml', '--list_local_models']
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--list_local_models']
     )
     assert result.exit_code == 0
     if not local_models:

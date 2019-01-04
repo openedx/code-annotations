@@ -18,7 +18,7 @@ from code_annotations.helpers import (
     yaml_ordered_load
 )
 
-DEFAULT_SAFELIST_FILE_PATH = '.pii_safe_list.yml'
+DEFAULT_SAFELIST_FILE_PATH = '.annotation_safe_list.yml'
 
 
 class DjangoSearch(BaseSearch):
