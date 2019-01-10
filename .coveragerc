@@ -4,8 +4,4 @@ data_file = .coverage
 source=code_annotations
 omit =
     test_settings
-    *migrations*
-    *admin.py
-    *static*
-    *templates*
     code_annotations/extensions/tests/python_test_files/*

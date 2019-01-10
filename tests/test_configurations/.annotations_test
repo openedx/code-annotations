@@ -1,5 +1,6 @@
 source_path: tests/extensions/javascript_test_files/
 report_path: test_reports
+safelist_path: .annotation_safe_list.yml
 annotations:
     pii:
         - ".. pii::"
