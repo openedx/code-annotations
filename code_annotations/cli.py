@@ -5,6 +5,7 @@ import datetime
 
 import click
 
+from code_annotations.base import AnnotationConfig
 from code_annotations.find_django import DjangoSearch
 from code_annotations.find_static import StaticSearch
 from code_annotations.helpers import fail
@@ -47,7 +48,8 @@ def django_find_annotations(config_file, seed_safelist, list_local_models, repor
     """
     try:
         start_time = datetime.datetime.now()
-        searcher = DjangoSearch(config_file, report_path, verbosity)
+        config = AnnotationConfig(config_file, report_path, verbosity)
+        searcher = DjangoSearch(config)
 
         if seed_safelist:
             searcher.seed_safelist()
@@ -117,7 +119,8 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
     """
     try:
         start_time = datetime.datetime.now()
-        searcher = StaticSearch(config_file, source_path, report_path, verbosity)
+        config = AnnotationConfig(config_file, report_path, verbosity, source_path)
+        searcher = StaticSearch(config)
         all_results = searcher.search()
 
         if lint:

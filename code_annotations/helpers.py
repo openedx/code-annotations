@@ -2,12 +2,10 @@
 Helpers for code_annotations scripts.
 """
 import os
-import re
 import sys
 from collections import OrderedDict
 
 import click
-import six
 import yaml
 
 
@@ -121,6 +119,7 @@ class VerboseEcho(object):
             None
         """
         self.verbosity = verbosity
+        self.echo_v("Verbosity level set to {}".format(verbosity))
 
     def echo(self, output, verbosity_level=0):
         """
@@ -177,93 +176,6 @@ def clean_abs_path(filename_to_clean, parent_path):
     if filename_to_clean == parent_path:
         return parent_path
     return os.path.relpath(filename_to_clean, parent_path)
-
-
-def read_configuration(config_file_path):
-    """
-    Read the given yaml configuration file, return the results.
-
-    Args:
-        config_file_path: The path to the configuration file
-
-    Returns:
-        Results of yaml.read() on the file
-    """
-    with open(config_file_path) as config_file:
-        return yaml.load(config_file)
-
-
-def add_annotation_token(annotation_tokens, annotation_regexes, annotation):
-    """
-    Add annotations to our local lists during configuration.
-
-    Args:
-        annotation: An annotation token (ex. ".. pii::")
-
-    Raises:
-        TypeError
-    """
-    annotation_tokens.append(annotation)
-    annotation_regexes.append(re.escape(annotation))
-
-
-def add_annotation_group(annotation_tokens, annotation_regexes, annotation_group):
-    """
-    Add an annotation group to our local lists during configuration.
-
-    Args:
-        annotation_tokens: List of tokens to add new tokens to.
-        annotation_regexes: List of re.escaped tokens to add to.
-        annotation_group: An annotation group from the configuration file.
-
-    Raises:
-        TypeError
-    """
-    for annotation in annotation_group:
-        if isinstance(annotation, six.string_types):
-            add_annotation_token(annotation_tokens, annotation_regexes, annotation)
-        elif isinstance(annotation, dict):
-            annotation_name = next(iter(annotation))
-            add_annotation_token(annotation_tokens, annotation_regexes, annotation_name)
-        else:
-            raise TypeError(
-                '{} is an unknown type. Annotation groups must be strings or dicts.'.format(annotation_group)
-            )
-
-
-def generate_annotation_regex_from_config(config):
-    """
-    Create lists of all annotation tokens, and regular expressions to find annotations in a string.
-
-    Args:
-        config: The configuration object
-
-    Returns:
-        2-tuple of (list of all annotation tokens, list of re.escape'd annotation tokens)
-    """
-    config_annotations = config['annotations']
-
-    annotation_tokens = []
-    annotation_regexes = []
-
-    # Allow sub-classes to configure themselves with the configured annotations
-    for annotation_or_group in config_annotations:
-        if isinstance(config_annotations[annotation_or_group], six.string_types):
-            add_annotation_token(annotation_tokens, annotation_regexes, config_annotations[annotation_or_group])
-        elif isinstance(config_annotations[annotation_or_group], (list, tuple)):
-            add_annotation_group(annotation_tokens, annotation_regexes, config_annotations[annotation_or_group])
-        elif isinstance(config_annotations[annotation_or_group], dict):
-            add_annotation_token(
-                annotation_tokens,
-                annotation_regexes,
-                next(iter(config_annotations[annotation_or_group]))
-            )
-        else:
-            raise TypeError('{} is an unknown type. Annotations must be strings, list/tuples, or dicts.'.format(
-                config_annotations[annotation_or_group])
-            )
-
-    return annotation_tokens, annotation_regexes
 
 
 def get_annotation_regex(annotation_regexes):

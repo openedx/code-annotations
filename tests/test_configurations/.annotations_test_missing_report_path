@@ -1,16 +1,15 @@
 source_path: ../devstack-docker/edx-platform
+safelist_path: .annotation_safe_list.yml
 annotations:
-    pii:
-        - ".. pii::"
+    ".. no_pii::":
+    ".. ignored::":
+        choices: [irrelevant, terrible, silly-silly]
+    "pii_group":
+        - ".. pii::":
         - ".. pii_types::":
             choices: [id, name, other]
         - ".. pii_retirement::":
             choices: [retained, local_api, consumer_api, third_party]
-    nopii: ".. no_pii::"
-    ignored:
-        ".. ignored::":
-            choices: [irrelevant, terrible, silly-silly]
-
 extensions:
     javascript:
         - .js

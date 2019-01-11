@@ -1,7 +1,6 @@
 """
 Tests for the `find_annotations` sub-command.
 """
-import pytest
 from mock import patch
 
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
@@ -59,22 +58,6 @@ def test_file_walking():
     # Just making sure that multiple files are being walked since other tests point to only one file.
     assert 'group_failures_4' in result.output
     assert 'choice_failures_1' in result.output
-
-
-@pytest.mark.parametrize("test_config,expected_message", [
-    ('.annotations_test_missing_source_path', "source_path not given and not in configuration file"),
-    ('.annotations_test_missing_report_path', "report_path not given and not in configuration file"),
-])
-def test_missing_config(test_config, expected_message):
-    result = call_script((
-        'static_find_annotations',
-        '--config_file',
-        'tests/test_configurations/{}'.format(test_config),
-        '-v',
-
-    ))
-    assert result.exit_code == EXIT_CODE_FAILURE
-    assert expected_message in result.output
 
 
 def test_source_path_from_file():

@@ -6,6 +6,7 @@ import re
 
 from click.testing import CliRunner
 
+from code_annotations.base import BaseSearch, VerboseEcho
 from code_annotations.cli import entry_point
 
 EXIT_CODE_SUCCESS = 0
@@ -13,20 +14,47 @@ EXIT_CODE_FAILURE = -1
 DEFAULT_FAKE_SAFELIST_PATH = 'fake_safelist_path.yaml'
 
 FAKE_CONFIG_FILE = """
-safelist_path: {}
+safelist_path: {fake_safelist_path}
 report_path: test_reports
+source_path: ../
 annotations:
-    pii:
-        - ".. pii::"
+    ".. no_pii::":
+    ".. ignored::":
+        choices: [irrelevant, terrible, silly-silly]
+    "pii_group":
+        - ".. pii::":
         - ".. pii_types::":
             choices: [id, name, other]
         - ".. pii_retirement::":
             choices: [retained, local_api, consumer_api, third_party]
-    nopii: ".. no_pii::"
-    ignored:
-        ".. ignored::":
-            choices: [irrelevant, terrible, silly-silly]
+extensions:
+    python:
+        - py
 """
+
+
+class FakeConfig(object):
+    """
+    Simple config for testing without reading a config file.
+    """
+
+    annotations = {}
+    annotation_regexes = []
+    annotation_tokens = []
+    groups = []
+    echo = VerboseEcho()
+
+
+class FakeSearch(BaseSearch):
+    """
+    Simple test class for directly testing BaseSearch since it's abstract.
+    """
+
+    def search(self):
+        """
+        Override for abstract base method.
+        """
+        pass
 
 
 def call_script(args_list, delete_test_reports=True):
@@ -85,7 +113,7 @@ def call_script_isolated(
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open('test_config.yml', 'w') as f:
-            f.write(FAKE_CONFIG_FILE.format(safelist_path))
+            f.write(FAKE_CONFIG_FILE.format(fake_safelist_path=safelist_path))
 
         if fake_safelist_data:
             with open(safelist_path, 'w') as f:

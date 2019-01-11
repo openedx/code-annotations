@@ -10,13 +10,7 @@ from six import text_type
 
 from code_annotations.base import BaseSearch
 from code_annotations.django_reporting_helpers import get_model_id, get_models_requiring_annotations
-from code_annotations.helpers import (
-    fail,
-    generate_annotation_regex_from_config,
-    get_annotation_regex,
-    yaml_ordered_dump,
-    yaml_ordered_load
-)
+from code_annotations.helpers import fail, get_annotation_regex, yaml_ordered_dump, yaml_ordered_load
 
 DEFAULT_SAFELIST_FILE_PATH = '.annotation_safe_list.yml'
 
@@ -26,26 +20,22 @@ class DjangoSearch(BaseSearch):
     Handles Django model comment searching for annotations.
     """
 
-    def __init__(self, config, report_path, verbosity):
+    def __init__(self, config):
         """
         Initialize for DjangoSearch.
 
         Args:
             config: Configuration file path
-            report_path: Directory to write the report file to
-            verbosity: Integer representing verbosity level (0-3)
         """
-        super(DjangoSearch, self).__init__(config, report_path, verbosity)
+        super(DjangoSearch, self).__init__(config)
         self.local_models, self.non_local_models = get_models_requiring_annotations()
 
     def seed_safelist(self):
         """
         Seed a new safelist file with all non-local models that need to be vetted.
         """
-        self.config.setdefault('safelist_path', DEFAULT_SAFELIST_FILE_PATH)
-
-        if os.path.exists(self.config['safelist_path']):
-            fail('{} already exists, not overwriting.'.format(self.config['safelist_path']))
+        if os.path.exists(self.config.safelist_path):
+            fail('{} already exists, not overwriting.'.format(self.config.safelist_path))
 
         self.echo(
             'Found {} non-local models requiring annotations. Adding them to safelist.'.format(
@@ -54,10 +44,10 @@ class DjangoSearch(BaseSearch):
 
         safelist_data = {get_model_id(model): {} for model in self.non_local_models}
 
-        with open(self.config['safelist_path'], 'w') as safelist_file:
+        with open(self.config.safelist_path, 'w') as safelist_file:
             yaml_ordered_dump(safelist_data, stream=safelist_file)
 
-        self.echo('Successfully created safelist file "{}".'.format(self.config['safelist_path']))
+        self.echo('Successfully created safelist file "{}".'.format(self.config.safelist_path))
         self.echo('Now, you need to:')
         self.echo('  1) Make sure that any un-annotated models in the safelist are annotated, and')
         self.echo('  2) Annotate any LOCAL models (see --list_local_models).')
@@ -81,14 +71,15 @@ class DjangoSearch(BaseSearch):
         Returns:
             Dict of all found annotations keyed by filename
         """
-        if os.path.exists(self.config['safelist_path']):
-            self.echo('Found safelist at {}. Reading.'.format(self.config['safelist_path']))
-            with open(self.config['safelist_path']) as safelist_file:
+        if os.path.exists(self.config.safelist_path):
+            self.echo('Found safelist at {}. Reading.'.format(self.config.safelist_path))
+            with open(self.config.safelist_path) as safelist_file:
                 safelisted_models = yaml_ordered_load(safelist_file)
         else:
             raise Exception('Safelist not found! Generate one with the --seed_safelist command.')
 
-        annotation_tokens, annotation_regexes = generate_annotation_regex_from_config(self.config)
+        annotation_tokens = self.config.annotation_tokens
+        annotation_regexes = self.config.annotation_regexes
         query = get_annotation_regex(annotation_regexes)
 
         annotated_models = {}
@@ -155,7 +146,7 @@ class DjangoSearch(BaseSearch):
                     comment = safelisted_models[model_id][annotation]
                     model_annotations.append({
                         'found_by': "safelist",
-                        'filename': self.config['safelist_path'],
+                        'filename': self.config.safelist_path,
                         'line_number': 0,
                         'annotation_token': annotation.strip(),
                         'annotation_data': comment.strip(),

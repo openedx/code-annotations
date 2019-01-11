@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 
 import six
 
-from code_annotations.helpers import clean_abs_path
+from code_annotations.helpers import clean_abs_path, get_annotation_regex
 
 
 @six.add_metaclass(ABCMeta)
@@ -28,57 +28,12 @@ class AnnotationExtension(object):
         self.config = config
         self.ECHO = echo
 
-        annotation_tokens = config['annotations']
-
-        # Allow sub-classes to configure themselves with the configured annotations
-        for annotation_or_group in annotation_tokens:
-            if isinstance(annotation_tokens[annotation_or_group], six.string_types):
-                self._add_annotation_token(annotation_tokens[annotation_or_group])
-            elif isinstance(annotation_tokens[annotation_or_group], (list, tuple)):
-                self._add_annotation_group(annotation_tokens[annotation_or_group])
-            elif isinstance(annotation_tokens[annotation_or_group], dict):
-                self._add_annotation_token(next(iter(annotation_tokens[annotation_or_group])))
-            else:
-                raise TypeError('{} is an unknown type. Annotations must be strings, list/tuples, or dicts.'.format(
-                    annotation_tokens[annotation_or_group])
-                )
-
     @abstractmethod
     def search(self, file_handle):  # pragma: no cover
         """
         Search for annotations in the given file.
         """
         raise NotImplementedError('search called on base class!')
-
-    @abstractmethod
-    def _add_annotation_token(self, annotation):  # pragma: no cover
-        """
-        During initialization this method will be called for each configured annotation.
-
-        Subclasses should use this to perform any necessary setup, such as creating regexes.
-
-        Args:
-            annotation: The string annotation to be searched for
-
-        Returns:
-            None
-        """
-        raise NotImplementedError('_add_annotation_token called on base class!')
-
-    @abstractmethod
-    def _add_annotation_group(self, annotation_group):  # pragma: no cover
-        """
-        During initialization this method will be called for each configured annotation group.
-
-        Subclasses should use this to perform any necessary setup, such as creating regexes.
-
-        Args:
-            annotation_group: The list of annotations in the group to be searched for.
-
-        Returns:
-            None
-        """
-        raise NotImplementedError('_add_annotation_group called on base class!')
 
 
 @six.add_metaclass(ABCMeta)
@@ -123,8 +78,6 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
 
     TODO: Make multi line annotation comments work again.
     """
-    annotation_regex = r'[\s\S]*?({})(.*)'
-
     def __init__(self, config, echo):
         """
         Set up the extension and create the regexes used to do searches.
@@ -133,11 +86,6 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
             config: The configuration dict
             echo: VerboseEcho object for logging
         """
-        # These must be set before the parent config is called since callbacks happen
-        # on parent __init__ to _add_annotation_token / _add_annotation_group.
-        self.annotation_tokens = []
-        self.annotation_regexes = []
-
         super(SimpleRegexAnnotationExtension, self).__init__(config, echo)
 
         if self.lang_comment_definition is None:  # pragma: no cover
@@ -149,43 +97,9 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
         # Parent class will allow this class to populate self.strings_to_search via
         # calls to _add_annotation_token or _add_annotation_group for each configured
         # annotation.
-        self.query = self.annotation_regex.format('|'.join(self.annotation_regexes))
+        self.query = get_annotation_regex(self.config.annotation_regexes)
 
         self.ECHO.echo_v("{} extension regex query: {}".format(self.extension_name, self.query))
-
-    def _add_annotation_token(self, annotation):
-        """
-        Add annotations to our local lists during configuration.
-
-        Args:
-            annotation: An annotation token (ex. ".. pii::")
-
-        Raises:
-            TypeError
-        """
-        self.annotation_tokens.append(annotation)
-        self.annotation_regexes.append(re.escape(annotation))
-
-    def _add_annotation_group(self, annotation_group):
-        """
-        Add an annotation group to our local lists during configuration.
-
-        Args:
-            annotation_group: An annotation group from the configuration file.
-
-        Raises:
-            TypeError
-        """
-        for annotation in annotation_group:
-            if isinstance(annotation, six.string_types):
-                self._add_annotation_token(annotation)
-            elif isinstance(annotation, dict):
-                annotation_name = next(iter(annotation))
-                self._add_annotation_token(annotation_name)
-            else:
-                raise TypeError(
-                    '{} is an unknown type. Annotation groups must be strings or dicts.'.format(annotation_group)
-                )
 
     def search(self, file_handle):
         """
@@ -202,8 +116,8 @@ class SimpleRegexAnnotationExtension(AnnotationExtension):
         found_annotations = []
 
         # Fast out if no annotations exist in the file
-        if any(anno in txt for anno in self.annotation_tokens):
-            fname = clean_abs_path(file_handle.name, self.config['source_path'])
+        if any(anno in txt for anno in self.config.annotation_tokens):
+            fname = clean_abs_path(file_handle.name, self.config.source_path)
 
             for match in re.finditer(self.comment_regex, txt):
                 # Should only be one match

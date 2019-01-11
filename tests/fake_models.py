@@ -89,7 +89,6 @@ class FakeChildModelMultiWithBrokenAnnotations(FakeChildModelWithAnnotation):
     This model multi-level inherits and has one annotation. Its parent also has one.
 
     .. pii_types:: id
-    .. pii:: This is out of order and should cause an error
     .. pii_retirement:: retained
     """
 
