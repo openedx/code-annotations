@@ -14,7 +14,7 @@ EXIT_CODE_FAILURE = -1
 DEFAULT_FAKE_SAFELIST_PATH = 'fake_safelist_path.yaml'
 
 FAKE_CONFIG_FILE = """
-safelist_path: {fake_safelist_path}
+safelist_path: {}
 report_path: test_reports
 source_path: ../
 annotations:
@@ -30,7 +30,7 @@ annotations:
 extensions:
     python:
         - py
-"""
+""".format(DEFAULT_FAKE_SAFELIST_PATH)
 
 
 class FakeConfig(object):
@@ -91,8 +91,7 @@ def call_script_isolated(
         args_list,
         test_filesystem_cb=None,
         test_filesystem_report_cb=None,
-        fake_safelist_data="{}",
-        safelist_path=DEFAULT_FAKE_SAFELIST_PATH
+        fake_safelist_data="{}"
 ):
     """
     Call the code_annotations script with the given params and a generic config file.
@@ -113,10 +112,10 @@ def call_script_isolated(
     runner = CliRunner()
     with runner.isolated_filesystem():
         with open('test_config.yml', 'w') as f:
-            f.write(FAKE_CONFIG_FILE.format(fake_safelist_path=safelist_path))
+            f.write(FAKE_CONFIG_FILE)
 
         if fake_safelist_data:
-            with open(safelist_path, 'w') as f:
+            with open(DEFAULT_FAKE_SAFELIST_PATH, 'w') as f:
                 f.write(fake_safelist_data)
 
         result = runner.invoke(

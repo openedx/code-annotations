@@ -146,7 +146,7 @@ class AnnotationConfig(object):
                     self._configure_choices(annotation_token, annotation_value)
                 # Otherwise it should be a text type, if not then error out
                 elif not self._is_annotation_token(annotation_value):
-                    raise TypeError('{} is an unknown type.'.format(annotation))
+                    raise TypeError('{} is an unknown annotation type.'.format(annotation))
 
                 self.groups[group_name].append(annotation_token)
                 self.annotation_tokens.append(annotation_token)
@@ -425,7 +425,9 @@ class BaseSearch(object):
                         if current_group is None:  # pragma: no cover
                             # If we get here there is a problem with check_results' group_children not matching up with
                             # our config's groups. That puts us in an unknown state, so we should quit.
-                            raise Exception('group_children is out of sync with config.groups!')
+                            raise Exception(
+                                'group_children is out of sync with config.groups. {} is not in a group!'.format(token)
+                            )
 
                         found_group_members = [token]
                         self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(

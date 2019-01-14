@@ -54,4 +54,4 @@ def test_bad_type_in_group():
         AnnotationConfig('tests/test_configurations/.annotations_test_group_bad_type', None, 3)
 
     exc_msg = str(exception.value)
-    assert "{'.. pii::': ['bad', 'type']} is an unknown type." in exc_msg
+    assert "{'.. pii::': ['bad', 'type']} is an unknown annotation type." in exc_msg
