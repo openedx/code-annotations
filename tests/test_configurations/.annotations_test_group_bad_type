@@ -7,10 +7,8 @@ annotations:
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
         - ".. pii::":
-        - ".. pii_types::":
-            choices: [id, name, other]
-        - ".. pii_retirement::":
-            choices: [retained, local_api, consumer_api, third_party]
+            - bad
+            - type
 extensions:
     python:
         - pyt

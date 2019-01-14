@@ -1,6 +1,5 @@
-source_path: ../
-report_path: reports
-safelist_path: .annotation_safe_list.yml
+source_path: tests/extensions/javascript_test_files/
+report_path: test_reports
 annotations:
     ".. no_pii::":
     ".. ignored::":
@@ -13,4 +12,7 @@ annotations:
             choices: [retained, local_api, consumer_api, third_party]
 extensions:
     python:
-        - py
+        - pyt
+    javascript:
+        - js
+        - jsx

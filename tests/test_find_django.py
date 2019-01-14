@@ -261,8 +261,7 @@ def test_find_django_ordering_error(**kwargs):
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
-    assert '".. pii_types::" is a member of a group, but no group is started!' in result.output
-    assert '".. no_pii::" is not in the group that starts with' in result.output
+    assert '".. no_pii::" is not in the group ' in result.output
 
 
 @patch.multiple(
