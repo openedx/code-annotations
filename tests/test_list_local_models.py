@@ -10,7 +10,7 @@ from tests.helpers import call_script_isolated
 
 
 @patch.multiple(
-    'code_annotations.find_django',
+    'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT,
 )
 @pytest.mark.parametrize("local_model_ids,non_local_model_ids", [

@@ -8,12 +8,12 @@ import os
 import pytest
 from mock import DEFAULT, MagicMock, patch
 
-from code_annotations.django_reporting_helpers import get_model_id
+from code_annotations.find_django import DjangoSearch
 from tests.helpers import DEFAULT_FAKE_SAFELIST_PATH, EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script_isolated
 
 
 @patch.multiple(
-    'code_annotations.find_django',
+    'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT,
 )
 @pytest.mark.parametrize("local_model_ids,non_local_model_ids", [
@@ -50,9 +50,9 @@ def test_seeding_safelist(local_model_ids, non_local_model_ids, **kwargs):
         with open(DEFAULT_FAKE_SAFELIST_PATH, 'r') as fake_safelist_file:
             fake_safelist = fake_safelist_file.read()
         for model in non_local_model_ids:
-            assert get_model_id(model) in fake_safelist
+            assert DjangoSearch.get_model_id(model) in fake_safelist
         for model in local_model_ids:
-            assert get_model_id(model) not in fake_safelist
+            assert DjangoSearch.get_model_id(model) not in fake_safelist
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--seed_safelist'],
@@ -64,7 +64,7 @@ def test_seeding_safelist(local_model_ids, non_local_model_ids, **kwargs):
 
 
 @patch.multiple(
-    'code_annotations.find_django',
+    'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT,
 )
 def test_safelist_exists(**kwargs):
