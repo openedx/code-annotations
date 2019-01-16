@@ -48,6 +48,18 @@ class AnnotationConfig(object):
         self.safelist_path = raw_config['safelist_path']
         self.extensions = raw_config['extensions']
 
+        try:
+            self.coverage_target = float(raw_config['coverage_target'])
+        except (TypeError, ValueError):
+            raise ConfigurationException(
+                'Coverage target must be a number between 0 and 100 not "{}".'.format(raw_config['coverage_target'])
+            )
+
+        if self.coverage_target < 0.0 or self.coverage_target > 100.0:
+            raise ConfigurationException(
+                'Invalid coverage target. {} is not between 0 and 100.'.format(self.coverage_target)
+            )
+
         self.verbosity = verbosity
         self.echo.set_verbosity(verbosity)
 
@@ -60,9 +72,6 @@ class AnnotationConfig(object):
         self._configure_annotations(raw_config)
         self._configure_extensions()
 
-        self.echo.echo_v("Configuration:")
-        self.echo.echo_v(str(self))
-
     def _check_raw_config_keys(self, raw_config):
         """
         Validate that all required keys exist in the configuration file.
@@ -74,7 +83,7 @@ class AnnotationConfig(object):
             ConfigurationException on any missing keys
         """
         errors = []
-        for k in ('report_path', 'source_path', 'safelist_path', 'annotations', 'extensions'):
+        for k in ('report_path', 'source_path', 'safelist_path', 'annotations', 'extensions', 'coverage_target'):
             if k not in raw_config:
                 errors.append(k)
 
@@ -365,6 +374,9 @@ class BaseSearch(object):
 
         Args:
             all_results: Dict of annotations found in search()
+
+        Returns:
+            Boolean indicating whether or not any errors were found
         """
         if self.config.verbosity >= 2:
             pprint.pprint(all_results, indent=3)
@@ -436,6 +448,8 @@ class BaseSearch(object):
 
             if current_group:
                 self.errors.append('File finished with an incomplete group {}!'.format(current_group))
+
+        return False if self.errors else True
 
     def _add_annotation_error(self, annotation, message):
         """

@@ -31,6 +31,7 @@ def test_get_group_for_token_multiple_groups():
     ('.annotations_test_missing_source_path', "source_path"),
     ('.annotations_test_missing_report_path', "report_path"),
     ('.annotations_test_missing_safelist_path', "safelist_path"),
+    ('.annotations_test_missing_coverage_target', 'coverage_target')
 ])
 def test_missing_config(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
@@ -55,3 +56,22 @@ def test_bad_type_in_group():
 
     exc_msg = str(exception.value)
     assert "{'.. pii::': ['bad', 'type']} is an unknown annotation type." in exc_msg
+
+
+@pytest.mark.parametrize("test_config,expected_message", [
+    ('.annotations_test_coverage_negative', "Invalid coverage target. -50.0 is not between 0 and 100."),
+    ('.annotations_test_coverage_over_100', "Invalid coverage target. 150.0 is not between 0 and 100."),
+    ('.annotations_test_coverage_nan', 'Coverage target must be a number between 0 and 100 not "not a number".'),
+    ('.annotations_test_coverage_none', 'Coverage target must be a number between 0 and 100 not "None".'),
+])
+def test_bad_coverage_targets(test_config, expected_message):
+    with pytest.raises(ConfigurationException) as exception:
+        AnnotationConfig('tests/test_configurations/{}'.format(test_config), None, 3)
+
+    exc_msg = str(exception.value)
+    assert expected_message in exc_msg
+
+
+def test_coverage_target_int():
+    # We just care that this doesn't throw an exception
+    AnnotationConfig('tests/test_configurations/{}'.format('.annotations_test_coverage_int'), None, 3)

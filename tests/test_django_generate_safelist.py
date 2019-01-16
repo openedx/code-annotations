@@ -16,7 +16,7 @@ from tests.helpers import DEFAULT_FAKE_SAFELIST_PATH, EXIT_CODE_FAILURE, EXIT_CO
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT,
 )
-@pytest.mark.parametrize("local_model_ids,non_local_model_ids", [
+@pytest.mark.parametrize("local_models,non_local_models", [
     (
         [
             MagicMock(_meta=MagicMock(app_label='fake_app_1', object_name='FakeModelA')),
@@ -35,23 +35,25 @@ from tests.helpers import DEFAULT_FAKE_SAFELIST_PATH, EXIT_CODE_FAILURE, EXIT_CO
         [],  # No non-local models to add to the safelist.
     ),
 ])
-def test_seeding_safelist(local_model_ids, non_local_model_ids, **kwargs):
+def test_seeding_safelist(local_models, non_local_models, **kwargs):
     """
     Test the success case for seeding the safelist.
     """
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
-        local_model_ids,
-        non_local_model_ids,
+        local_models,
+        non_local_models,
+        0,  # Number of total models found, irrelevant here
+        []  # List of model ids that need anntations, irrelevant here
     )
 
     def test_safelist_callback():
         assert os.path.exists(DEFAULT_FAKE_SAFELIST_PATH)
         with open(DEFAULT_FAKE_SAFELIST_PATH, 'r') as fake_safelist_file:
             fake_safelist = fake_safelist_file.read()
-        for model in non_local_model_ids:
+        for model in non_local_models:
             assert DjangoSearch.get_model_id(model) in fake_safelist
-        for model in local_model_ids:
+        for model in local_models:
             assert DjangoSearch.get_model_id(model) not in fake_safelist
 
     result = call_script_isolated(
@@ -72,7 +74,7 @@ def test_safelist_exists(**kwargs):
     Test the success case for seeding the safelist.
     """
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
-    mock_get_models_requiring_annotations.return_value = ([], [])
+    mock_get_models_requiring_annotations.return_value = ([], [], 0, [])
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--seed_safelist']

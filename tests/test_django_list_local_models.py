@@ -40,6 +40,8 @@ def test_listing_local_models(local_model_ids, non_local_model_ids, **kwargs):
     mock_get_models_requiring_annotations.return_value = (
         local_model_ids,
         non_local_model_ids,
+        0,  # Number of total models found, irrelevant here
+        []  # List of model ids that need anntations, irrelevant here
     )
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--list_local_models']

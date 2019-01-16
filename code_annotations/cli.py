@@ -2,6 +2,7 @@
 Command line interface for code annotation tools.
 """
 import datetime
+import traceback
 
 import click
 
@@ -42,7 +43,17 @@ def entry_point():
 @click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
 @click.option('--lint/--no_lint', help='Enable or disable linting checks', default=False, show_default=True)
 @click.option('--report/--no_report', help='Enable or disable writing the report', default=False, show_default=True)
-def django_find_annotations(config_file, seed_safelist, list_local_models, report_path, verbosity, lint, report):
+@click.option('--coverage/--no_coverage', help='Enable or disable coverage checks', default=False, show_default=True)
+def django_find_annotations(
+        config_file,
+        seed_safelist,
+        list_local_models,
+        report_path,
+        verbosity,
+        lint,
+        report,
+        coverage
+):
     """
     Subcommand for dealing with annotations in Django models.
     """
@@ -57,23 +68,28 @@ def django_find_annotations(config_file, seed_safelist, list_local_models, repor
         if list_local_models:
             searcher.list_local_models()
 
-        if lint or report:
+        if lint or report or coverage:
             annotated_models = searcher.search()
 
             if lint:
                 click.echo("Performing linting checks...")
 
                 # Check grouping and choices
-                searcher.check_results(annotated_models)
-
-                # If there are any errors, do not generate the report
-                if searcher.errors:
+                if not searcher.check_results(annotated_models):
                     click.secho("\nSearch failed due to linting errors!", fg="red")
                     click.secho("{} errors:".format(len(searcher.errors)), fg="red")
                     click.secho("---------------------------------", fg="red")
                     click.echo("\n".join(searcher.errors))
+                    # If there are any errors, do not continue
                     exit(-1)
                 click.echo("Linting passed without errors.")
+
+            if coverage:
+                if not searcher.check_coverage():
+                    # If there are any errors, do not continue
+                    exit(-1)
+
+                click.echo("Coverage passed without errors.")
 
             if report:
                 searcher.report(annotated_models)
@@ -85,7 +101,9 @@ def django_find_annotations(config_file, seed_safelist, list_local_models, repor
 
             elapsed = datetime.datetime.now() - start_time
             click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
+
     except Exception as exc:  # pylint: disable=broad-except
+        click.echo(traceback.print_exc())
         fail(str(exc))
 
 
@@ -151,4 +169,5 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
         click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
 
     except Exception as exc:  # pylint: disable=broad-except
+        click.echo(traceback.print_exc())
         fail(str(exc))

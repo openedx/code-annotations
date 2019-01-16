@@ -1,7 +1,7 @@
 source_path: tests/extensions/javascript_test_files/
 report_path: test_reports
 safelist_path: .annotation_safe_list.yml
-coverage_target: 50.0
+coverage_target: -50.0
 annotations:
     ".. no_pii::":
     ".. ignored::":
@@ -15,3 +15,6 @@ annotations:
 extensions:
     python:
         - pyt
+    javascript:
+        - js
+        - jsx

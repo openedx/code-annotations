@@ -36,7 +36,9 @@ def test_find_django_simple_success(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        len(test_models),
+        [DjangoSearch.get_model_id(m) for m in test_models]
     )
 
     def report_callback(report_contents):
@@ -53,7 +55,7 @@ def test_find_django_simple_success(**kwargs):
             assert 'object_id: {}'.format(DjangoSearch.get_model_id(model)) in report_contents
 
     result = call_script_isolated(
-        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report'],
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report', '--coverage'],
         test_filesystem_report_cb=report_callback
     )
 
@@ -74,7 +76,9 @@ def test_find_django_no_viable_models(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         set(),
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
@@ -99,17 +103,19 @@ def test_find_django_model_not_annotated(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
-        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report']
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report', '-vv']
     )
 
-    assert result.exit_code == EXIT_CODE_FAILURE
-    assert 'fake_app_1.FakeBaseModel is not annotated and not in the safelist!' in result.output
-    assert '1 errors:' in result.output
-    assert 'Generating report to' not in result.output
+    assert result.exit_code == EXIT_CODE_SUCCESS
+    assert 'fake_app_1.FakeBaseModelNoAnnotation has no annotations' in result.output
+    assert 'Linting passed without errors.' in result.output
+    assert 'Generating report to' in result.output
 
 
 @patch.multiple(
@@ -124,12 +130,14 @@ def test_find_django_model_in_safelist_not_annotated(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     fake_safelist_data = """
     {
-        fake_app_1.FakeBaseModel: {}
+        fake_app_1.FakeBaseModelNoAnnotation: {}
     }
     """
 
@@ -139,7 +147,7 @@ def test_find_django_model_in_safelist_not_annotated(**kwargs):
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
-    assert 'fake_app_1.FakeBaseModel is in the safelist but has no annotations!' in result.output
+    assert 'fake_app_1.FakeBaseModelNoAnnotation is in the safelist but has no annotations!' in result.output
     assert '1 errors:' in result.output
     assert 'Generating report to' not in result.output
 
@@ -156,12 +164,14 @@ def test_find_django_model_in_safelist_annotated(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     fake_safelist_data = """
     {
-        fake_app_1.FakeBaseModel: {".. no_pii::": "This model is annotated."}
+        fake_app_1.FakeBaseModelNoAnnotation: {".. no_pii::": "This model is annotated."}
     }
     """
 
@@ -185,7 +195,7 @@ def test_find_django_no_safelist(**kwargs):
     Test that we fail when there is no safelist.
     """
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
-    mock_get_models_requiring_annotations.return_value = (set(), set())
+    mock_get_models_requiring_annotations.return_value = (set(), set(), 0, [])
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report'],
@@ -209,7 +219,9 @@ def test_find_django_in_safelist_and_annotated(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
@@ -235,16 +247,18 @@ def test_find_django_no_docstring(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
     result = call_script_isolated(
-        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report']
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report', '-vv']
     )
 
-    assert result.exit_code == EXIT_CODE_FAILURE
-    assert 'fake_app_2.FakeBaseModelWithNoDocstring is not annotated and not in the safelist!' in result.output
-    assert '1 errors:' in result.output
-    assert 'Generating report to' not in result.output
+    assert result.exit_code == EXIT_CODE_SUCCESS
+    assert 'fake_app_2.FakeBaseModelWithNoDocstring has no annotations' in result.output
+    assert 'Linting passed without errors.' in result.output
+    assert 'Generating report to' in result.output
 
 
 @patch.multiple(
@@ -259,7 +273,9 @@ def test_find_django_ordering_error(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
@@ -282,7 +298,9 @@ def test_find_django_without_linting(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
@@ -306,7 +324,9 @@ def test_find_django_without_report(**kwargs):
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
-        set()
+        set(),
+        0,
+        []
     )
 
     result = call_script_isolated(
@@ -404,12 +424,14 @@ def test_get_models_requiring_annotations(mock_get_app_configs, mock_is_non_loca
     # testing setup.
     mock_issubclass.return_value = True
 
-    local_models, non_local_models = DjangoSearch.get_models_requiring_annotations()
+    local_models, non_local_models, total, needing_annotations = DjangoSearch.get_models_requiring_annotations()
 
     assert len(local_models) == 1
     assert len(non_local_models) == 1
     assert list(local_models)[0] == FakeBaseModelBoringWithAnnotations
     assert list(non_local_models)[0] == FakeBaseModelBoring
+    assert total == 2
+    assert len(needing_annotations) == 2
 
 
 @patch('code_annotations.find_django.django.setup')
