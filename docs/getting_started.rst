@@ -24,23 +24,29 @@ following is an example of a minimal configuration file. See ``.annotations_samp
 
 .. code-block:: yaml
 
-    # Path that you wish to search, can be passed on the command line.
-    # Directories will be searched recursively, can also point to a single file.
-    source_path: ../path/to/be/searched/
+    # Path that you wish to static search, can be passed on the command line
+    # Directories will be searched recursively, but this can also point to a single file
+    source_path: ../
 
-    # Directory to write the report to, can be passed on the command line.
-    report_path: /path/to/write/report/to/
+    # Directory to write the report to, can be passed on the command line
+    report_path: reports
 
-    # Definitions of the annotations to search for.
+    # Path to the Django annotation safelist file
+    safelist_path: .annotation_safe_list.yml
+
+    # Percentage of Django models which must have annotations in order to pass coverage checking
+    coverage_target: 50.0
+
+    # Definitions of the annotations to search for. Notice the trailing colon, this is a mapping type!
+    # For more information see "Writing Annotations"
     annotations:
-        name-of-annotation: ".. annotation_token::"
+        ".. annotation_token::":
 
     # Code Annotations extensions to load and the file extensions to map them to
     extensions:
         python:
             - py
-        javascript:
-            - js
+
 
 Create some annotations
 -----------------------
@@ -79,10 +85,10 @@ your favorite text editor to make sure all of your annotations were found. Diffe
 this command, try ``-v``, ``-vv``, and ``-vvv`` to assist in debugging. ``--help`` will provide information on all of
 the available options.
 
-By default the annotation search will perform linting, which makes sure that any found annotations match the structure
-listed in configuration. If any issues are found the command will fail with no report written, otherwise a YAML file
-containing the results of the search will be written to your ``report_path``. Both linting and reporting features can be
-turned off via command line flags.
+By default the static annotation search will perform linting, which makes sure that any found annotations match the
+structure listed in configuration. If any issues are found the command will fail with no report written, otherwise a
+YAML file containing the results of the search will be written to your ``report_path``. Both linting and reporting
+features can be turned off via command line flags.
 
 Add more structure to your annotations
 --------------------------------------

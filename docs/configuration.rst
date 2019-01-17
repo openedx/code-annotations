@@ -8,12 +8,12 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
     source_path: /path/to/be/searched/
     report_path: /path/to/write/report/to/
     annotations:
-        name_of_annotation: ".. annotation_token::"
-        another_annotation: ".. annotation_token2::"
-        choice_annotation:
+        ".. annotation_token::":
+        ".. annotation_token2::":
+        "".. choice_annotation::"":
             choices: [choice_1, choice_2, choice_3]
         name_of_annotation_group:
-            - ".. first_group_token::"
+            - ".. first_group_token::":
             - ".. second_group_token::":
                 choices: [choice_4, choice_5]
             - ".. third_group_token::":
@@ -35,8 +35,9 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 ``annotations``
     The definition of annotations to be searched for. There are two types of annotations.
 
-    - Basic, or comment, annotations such as ``name_of_annotation`` and ``another_annotation`` above, allow for
-      free-form text following the annotation itself. At this time the comment must be all on one line to be included
+    - Basic, or comment, annotations such as ``annotation_token`` and ``first_group_token`` above, allow for
+      free-form text following the annotation itself. Note the colon after the annotation token! In configuration this
+      type is a mapping type, mapping to a null value. At this time the comment must be all on one line to be included
       in the report. Multi-line annotation comments are not yet supported.
 
     - Choice annotations, such as ``choice_annotation``, ``second_group_token`` and ``third_group_token``, limit the
@@ -46,9 +47,9 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 
     In addition to the two types of annotations, it is also possible to group several annotations together into a fixed
     structure. In our example ``name_of_annotation_group`` is a group consisting of 3 annotations. When grouped, all
-    of the annotations in the group **must** be present, or linting will fail. The order of the grouping does not matter
-    except that the first annotation in the group **must** come first in the comments. Only one of each annotation is
-    allowed in a group. See :doc:`writing_annotations` for more information and examples.
+    of the annotations in the group **must** be present, or linting will fail. The order of the grouping does not
+    matter as long as all of them are found before any other annotations. Only one of each annotation is allowed in a
+    group. See :doc:`writing_annotations` for more information and examples.
 
 ``extensions``
     Code Annotations uses Stevedore extensions to extend the capability of finding new language comments. Language

@@ -13,8 +13,11 @@ comments into two parts- the annotation token, and the annotation data.
 
 - Annotation data
     Annotation data can either be a simple free text comment that is on the same line as the token, or a choice list.
-    The choices in a choice list are configured in the ``.annotations`` configuration file and can be separated by
-    spaces or commas when used in comments. As such, the choices themselves should not contain spaces or commas.
+    The choices in a choice list are configured in the configuration file and can be separated by spaces or commas when
+    used in comments. As such, the choices themselves should not contain spaces or commas.
+
+The information below applies to both the Static Search and Django Model Search tools, with the exception that the
+Django Model Search only looks in model docstrings.
 
 **Examples**
 
@@ -23,9 +26,10 @@ Configuration for a "fun fact" annotation type, denoted by the annotation token 
 .. code-block:: yaml
 
     annotations:
-        fun_fact: ".. fun_fact::"
+        ".. fun_fact::":
 
-There are no choices given, so this is a free form comment type of annotation. It would be used in Python like this:
+There are no choices given, so this is a free form comment type of annotation. Note the trailing colon! It would be used
+in Python like this:
 
 .. code-block:: python
 
@@ -130,10 +134,7 @@ Annotation Groups
 =================
 In addition to choices, you can combine several annotations into a group. When configured this way you can combine free
 form text comments with choices to allow structured and unstructured data to work together. Linting will enforce that
-that all group members are present together.
-
-Group members can be be comment or choice types. The only limitation on ordering is that the group member listed first
-in the configuration must also appear first in the comment.
+that all group members are consecutively, though ordering does not matter.
 
 **Examples**
 
@@ -183,7 +184,7 @@ You would get this in the report:
        found_by: python
        line_number: 18
 
-But with this comment:
+This comment also works even though the ordering is different:
 
 .. code-block:: python
 
@@ -194,15 +195,4 @@ But with this comment:
     .. reporting:: Reporting events for the mobile app
     .. reporting_consumers:: Recommendations and email marketing events
     """
-
-
-The report would fail (since the first configured annotation is not the first one in the comment):
-
-.. code-block:: bash
-
-    Search failed due to linting errors!
-    1 errors:
-    ---------------------------------
-
-    foo/bar/reporting.py::17:  ".. reporting_types::" is a member of a group, but no group is started!
 
