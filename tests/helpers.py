@@ -17,6 +17,7 @@ FAKE_CONFIG_FILE = """
 safelist_path: {}
 report_path: test_reports
 source_path: ../
+coverage_target: 50.0
 annotations:
     ".. no_pii::":
     ".. ignored::":

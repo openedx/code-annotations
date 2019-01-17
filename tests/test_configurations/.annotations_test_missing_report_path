@@ -1,5 +1,6 @@
 source_path: ../devstack-docker/edx-platform
 safelist_path: .annotation_safe_list.yml
+coverage_target: 50.0
 annotations:
     ".. no_pii::":
     ".. ignored::":

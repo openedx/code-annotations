@@ -10,7 +10,7 @@ class FakeBaseModelNoAnnotation(object):
     This is a fake model with no annotations.
     """
 
-    _meta = MagicMock(app_label='fake_app_1', object_name='FakeBaseModel')
+    _meta = MagicMock(app_label='fake_app_1', object_name='FakeBaseModelNoAnnotation', abstract=False, proxy=False)
 
 
 class FakeChildModelNoAnnotation(FakeBaseModelNoAnnotation):
@@ -18,7 +18,7 @@ class FakeChildModelNoAnnotation(FakeBaseModelNoAnnotation):
     This model inherits, but also has no annotations.
     """
 
-    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelNoAnnotation')
+    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelNoAnnotation', abstract=False, proxy=False)
 
 
 class FakeChildModelSingleAnnotation(FakeBaseModelNoAnnotation):
@@ -28,7 +28,7 @@ class FakeChildModelSingleAnnotation(FakeBaseModelNoAnnotation):
     .. no_pii:: Child model.
     """
 
-    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelSingleAnnotation')
+    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelSingleAnnotation', abstract=False, proxy=False)
 
 
 class FakeChildModelMultiAnnotation(FakeChildModelSingleAnnotation):
@@ -38,7 +38,7 @@ class FakeChildModelMultiAnnotation(FakeChildModelSingleAnnotation):
     .. no_pii:: Grandchild model.
     """
 
-    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelMultiAnnotation')
+    _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelMultiAnnotation', abstract=False, proxy=False)
 
 
 # Base model with an annotation and its children
@@ -49,7 +49,7 @@ class FakeBaseModelWithAnnotation(object):
     .. no_pii:: Base model annotation.
     """
 
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithAnnotation')
+    _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithAnnotation', abstract=False, proxy=False)
 
 
 class FakeChildModelWithAnnotation(FakeBaseModelWithAnnotation):
@@ -57,7 +57,7 @@ class FakeChildModelWithAnnotation(FakeBaseModelWithAnnotation):
     This model inherits, but also has no annotations.
     """
 
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeChildModelWithAnnotation')
+    _meta = MagicMock(app_label='fake_app_2', object_name='FakeChildModelWithAnnotation', abstract=False, proxy=False)
 
 
 class FakeChildModelSingleWithAnnotation(FakeBaseModelWithAnnotation):
@@ -67,7 +67,12 @@ class FakeChildModelSingleWithAnnotation(FakeBaseModelWithAnnotation):
     .. no_pii:: Child model.
     """
 
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeChildModelSingleWithAnnotation')
+    _meta = MagicMock(
+        app_label='fake_app_2',
+        object_name='FakeChildModelSingleWithAnnotation',
+        abstract=False,
+        proxy=False
+    )
 
 
 class FakeChildModelMultiWithAnnotation(FakeChildModelWithAnnotation):
@@ -77,11 +82,16 @@ class FakeChildModelMultiWithAnnotation(FakeChildModelWithAnnotation):
     .. no_pii:: Grandchild model.
     """
 
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeChildModelMultiWithAnnotation')
+    _meta = MagicMock(
+        app_label='fake_app_2',
+        object_name='FakeChildModelMultiWithAnnotation',
+        abstract=False,
+        proxy=False
+    )
 
 
 class FakeBaseModelWithNoDocstring(object):
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithNoDocstring')
+    _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithNoDocstring', abstract=False, proxy=False)
 
 
 class FakeChildModelMultiWithBrokenAnnotations(FakeChildModelWithAnnotation):
@@ -92,7 +102,12 @@ class FakeChildModelMultiWithBrokenAnnotations(FakeChildModelWithAnnotation):
     .. pii_retirement:: retained
     """
 
-    _meta = MagicMock(app_label='fake_app_2', object_name='FakeChildModelMultiWithBrokenAnnotations')
+    _meta = MagicMock(
+        app_label='fake_app_2',
+        object_name='FakeChildModelMultiWithBrokenAnnotations',
+        abstract=False,
+        proxy=False
+    )
 
 
 # Models for testing requires_annotations
@@ -111,7 +126,12 @@ class FakeBaseModelBoringWithAnnotations(object):
     .. no_pii:: No PII.
     """
 
-    _meta = MagicMock(app_label='fake_app_3', object_name='FakeBaseModelBoring', abstract=False, proxy=False)
+    _meta = MagicMock(
+        app_label='fake_app_3',
+        object_name='FakeBaseModelBoringWithAnnotations',
+        abstract=False,
+        proxy=False
+    )
 
 
 class FakeBaseModelAbstract(object):
