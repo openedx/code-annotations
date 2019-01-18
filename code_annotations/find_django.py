@@ -64,7 +64,7 @@ class DjangoSearch(BaseSearch):
 
         with open(self.config.safelist_path, 'w') as safelist_file:
             safelist_comment = """
-# This is a Code Annotations automatically generated Django model safelist file.
+# This is a Code Annotations automatically-generated Django model safelist file.
 # These models must be annotated as follows in order to be counted in the coverage report.
 # See https://code-annotations.readthedocs.io/en/latest/safelist.html for more information.
 #
