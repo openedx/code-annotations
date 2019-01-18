@@ -97,7 +97,7 @@ class VerboseEcho(object):
 
     verbosity = 1
 
-    def __call__(self, output):
+    def __call__(self, output, **kwargs):
         """
         Echo the given output regardless of verbosity level.
 
@@ -105,8 +105,9 @@ class VerboseEcho(object):
 
         Args:
             output: Text to output
+            kwargs: Any additional keyword args to pass to click.echo
         """
-        self.echo(output)
+        self.echo(output, **kwargs)
 
     def set_verbosity(self, verbosity):
         """
@@ -114,50 +115,52 @@ class VerboseEcho(object):
 
         Args:
             verbosity: The verbosity level to set to
-
-        Returns:
-            None
+            kwargs: Any additional keyword args to pass to click.echo
         """
         self.verbosity = verbosity
         self.echo_v("Verbosity level set to {}".format(verbosity))
 
-    def echo(self, output, verbosity_level=0):
+    def echo(self, output, verbosity_level=0, **kwargs):
         """
         Echo the given output, if over the verbosity threshold.
 
         Args:
             output: Text to output
             verbosity_level: Only output if our verbosity level is >= this.
+            kwargs: Any additional keyword args to pass to click.echo
         """
         if verbosity_level <= self.verbosity:
-            click.echo(output)
+            click.secho(output, **kwargs)
 
-    def echo_v(self, output):
+    def echo_v(self, output, **kwargs):
         """
         Echo the given output if verbosity level is >= 1.
 
         Args:
             output: Text to output
+            kwargs: Any additional keyword args to pass to click.echo
         """
-        self.echo(output, 1)
+        self.echo(output, 1, **kwargs)
 
-    def echo_vv(self, output):
+    def echo_vv(self, output, **kwargs):
         """
         Echo the given output if verbosity level is >= 2.
 
         Args:
             output: Text to output
+            kwargs: Any additional keyword args to pass to click.echo
         """
-        self.echo(output, 2)
+        self.echo(output, 2, **kwargs)
 
-    def echo_vvv(self, output):
+    def echo_vvv(self, output, **kwargs):
         """
         Echo the given output if verbosity level is >= 3.
 
         Args:
             output: Text to output
+            kwargs: Any additional keyword args to pass to click.echo
         """
-        self.echo(output, 3)
+        self.echo(output, 3, **kwargs)
 
 
 def clean_abs_path(filename_to_clean, parent_path):

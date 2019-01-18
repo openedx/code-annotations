@@ -220,8 +220,8 @@ class AnnotationConfig(object):
         Raises:
             ConfigurationException
         """
-        self.echo(args)
-        self.echo(kwargs)
+        self.echo(str(args), fg='red')
+        self.echo(str(kwargs), fg='red')
         raise ConfigurationException('Failed to load a plugin, aborting.')
 
     def _configure_extensions(self):

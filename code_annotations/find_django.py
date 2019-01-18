@@ -63,12 +63,24 @@ class DjangoSearch(BaseSearch):
         safelist_data = {self.get_model_id(model): {} for model in self.non_local_models}
 
         with open(self.config.safelist_path, 'w') as safelist_file:
-            yaml_ordered_dump(safelist_data, stream=safelist_file)
+            safelist_comment = """
+# This is a Code Annotations automatically-generated Django model safelist file.
+# These models must be annotated as follows in order to be counted in the coverage report.
+# See https://code-annotations.readthedocs.io/en/latest/safelist.html for more information.
+#
+# fake_app_1.FakeModelName:
+#    ".. no_pii::": "This model has no PII"
+# fake_app_2.FakeModel2:
+#    ".. choice_annotation::": foo, bar, baz
 
-        self.echo('Successfully created safelist file "{}".'.format(self.config.safelist_path))
-        self.echo('Now, you need to:')
-        self.echo('  1) Make sure that any un-annotated models in the safelist are annotated, and')
-        self.echo('  2) Annotate any LOCAL models (see --list_local_models).')
+            """
+            safelist_file.write(safelist_comment.strip())
+            yaml_ordered_dump(safelist_data, stream=safelist_file, default_flow_style=False)
+
+        self.echo('Successfully created safelist file "{}".'.format(self.config.safelist_path), fg='red')
+        self.echo('Now, you need to:', fg='red')
+        self.echo('  1) Make sure that any un-annotated models in the safelist are annotated, and', fg='red')
+        self.echo('  2) Annotate any LOCAL models (see --list_local_models).', fg='red')
 
     def list_local_models(self):
         """
@@ -228,6 +240,8 @@ class DjangoSearch(BaseSearch):
                     self.uncovered_model_ids.add(model_id)
                     self.echo.echo_vv("      {} is in the safelist.".format(model_id))
                     self._add_error("{} is in the safelist but has no annotations!".format(model_id))
+                else:
+                    self._increment_count('annotated')
 
                 self._append_safelisted_model_annotations(safelisted_models, model_id, model_annotations)
                 self.format_file_results(annotated_models, [model_annotations])

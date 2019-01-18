@@ -32,7 +32,12 @@ def test_find_django_simple_success(**kwargs):
     """
     Tests the basic case where all models have annotations, with an empty safelist.
     """
-    test_models = {FakeChildModelSingleAnnotation, FakeChildModelMultiAnnotation, FakeChildModelSingleWithAnnotation}
+    test_models = {
+        FakeChildModelSingleAnnotation,
+        FakeChildModelMultiAnnotation,
+        FakeChildModelSingleWithAnnotation,
+        FakeBaseModelWithNoDocstring
+    }
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         test_models,
@@ -54,15 +59,21 @@ def test_find_django_simple_success(**kwargs):
         for model in test_models:
             assert 'object_id: {}'.format(DjangoSearch.get_model_id(model)) in report_contents
 
+    fake_safelist = """
+    fake_app_2.FakeBaseModelWithNoDocstring:
+        ".. no_pii::": "No PII"
+    """
+
     result = call_script_isolated(
-        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report', '--coverage'],
-        test_filesystem_report_cb=report_callback
+        ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report', '--coverage', '-vvv'],
+        test_filesystem_report_cb=report_callback,
+        fake_safelist_data=fake_safelist
     )
 
     assert result.exit_code == EXIT_CODE_SUCCESS
     assert 'Linting passed without errors' in result.output
     assert 'Generating report to' in result.output
-    assert 'Search found 5 annotations' in result.output
+    assert 'Search found 6 annotations' in result.output
 
 
 @patch.multiple(
