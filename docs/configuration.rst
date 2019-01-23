@@ -7,6 +7,8 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 
     source_path: /path/to/be/searched/
     report_path: /path/to/write/report/to/
+    safelist_path: .annotation_safe_list.yml
+    coverage_target: 100.0
     annotations:
         ".. annotation_token::":
         ".. annotation_token2::":
@@ -31,6 +33,15 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 
 ``report_path``
     The directory where the YAML report file will be written. If it does not exist, it will be created.
+
+``safelist_path``
+    The path to a safelist, used by the Django Search tool to find annotations in models that are defined outside of
+    the local source tree. See :doc:`safelist` for more information.
+
+``coverage_target``
+    A number from 0 - 100 that represents the percentage of Django models in the project that should have annotations.
+    The Django Search tool will fail if run with the ``--coverage`` option if the covered percentage is below this
+    number. See :doc:`django_coverage` for more information.
 
 ``annotations``
     The definition of annotations to be searched for. There are two types of annotations.
