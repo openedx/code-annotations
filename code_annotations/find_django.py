@@ -73,8 +73,8 @@ class DjangoSearch(BaseSearch):
 # fake_app_2.FakeModel2:
 #    ".. choice_annotation::": foo, bar, baz
 
-            """
-            safelist_file.write(safelist_comment.strip())
+"""
+            safelist_file.write(safelist_comment.lstrip())
             yaml_ordered_dump(safelist_data, stream=safelist_file, default_flow_style=False)
 
         self.echo('Successfully created safelist file "{}".'.format(self.config.safelist_path), fg='red')
