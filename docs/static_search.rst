@@ -17,8 +17,8 @@ code_annotations static_find_annotations::
 
 Overview
 ========
-The Static Search Tool, or Static Tool, is written as an extensible way to find annotations in code. It does this by
-performing static analysis on the files themselves instead of relying on the language's runtime and introspection. It
+The Static Search Tool, or Static Tool, is written as an extensible way to find annotations in code. The tool performs
+static analysis on the files themselves instead of relying on the language's runtime and introspection. It
 will optionally write a report file in YAML, and optionally check for annotation validity (linting).
 
 Linting

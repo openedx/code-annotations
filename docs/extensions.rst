@@ -4,7 +4,7 @@ Extensions
 Code Annotations uses `Stevedore`_ to allow new lanuages to be statically searched in an easily extensible fashion. All
 language searches, even the ones that come by default, are implemented as extensions. A language extension is
 responsible for finding all comments in files of the given type. Note that extensions are only used in the Static Search
-and not in Django search, as Django models are obviously all written in Python.
+and not in Django Search, as Django models are obviously all written in Python.
 
 .. _Stevedore: https://docs.openstack.org/stevedore/latest/
 

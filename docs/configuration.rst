@@ -12,7 +12,7 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
     annotations:
         ".. annotation_token::":
         ".. annotation_token2::":
-        "".. choice_annotation::"":
+        ".. choice_annotation::":
             choices: [choice_1, choice_2, choice_3]
         name_of_annotation_group:
             - ".. first_group_token::":
@@ -40,7 +40,7 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 
 ``coverage_target``
     A number from 0 - 100 that represents the percentage of Django models in the project that should have annotations.
-    The Django Search tool will fail if run with the ``--coverage`` option if the covered percentage is below this
+    The Django Search tool will fail when run with the ``--coverage`` option if the covered percentage is below this
     number. See :doc:`django_coverage` for more information.
 
 ``annotations``
@@ -48,8 +48,9 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
 
     - Basic, or comment, annotations such as ``annotation_token`` and ``first_group_token`` above, allow for
       free-form text following the annotation itself. Note the colon after the annotation token! In configuration this
-      type is a mapping type, mapping to a null value. At this time the comment must be all on one line to be included
-      in the report. Multi-line annotation comments are not yet supported.
+      type is a mapping type, mapping to a null value.
+
+      Note: At this time the comment must be all on one line. Multi-line annotation comments are not yet supported.
 
     - Choice annotations, such as ``choice_annotation``, ``second_group_token`` and ``third_group_token``, limit the
       potential values of the annotation to the ones listed in ``choices``. This can help enforce consistency across the

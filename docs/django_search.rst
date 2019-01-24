@@ -37,7 +37,7 @@ in some way. If you do not need this functionality and simply want to find annot
 search tool is much easier to configure and can search all of your code (instead of just model docstrings).
 
 .. important::
-    In order to use the Django tool you must first set the ``DJANGO_SETTINGS_MODULE`` environment variable to point to
+    To use the Django tool you must first set the ``DJANGO_SETTINGS_MODULE`` environment variable to point to
     a valid settings file. The tool will initialize Django and use its introspection to find models. The settings file
     should have ``INSTALLED_APPS`` configured for all Django apps that you wish to have annotated. See the
     `Django Docs`_ for details.
@@ -57,22 +57,22 @@ added to the list.
 The Safelist
 ============
 In order to assert that **all** concrete models in a project are annotated, it is also necessary to be able to annotate
-models that are otherwise installed installed in the Python virtual environment and are not part of your source tree. We
-call models in your source tree "local models" and ones otherwise installed in the Python environment "non-local"
-models. In order to annotate non-local models, which may come from other repositories or PyPI packages, we have added a
-feature called the "safelist".
+models that are otherwise installed in the Python virtual environment and are not part of your source tree. Models in
+your source tree are called "local models", and ones otherwise installed in the Python environment are "non-local"
+models. In order to annotate non-local models, which may come from other repositories or PyPI packages, use the
+"safelist" feature.
 
-In this case "safe" doesn't mean that the models themselves do not require annotation, but rather it gives developers a
+"Safe" in safelist doesn't mean that the models themselves do not require annotation, but rather it gives developers a
 place to annotate those models and put them in a known state. When setting up a repository to use the Django tool, you
-can use the ``--seed_safelist`` option to generate an initial safelist template that contains empty entries for all
+should use the ``--seed_safelist`` option to generate an initial safelist template that contains empty entries for all
 non-local models. In order for those models to count as "covered", you must add annotations to them in the safelist.
 
 An freshly created safelist:
 
 .. code-block:: yaml
 
-    social_django.Association:
-    social_django.Code:
+    social_django.Association: {}
+    social_django.Code: {}
 
 And one that has been annotated:
 
@@ -90,8 +90,8 @@ And one that has been annotated:
     second ``.. no_pii::`` annotation to ``social_django.Association``.
 
 .. important::
-    Some types of "local" models are procedurally generated and do not have files in code, for instance those created by
-    ``django-simple-history``. In those unusual circumstances you can choose to annotate them in the safelist to make
+    Some types of "local" models are procedurally generated and do not have files in code, e.g. models created by
+    django-simple-history. In those unusual circumstances you can choose to annotate them in the safelist to make
     sure they are covered.
 
 Coverage
