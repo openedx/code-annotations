@@ -15,6 +15,8 @@ Contents:
    readme
    getting_started
    writing_annotations
+   static_search
+   django_search
    configuration
    extensions
    testing
