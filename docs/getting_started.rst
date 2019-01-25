@@ -26,7 +26,7 @@ following is an example of a minimal configuration file. See ``.annotations_samp
 
     # Path that you wish to static search, can be passed on the command line
     # Directories will be searched recursively, but this can also point to a single file
-    source_path: ../
+    source_path: ./
 
     # Directory to write the report to, can be passed on the command line
     report_path: reports

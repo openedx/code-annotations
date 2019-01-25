@@ -134,7 +134,7 @@ Annotation Groups
 =================
 In addition to choices, you can combine several annotations into a group. When configured this way you can combine free
 form text comments with choices to allow structured and unstructured data to work together. Linting will enforce that
-that all group members are consecutively, though ordering does not matter.
+that all group members are consecutive, though ordering does not matter.
 
 **Examples**
 
