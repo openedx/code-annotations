@@ -271,9 +271,11 @@ class DjangoSearch(BaseSearch):
         self.echo("Coverage is {}%\n".format(pct))
 
         if self.uncovered_model_ids:
+            displayed_uncovereds = list(self.uncovered_model_ids)
+            displayed_uncovereds.sort()
             self.echo(
                 "Coverage found {} uncovered models:\n   ".format(len(self.uncovered_model_ids)) +
-                "\n   ".join(self.uncovered_model_ids)
+                "\n   ".join(displayed_uncovereds)
             )
 
         if pct < float(self.config.coverage_target):
