@@ -25,7 +25,7 @@ class FakeChildModelSingleAnnotation(FakeBaseModelNoAnnotation):
     """
     This model inherits and has one annotation.
 
-    .. no_pii:: Child model.
+    .. no_pii: Child model.
     """
 
     _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelSingleAnnotation', abstract=False, proxy=False)
@@ -35,7 +35,7 @@ class FakeChildModelMultiAnnotation(FakeChildModelSingleAnnotation):
     """
     This model multi-level inherits and has one annotation. Its parent also has one.
 
-    .. no_pii:: Grandchild model.
+    .. no_pii: Grandchild model.
     """
 
     _meta = MagicMock(app_label='fake_app_1', object_name='FakeChildModelMultiAnnotation', abstract=False, proxy=False)
@@ -46,7 +46,7 @@ class FakeBaseModelWithAnnotation(object):
     """
     This is a fake model with one annotation.
 
-    .. no_pii:: Base model annotation.
+    .. no_pii: Base model annotation.
     """
 
     _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithAnnotation', abstract=False, proxy=False)
@@ -64,7 +64,7 @@ class FakeChildModelSingleWithAnnotation(FakeBaseModelWithAnnotation):
     """
     This model inherits and has one annotation.
 
-    .. no_pii:: Child model.
+    .. no_pii: Child model.
     """
 
     _meta = MagicMock(
@@ -79,7 +79,7 @@ class FakeChildModelMultiWithAnnotation(FakeChildModelWithAnnotation):
     """
     This model multi-level inherits and has one annotation. Its parent also has one.
 
-    .. no_pii:: Grandchild model.
+    .. no_pii: Grandchild model.
     """
 
     _meta = MagicMock(
@@ -98,8 +98,8 @@ class FakeChildModelMultiWithBrokenAnnotations(FakeChildModelWithAnnotation):
     """
     This model multi-level inherits and has one annotation. Its parent also has one.
 
-    .. pii_types:: id
-    .. pii_retirement:: retained
+    .. pii_types: id
+    .. pii_retirement: retained
     """
 
     _meta = MagicMock(
@@ -123,7 +123,7 @@ class FakeBaseModelBoringWithAnnotations(object):
     """
     This is a fake model with an annotation.
 
-    .. no_pii:: No PII.
+    .. no_pii: No PII.
     """
 
     _meta = MagicMock(

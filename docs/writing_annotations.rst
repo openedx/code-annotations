@@ -7,8 +7,8 @@ comments into two parts- the annotation token, and the annotation data.
 
 - Annotation token
     The annotation token is a unique string that can be easily found and separated from other comment content. The
-    convention used in our examples is ``.. <descriptor>::`` where <descriptor> is a slug that says the kind of
-    annotation it is. The ``..`` and ``::`` are entirely optional, but do help keep the strings unique and prevent false
+    convention used in our examples is ``.. <descriptor>:`` where <descriptor> is a slug that says the kind of
+    annotation it is. The ``..`` and ``:`` are entirely optional, but do help keep the strings unique and prevent false
     positives.
 
 - Annotation data
@@ -21,7 +21,7 @@ Django Model Search only looks in model docstrings.
 
 **Examples**
 
-Configuration for a "fun fact" annotation type, denoted by the annotation token ``.. fun_fact::``:
+Configuration for a "fun fact" annotation type, denoted by the annotation token ``.. fun_fact:``:
 
 .. code-block:: yaml
 
@@ -36,7 +36,7 @@ in Python like this:
     """
     This function handles setting the price on an item in the database.
 
-    .. fun_fact:: This code is the only remaining piece of our first commit!
+    .. fun_fact: This code is the only remaining piece of our first commit!
     """
 
 When a report is run against this code an entry like this will be generated in the YAML report:
@@ -44,29 +44,29 @@ When a report is run against this code an entry like this will be generated in t
 .. code-block:: yaml
 
     - annotation_data: This code is the only remaining piece of our first commit!
-      annotation_token: '.. fun_fact::'
+      annotation_token: '.. fun_fact:'
       filename: foo/bar/something.py
       found_by: python
       line_number: 33
 
 *Note that the rest of the comment is ignored in the report.*
 
-Configuration for an "async" annotation type, denoted by the annotation token ``.. async::`` and choices denoting the
+Configuration for an "async" annotation type, denoted by the annotation token ``.. async:`` and choices denoting the
 types of asynchronous processors hooked up to it:
 
 .. code-block:: yaml
 
     annotations:
-         ".. async::": choices: ['reporting_ingestion', 'published_internally', 'published_externally']
+         ".. async:": choices: ['reporting_ingestion', 'published_internally', 'published_externally']
 
-This means that any ``.. async::`` annotation must include one or more of those choices. With these Python comments:
+This means that any ``.. async:`` annotation must include one or more of those choices. With these Python comments:
 
 .. code-block:: python
 
     """
     Push this update onto the marketing site's processing queue
 
-    .. async:: published_internally
+    .. async: published_internally
     """
 
 .. code-block:: python
@@ -74,7 +74,7 @@ This means that any ``.. async::`` annotation must include one or more of those 
     """
     Push this to our reporting queue and the partner reporting queue
 
-    .. async:: reporting_ingestion, published_externally
+    .. async: reporting_ingestion, published_externally
     """
 
 .. code-block:: python
@@ -82,7 +82,7 @@ This means that any ``.. async::`` annotation must include one or more of those 
     """
     Push to both the wiki RSS feed and our home page
 
-    .. async:: published_internally published_externally
+    .. async: published_internally published_externally
     """
 
 This will be generated in the YAML report:
@@ -91,21 +91,21 @@ This will be generated in the YAML report:
 
     - annotation_data:
         - published_internally
-      annotation_token: '.. async::'
+      annotation_token: '.. async:'
       filename: foo/bar/data.py
       found_by: python
       line_number: 12
     - annotation_data:
         - reporting_ingestion
         - published_externally
-      annotation_token: '.. async::'
+      annotation_token: '.. async:'
       filename: foo/bar/reporting.py
       found_by: python
       line_number: 13
     - annotation_data:
         - published_internally
         - published_externally
-      annotation_token: '.. async::'
+      annotation_token: '.. async:'
       filename: foo/bar/rss.py
       found_by: python
       line_number: 333
@@ -117,7 +117,7 @@ If a comment is made that does not include only valid choices, such as:
     """
     Push this to our reporting queue
 
-    .. async:: This one only goes to our reporting queue
+    .. async: This one only goes to our reporting queue
     """
 
 You will receive a linting error such as:
@@ -128,7 +128,7 @@ You will receive a linting error such as:
     1 errors:
     ---------------------------------
 
-    foo/bar/data.py::17: "This" is not a valid choice for ".. async::". Expected one of ['reporting_ingestion', 'published_internally', 'published_externally'].
+    foo/bar/data.py::17: "This" is not a valid choice for ".. async:". Expected one of ['reporting_ingestion', 'published_internally', 'published_externally'].
 
 Annotation Groups
 =================
@@ -138,17 +138,17 @@ that all group members are consecutive, though ordering does not matter.
 
 **Examples**
 
-With this configuration there is a group of 3 annotations that must occur together. ``.. reporting::`` and
-``.. reporting_consumers::`` are free form text types and ``.. reporting_types::`` is a choice type.
+With this configuration there is a group of 3 annotations that must occur together. ``.. reporting:`` and
+``.. reporting_consumers:`` are free form text types and ``.. reporting_types:`` is a choice type.
 
 .. code-block:: yaml
 
     annotations:
         reporting:
-            - ".. reporting::"
-            - ".. reporting_types::":
+            - ".. reporting:"
+            - ".. reporting_types:":
                 choices: [internal, partner]
-            - ".. reporting_consumers::"
+            - ".. reporting_consumers:"
 
 With this comment:
 
@@ -157,9 +157,9 @@ With this comment:
     """
     Send an event to the reporting engine, for internal events only
 
-    .. reporting:: Reporting events for the mobile app
-    .. reporting_types:: internal
-    .. reporting_consumers:: Recommendations and email marketing events
+    .. reporting: Reporting events for the mobile app
+    .. reporting_types: internal
+    .. reporting_consumers: Recommendations and email marketing events
     """
 
 You would get this in the report:
@@ -168,18 +168,18 @@ You would get this in the report:
 
     openedx/core/djangoapps/user_api/legacy_urls.py:
      - annotation_data: Reporting events for the mobile app
-       annotation_token: '.. reporting::'
+       annotation_token: '.. reporting:'
        filename: foo/bar/events.py
        found_by: python
        line_number: 16
      - annotation_data:
        - internal
-       annotation_token: '.. reporting_types::'
+       annotation_token: '.. reporting_types:'
        filename: foo/bar/events.py
        found_by: python
        line_number: 16
      - annotation_data: Recommendations and email marketing events
-       annotation_token: '.. reporting_consumers::'
+       annotation_token: '.. reporting_consumers:'
        filename: openedx/core/djangoapps/user_api/legacy_urls.py
        found_by: python
        line_number: 18
@@ -191,8 +191,8 @@ This comment also works even though the ordering is different:
     """
     Send an event to the reporting engine, for internal events only
 
-    .. reporting_types:: internal
-    .. reporting:: Reporting events for the mobile app
-    .. reporting_consumers:: Recommendations and email marketing events
+    .. reporting_types: internal
+    .. reporting: Reporting events for the mobile app
+    .. reporting_consumers: Recommendations and email marketing events
     """
 

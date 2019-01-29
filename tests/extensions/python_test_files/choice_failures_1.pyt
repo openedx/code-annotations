@@ -1,6 +1,6 @@
 """
 Test bad choice alone
 
-.. ignored:: doesnotexist
+.. ignored: doesnotexist
 
 """

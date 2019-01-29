@@ -2,14 +2,14 @@ source_path: tests/extensions/javascript_test_files/
 report_path: test_reports
 coverage_target: 50.0
 annotations:
-    ".. no_pii::":
-    ".. ignored::":
+    ".. no_pii:":
+    ".. ignored:":
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
-        - ".. pii::":
-        - ".. pii_types::":
+        - ".. pii:":
+        - ".. pii_types:":
             choices: [id, name, other]
-        - ".. pii_retirement::":
+        - ".. pii_retirement:":
             choices: [retained, local_api, consumer_api, third_party]
 extensions:
     python:
