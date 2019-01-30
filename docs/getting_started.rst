@@ -99,7 +99,8 @@ Run a static annotation search
 
 .. code-block:: bash
 
-    $ code_annotations --config_file /path/to/your/config
+    $ code_annotations django_find_annotations --config_file /path/to/your/config
+    $ code_annotations static_find_annotations --config_file /path/to/your/config
 
 If all went well you should see a message telling you the name of the report file that was written out. Take a look in
 your favorite text editor to make sure all of your annotations were found. Different verbosity levels are available for
