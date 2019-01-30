@@ -79,15 +79,15 @@ And one that has been annotated:
 .. code-block:: yaml
 
     social_django.Association:
-      ".. no_pii::": "This model has no PII"
+      ".. no_pii:": "This model has no PII"
     social_django.Code:
-      ".. pii::": "Email address"
-      ".. pii_types::": other
-      ".. pii_retirement::": local_api
+      ".. pii:": "Email address"
+      ".. pii_types:": other
+      ".. pii_retirement:": local_api
 
 .. note::
     Note that each model can only have one annotation for each token type. For example, it would be invalid to add a
-    second ``.. no_pii::`` annotation to ``social_django.Association``.
+    second ``.. no_pii:`` annotation to ``social_django.Association``.
 
 .. important::
     Some types of "local" models are procedurally generated and do not have files in code, e.g. models created by

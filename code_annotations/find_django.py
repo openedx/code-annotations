@@ -69,9 +69,9 @@ class DjangoSearch(BaseSearch):
 # See https://code-annotations.readthedocs.io/en/latest/safelist.html for more information.
 #
 # fake_app_1.FakeModelName:
-#    ".. no_pii::": "This model has no PII"
+#    ".. no_pii:": "This model has no PII"
 # fake_app_2.FakeModel2:
-#    ".. choice_annotation::": foo, bar, baz
+#    ".. choice_annotation:": foo, bar, baz
 
 """
             safelist_file.write(safelist_comment.lstrip())

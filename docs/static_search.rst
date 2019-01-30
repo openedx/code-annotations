@@ -42,7 +42,7 @@ annotations, grouped by file. Each annotation entry has the following keys:
         'found_by': 'python',  # The name of the extension which found the annotation
         'filename': 'foo/bar/file.py',  # The filename where the extension was found
         'line_number': 101,  # The line number of the beginning of the comment which contained the annotation
-        'annotation_token': '.. no_pii::',  # The annotation token found
+        'annotation_token': '.. no_pii:',  # The annotation token found
         'annotation_data': 'This model contains no PII.',  # The comment, or choices, found with the annotation token
     }
 

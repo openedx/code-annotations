@@ -1,5 +1,5 @@
 """
 Test bad delimiter
-.. ignored:: terrible|silly-silly
+.. ignored: terrible|silly-silly
 
 """

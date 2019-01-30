@@ -61,7 +61,7 @@ def test_find_django_simple_success(**kwargs):
 
     fake_safelist = """
     fake_app_2.FakeBaseModelWithNoDocstring:
-        ".. no_pii::": "No PII"
+        ".. no_pii:": "No PII"
     """
 
     result = call_script_isolated(
@@ -182,7 +182,7 @@ def test_find_django_model_in_safelist_annotated(**kwargs):
 
     fake_safelist_data = """
     {
-        fake_app_1.FakeBaseModelNoAnnotation: {".. no_pii::": "This model is annotated."}
+        fake_app_1.FakeBaseModelNoAnnotation: {".. no_pii:": "This model is annotated."}
     }
     """
 
@@ -237,7 +237,7 @@ def test_find_django_in_safelist_and_annotated(**kwargs):
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report'],
-        fake_safelist_data='{{{}: ".. no_pii::"}}'.format(DjangoSearch.get_model_id(FakeBaseModelWithAnnotation))
+        fake_safelist_data='{{{}: ".. no_pii:"}}'.format(DjangoSearch.get_model_id(FakeBaseModelWithAnnotation))
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
@@ -294,7 +294,7 @@ def test_find_django_ordering_error(**kwargs):
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
-    assert '".. no_pii::" is not in the group ' in result.output
+    assert '".. no_pii:" is not in the group ' in result.output
 
 
 @patch.multiple(

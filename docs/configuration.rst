@@ -10,15 +10,15 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
     safelist_path: .annotation_safe_list.yml
     coverage_target: 100.0
     annotations:
-        ".. annotation_token::":
-        ".. annotation_token2::":
-        ".. choice_annotation::":
+        ".. annotation_token:":
+        ".. annotation_token2:":
+        ".. choice_annotation:":
             choices: [choice_1, choice_2, choice_3]
         name_of_annotation_group:
-            - ".. first_group_token::":
-            - ".. second_group_token::":
+            - ".. first_group_token:":
+            - ".. second_group_token:":
                 choices: [choice_4, choice_5]
-            - ".. third_group_token::":
+            - ".. third_group_token:":
                 choices: [choice_a, choice_b, choice_c, choice_d]
     extensions:
         python:

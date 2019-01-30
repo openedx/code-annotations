@@ -3,11 +3,11 @@ report_path: test_reports
 safelist_path: .annotation_safe_list.yml
 coverage_target: 50.0
 annotations:
-    ".. no_pii::":
-    ".. ignored::":
+    ".. no_pii:":
+    ".. ignored:":
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
-        - ".. pii::":
+        - ".. pii:":
             - bad
             - type
 extensions:

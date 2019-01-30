@@ -41,7 +41,7 @@ Create a configuration file
 Configuration for code-annotations is done via a yaml file, The default filename of which is ``.annotations``. The
 following is an example of a minimal configuration file. See ``.annotations_sample`` for a more thorough example and
 :doc:`configuration` for more details. In this example the Code Annotations tools will search for the string
-``.. annotation_token::`` in the comments of Python and Javascript files using the built-in extensions.
+``.. annotation_token:`` in the comments of Python and Javascript files using the built-in extensions.
 
 .. code-block:: yaml
 
@@ -61,7 +61,7 @@ following is an example of a minimal configuration file. See ``.annotations_samp
     # Definitions of the annotations to search for. Notice the trailing colon, this is a mapping type!
     # For more information see "Writing Annotations"
     annotations:
-        ".. annotation_token::":
+        ".. annotation_token:":
 
     # Code Annotations extensions to load and the file extensions to map them to
     extensions:
@@ -78,20 +78,20 @@ In your ``source_path`` add some comments with annotations in them. Examples:
 .. code-block:: python
 
     """
-    .. annotation_token:: This comment text will be captured along with the token in our search.
+    .. annotation_token: This comment text will be captured along with the token in our search.
     """
 
-    # .. annotation_token:: This comment will also be captured.
+    # .. annotation_token: This comment will also be captured.
 
 **Javascript**
 
 .. code-block:: javascript
 
     /*
-    .. annotation_token:: So will this.
+    .. annotation_token: So will this.
     */
 
-    // .. annotation_token:: And this!
+    // .. annotation_token: And this!
 
 
 Run a static annotation search

@@ -1,5 +1,5 @@
 /*
 Test duplicate choice
-.. ignored:: terrible silly-silly terrible
+.. ignored: terrible silly-silly terrible
 
  */
