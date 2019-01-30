@@ -7,13 +7,34 @@ below is executed within the virtualenv.
 .. _virtualenv: https://virtualenvwrapper.readthedocs.org/en/latest/
 
 
-Install dependencies
---------------------
-Dependencies can be installed via the command below.
-
+Install the tool
+----------------
 .. code-block:: bash
 
     $ make requirements
+    $ pip install -e .
+
+
+Run the tests
+-------------
+Make sure everything is working okay:
+
+.. code-block:: bash
+
+    $ make test
+
+or
+
+.. code-block:: bash
+
+    $ tox
+
+or
+
+.. code-block:: bash
+
+    $ tox -e py27
+
 
 Create a configuration file
 ---------------------------
