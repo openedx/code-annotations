@@ -130,14 +130,6 @@ def django_find_annotations(
 def static_find_annotations(config_file, source_path, report_path, verbosity, lint, report):
     """
     Subcommand to find annotations via static file analysis.
-
-    Args:
-        config_file: Path to the configuration file
-        source_path: Location of the source code to search
-        report_path: Location to write the report
-        verbosity: Verbosity level for output
-        lint: Boolean indicating whether or not to perform linting checks
-        report Boolean indicating whether or not to write the report file
     """
     try:
         start_time = datetime.datetime.now()

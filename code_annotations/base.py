@@ -362,6 +362,20 @@ class BaseSearch(object):
                 'No choices found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
             )
 
+    def _get_group_children(self):
+        """
+        Create a list of all annotation tokens that are part of a group.
+
+        Returns:
+            List of annotation tokens that are configured to be in groups
+        """
+        group_children = []
+
+        for group in self.config.groups:
+            group_children.extend(self.config.groups[group])
+
+        return group_children
+
     def _get_group_for_token(self, token):
         """
         Find out which group, if any, an annotation token belongs to.
@@ -391,12 +405,7 @@ class BaseSearch(object):
         if self.config.verbosity >= 2:
             pprint.pprint(all_results, indent=3)
 
-        # This is used to quickly find out if a token is a member of a group
-        group_children = []
-
-        # Build a big list of all tokens that are part of a group
-        for group in self.config.groups:
-            group_children.extend(self.config.groups[group])
+        group_children = self._get_group_children()
 
         # Spin through the search results
         for filename in all_results:
@@ -434,12 +443,6 @@ class BaseSearch(object):
                             current_group
                         ))
                         found_group_members.append(token)
-
-                        # If we have all members, this group is done
-                        if len(found_group_members) == len(self.config.groups[current_group]):
-                            self.echo.echo_vv("Group complete!")
-                            current_group = None
-                            found_group_members = []
                 else:
                     if token in group_children:
                         current_group = self._get_group_for_token(token)
@@ -455,6 +458,12 @@ class BaseSearch(object):
                         self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
                             current_group, token, annotation['line_number'])
                         )
+
+                # If we have all members, this group is done
+                if current_group and len(found_group_members) == len(self.config.groups[current_group]):
+                    self.echo.echo_vv("Group complete!")
+                    current_group = None
+                    found_group_members = []
 
             if current_group:
                 self.errors.append('File finished with an incomplete group {}!'.format(current_group))
@@ -494,6 +503,73 @@ class BaseSearch(object):
         """
         pass  # pragma: no cover
 
+    def _format_results_for_report(self, all_results):
+        """
+        Format the given results dict for reporting purposes.
+
+        Args:
+            all_results: Dict of all results found in a search
+
+        Returns:
+            Dict of results arranged for reporting
+        """
+        group_children = self._get_group_children()
+        formatted_results = {}
+        current_group_id = 0
+
+        for filename in all_results:
+            self.echo.echo_vv("report_format: formatting {}".format(filename))
+            formatted_results[filename] = []
+            current_group = None
+
+            found_group_members = []
+
+            for annotation in all_results[filename]:
+                token = annotation['annotation_token']
+                self.echo.echo_vvv("report_format: formatting annotation token {}".format(token))
+
+                if current_group:
+                    if token not in self.config.groups[current_group]:
+                        self.echo.echo_vv(
+                            "report_format: {} is not a group member, finishing group id {}".format(
+                                token,
+                                current_group_id
+                            )
+                        )
+                        current_group = None
+                        found_group_members = []
+                        formatted_results[filename].append(annotation)
+                    else:
+                        self.echo.echo_vv("report_format: Adding {} to group id {}".format(
+                            token,
+                            current_group_id
+                        ))
+                        annotation['report_group_id'] = current_group_id
+                        formatted_results[filename].append(annotation)
+                        found_group_members.append(token)
+                else:
+                    if token in group_children:
+                        current_group = self._get_group_for_token(token)
+                        current_group_id += 1
+                        found_group_members = [token]
+                        annotation['report_group_id'] = current_group_id
+                        formatted_results[filename].append(annotation)
+
+                        self.echo.echo_vv('Starting group id {} for "{}" token "{}", line {}'.format(
+                            current_group_id, current_group, token, annotation['line_number'])
+                        )
+                    else:
+                        self.echo.echo_vv('Adding single token {}.'.format(token))
+                        formatted_results[filename].append(annotation)
+
+                # If we have all members, this group is done
+                if current_group and len(found_group_members) == len(self.config.groups[current_group]):
+                    self.echo.echo_vv("report_format: Group complete!")
+                    current_group = None
+                    found_group_members = []
+
+        return formatted_results
+
     def report(self, all_results):
         """
         Genrates the YAML report of all search results.
@@ -509,6 +585,8 @@ class BaseSearch(object):
         now = datetime.datetime.now()
         report_filename = os.path.join(self.config.report_path, '{}.yaml'.format(now.strftime('%Y-%d-%m-%H-%M-%S')))
 
+        formatted_results = self._format_results_for_report(all_results)
+
         self.echo("Generating report to {}".format(report_filename))
 
         try:
@@ -518,6 +596,6 @@ class BaseSearch(object):
                 raise
 
         with open(report_filename, 'w+') as report_file:
-            yaml.dump(all_results, report_file, default_flow_style=False)
+            yaml.dump(formatted_results, report_file, default_flow_style=False)
 
         return report_filename
