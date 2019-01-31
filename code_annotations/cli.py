@@ -1,10 +1,13 @@
 """
 Command line interface for code annotation tools.
 """
+import collections
 import datetime
 import traceback
 
 import click
+import jinja2
+import yaml
 
 from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
@@ -171,3 +174,49 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
         fail(str(exc))
+
+
+@entry_point.command("generate_docs")
+@click.option(
+    '--config_file',
+    default='.annotations',
+    help='Path to the configuration file',
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
+)
+@click.argument("report", type=click.File('r'))
+@click.argument("output", type=click.File('w'))
+def generate_docs(
+        config_file,
+        report,
+        output,
+):
+    """
+    Generate documentation from a code annotations report.
+    """
+    config = AnnotationConfig(config_file)
+    report = yaml.safe_load(report)
+    annotations = []
+    for anns in report.values():
+        annotations.extend(anns)
+    groupeds = collections.defaultdict(list)
+    for ann in annotations:
+        groupeds[ann['report_group_id']].append(ann)
+
+    groups = []
+    for anns in groupeds.values():
+        group = {}
+        anns.sort(key=lambda ann: ann['line_number'])
+        group['filename'] = anns[0]['filename']
+        group['line_number'] = anns[0]['line_number']
+        for ann in anns:
+            key = ann['annotation_token'].strip(".: ")
+            value = ann['annotation_data']
+            group[key] = value
+        groups.append(group)
+
+    rst_template = config.rst_template
+    if not rst_template:
+        raise Exception("No rst_template key in {config_file}".format(config_file=config_file))
+    with open(config.rst_template) as ftemplate:
+        template = jinja2.Template(ftemplate.read())
+    output.write(template.render(groups=groups))

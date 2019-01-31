@@ -21,7 +21,7 @@ class AnnotationConfig(object):
     Configuration shared among all Code Annotations commands.
     """
 
-    def __init__(self, config_file_path, report_path_override, verbosity, source_path_override=None):
+    def __init__(self, config_file_path, report_path_override=None, verbosity=1, source_path_override=None):
         """
          Initialize AnnotationConfig.
 
@@ -41,7 +41,7 @@ class AnnotationConfig(object):
         self.echo = VerboseEcho()
 
         with open(config_file_path) as config_file:
-            raw_config = yaml.load(config_file)
+            raw_config = yaml.safe_load(config_file)
 
         self._check_raw_config_keys(raw_config)
 
@@ -58,6 +58,8 @@ class AnnotationConfig(object):
         self.echo("Configured for source path: {}".format(self.source_path))
 
         self._configure_coverage(raw_config.get('coverage_target', None))
+        self.rst_template = raw_config.get('rst_template')
+
         self._configure_annotations(raw_config)
         self._configure_extensions()
 
