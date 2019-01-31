@@ -48,18 +48,6 @@ class AnnotationConfig(object):
         self.safelist_path = raw_config['safelist_path']
         self.extensions = raw_config['extensions']
 
-        try:
-            self.coverage_target = float(raw_config['coverage_target'])
-        except (TypeError, ValueError):
-            raise ConfigurationException(
-                'Coverage target must be a number between 0 and 100 not "{}".'.format(raw_config['coverage_target'])
-            )
-
-        if self.coverage_target < 0.0 or self.coverage_target > 100.0:
-            raise ConfigurationException(
-                'Invalid coverage target. {} is not between 0 and 100.'.format(self.coverage_target)
-            )
-
         self.verbosity = verbosity
         self.echo.set_verbosity(verbosity)
 
@@ -69,6 +57,7 @@ class AnnotationConfig(object):
         self.source_path = source_path_override if source_path_override else raw_config['source_path']
         self.echo("Configured for source path: {}".format(self.source_path))
 
+        self._configure_coverage(raw_config.get('coverage_target', None))
         self._configure_annotations(raw_config)
         self._configure_extensions()
 
@@ -83,7 +72,7 @@ class AnnotationConfig(object):
             ConfigurationException on any missing keys
         """
         errors = []
-        for k in ('report_path', 'source_path', 'safelist_path', 'annotations', 'extensions', 'coverage_target'):
+        for k in ('report_path', 'source_path', 'safelist_path', 'annotations', 'extensions'):
             if k not in raw_config:
                 errors.append(k)
 
@@ -130,6 +119,27 @@ class AnnotationConfig(object):
         """
         return token_or_group is None
 
+    def _add_annotation_token(self, token):
+        if token in self.annotation_tokens:
+            raise ConfigurationException('{} is configured more than once, tokens must be unique.'.format(token))
+        self.annotation_tokens.append(token)
+
+    def _configure_coverage(self, coverage_target):
+        if coverage_target:
+            try:
+                self.coverage_target = float(coverage_target)
+            except (TypeError, ValueError):
+                raise ConfigurationException(
+                    'Coverage target must be a number between 0 and 100 not "{}".'.format(coverage_target)
+                )
+
+            if self.coverage_target < 0.0 or self.coverage_target > 100.0:
+                raise ConfigurationException(
+                    'Invalid coverage target. {} is not between 0 and 100.'.format(self.coverage_target)
+                )
+        else:
+            self.coverage_target = None
+
     def _configure_group(self, group_name, group):
         """
         Perform group configuration and add annotations from the group to global configuration.
@@ -143,8 +153,8 @@ class AnnotationConfig(object):
         """
         self.groups[group_name] = []
 
-        if not group:
-            raise TypeError('Group "{}" has no annotations!.'.format(group_name))
+        if not group or len(group) == 1:
+            raise ConfigurationException('Group "{}" must have more than one annotation.'.format(group_name))
 
         for annotation in group:
             for annotation_token in annotation:
@@ -153,12 +163,13 @@ class AnnotationConfig(object):
                 # The annotation comment is a choice group
                 if self._is_choice_group(annotation_value):
                     self._configure_choices(annotation_token, annotation_value)
+
                 # Otherwise it should be a text type, if not then error out
                 elif not self._is_annotation_token(annotation_value):
-                    raise TypeError('{} is an unknown annotation type.'.format(annotation))
+                    raise ConfigurationException('{} is an unknown annotation type.'.format(annotation))
 
                 self.groups[group_name].append(annotation_token)
-                self.annotation_tokens.append(annotation_token)
+                self._add_annotation_token(annotation_token)
                 self.annotation_regexes.append(re.escape(annotation_token))
 
     def _configure_choices(self, annotation_token, annotation):
@@ -190,16 +201,15 @@ class AnnotationConfig(object):
 
             elif self._is_choice_group(annotation):
                 self._configure_choices(annotation_token_or_group_name, annotation)
-                self.annotation_tokens.append(annotation_token_or_group_name)
+                self._add_annotation_token(annotation_token_or_group_name)
                 self.annotation_regexes.append(re.escape(annotation_token_or_group_name))
 
             elif not self._is_annotation_token(annotation):  # pragma: no cover
-                # If not we don't know what to do with it
                 raise TypeError(
                     '{} is an unknown type, must be strings or lists.'.format(annotation_token_or_group_name)
                 )
             else:
-                self.annotation_tokens.append(annotation_token_or_group_name)
+                self._add_annotation_token(annotation_token_or_group_name)
                 self.annotation_regexes.append(re.escape(annotation_token_or_group_name))
 
         self.echo.echo_v("Groups configured: {}".format(self.groups))

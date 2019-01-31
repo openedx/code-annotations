@@ -6,7 +6,7 @@ import traceback
 
 import click
 
-from code_annotations.base import AnnotationConfig
+from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
 from code_annotations.find_static import StaticSearch
 from code_annotations.helpers import fail
@@ -61,6 +61,10 @@ def django_find_annotations(
         start_time = datetime.datetime.now()
         config = AnnotationConfig(config_file, report_path, verbosity)
         searcher = DjangoSearch(config)
+
+        # Early out if we're trying to do coverage, but a coverage target is not configured
+        if coverage and not config.coverage_target:
+            raise ConfigurationException("Please add 'coverage_target' to your configuration before running --coverage")
 
         if seed_safelist:
             searcher.seed_safelist()

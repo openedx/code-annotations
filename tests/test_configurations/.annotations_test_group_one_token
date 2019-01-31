@@ -8,11 +8,6 @@ annotations:
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
         - ".. pii:":
-            - bad
-            - type
-        - ".. pii_types:":
-            - bad
-            - type
 extensions:
     python:
         - pyt
