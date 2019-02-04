@@ -4,8 +4,10 @@ safelist_path: .annotation_safe_list.yml
 coverage_target: 50.0
 annotations:
     ".. no_pii:":
+            type: string
     ".. ignored:":
-        choices: [irrelevant, terrible, silly-silly]
+            type: multichoice
+            choices: [irrelevant, terrible, silly-silly]
     "pii_group": []
 extensions:
     python:

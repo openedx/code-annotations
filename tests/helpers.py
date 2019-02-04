@@ -20,13 +20,18 @@ source_path: ../
 coverage_target: 50.0
 annotations:
     ".. no_pii:":
+        type: string
     ".. ignored:":
+        type: multichoice
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
         - ".. pii:":
+            type: string
         - ".. pii_types:":
+            type: multichoice
             choices: [id, name, other]
         - ".. pii_retirement:":
+            type: multichoice
             choices: [retained, local_api, consumer_api, third_party]
 extensions:
     python:

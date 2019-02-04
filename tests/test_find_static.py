@@ -6,6 +6,18 @@ from mock import patch
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
 
 
+def test_all_annotation_types():
+    result = call_script((
+        'static_find_annotations',
+        '--config_file',
+        'tests/test_configurations/.all_annotation_types',
+        '--source_path=tests/extensions/python_test_files/all_annotation_types.pyt',
+        '-vvv'
+    ))
+    assert result.exit_code == EXIT_CODE_SUCCESS
+    assert 'Search found 11 annotations' in result.output
+
+
 def test_missing_extension():
     result = call_script((
         'static_find_annotations',

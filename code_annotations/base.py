@@ -16,6 +16,174 @@ from code_annotations.exceptions import ConfigurationException
 from code_annotations.helpers import VerboseEcho
 
 
+@six.add_metaclass(ABCMeta)
+class BaseAnnotation(object):
+    """
+    Annotations defined in configuration.
+    """
+
+    def __init__(self, annotation_token, annotation_definition):
+        """
+        Initialize Annotation.
+
+        Args:
+            annotation_definition: The Python representation of the annotation from config
+        """
+        self.token = annotation_token
+        self.annotation_type = annotation_definition['type']
+        self.required = annotation_definition.get('required', False)
+
+    @abstractmethod
+    def format_annotation_data(self, data):
+        """
+        Take a found annotation's data and format it based on the annotation type. Defined in child classes.
+
+        Args:
+            data: The found annotation's data
+
+        Returns:
+            The formatted data, defined by the Annotation's type
+
+        Raises:
+            TypeError if the data will not format correctly
+        """
+        pass  # pragma: no cover
+
+
+class IntAnnotation(BaseAnnotation):
+    """
+    An annotation that enforces integer typing.
+    """
+
+    def format_annotation_data(self, data):
+        """
+        Format the string input from a found annotation into the expected type for this annotation.
+
+        Args:
+            data: String of found annotation data
+
+        Returns:
+            data converted to an integer
+        """
+        return int(data)
+
+
+class FloatAnnotation(BaseAnnotation):
+    """
+    An annotation that enforces float typing.
+    """
+
+    def format_annotation_data(self, data):
+        """
+        Format the string input from a found annotation into the expected type for this annotation.
+
+        Args:
+            data: String of found annotation data
+
+        Returns:
+            data converted to a float
+        """
+        return float(data)
+
+
+class StringAnnotation(BaseAnnotation):
+    """
+    An annotation that enforces string typing.
+    """
+
+    def format_annotation_data(self, data):
+        """
+        Format the string input from a found annotation into the expected type for this annotation.
+
+        Args:
+            data: String of found annotation data
+
+        Returns:
+            data converted to a string appropriate for this version of Python
+        """
+        return six.text_type(data)
+
+
+class ChoiceAnnotation(BaseAnnotation):
+    """
+    An annotation that allows only one choice from the configured list.
+    """
+
+    def __init__(self, annotation_token, annotation_definition):
+        """
+        Initialize ChoiceAnnotation.
+
+        Args:
+            annotation_token: The annotation token that identifies this annotation type
+            annotation_definition: The Python representation of the annotation from config
+        """
+        super(ChoiceAnnotation, self).__init__(annotation_token, annotation_definition)
+
+        # Everything we have is coming in as strings, so make sure they are correct for comparison later
+        self.choices = [six.text_type(choice) for choice in annotation_definition['choices']]
+
+    def format_annotation_data(self, data):
+        """
+        Format the string input from a found annotation into the expected type for this annotation.
+
+        Args:
+            data: String of found annotation data
+
+        Returns:
+            The single choice, if valid
+
+        Raises:
+            ValueError if the choice isn't in the configured list
+        """
+        if not data or data not in self.choices:
+            raise ValueError('"{}" is not a valid choice for "{}". Expected one of: {}'.format(
+                data,
+                self.token,
+                self.choices
+            ))
+        return data
+
+
+class MultiChoiceAnnotation(ChoiceAnnotation):
+    """
+    An annotation that allows multiple choices from the configured list.
+    """
+
+    def format_annotation_data(self, data):
+        """
+        Format the string input from a found annotation into the expected type for this annotation.
+
+        Args:
+            data: String of found annotation data
+
+        Returns:
+            The list of choice, if all choices are valid
+
+        Raises:
+            ValueError if any choice isn't in the configured list, or if the same choice appears more than once
+        """
+        if not data:
+            raise ValueError('No choices found for "{}". Expected one of: {}'.format(
+                self.token,
+                self.choices
+            ))
+
+        choices = re.split(r',\s?|\s', data)
+        found_choices = []
+        for choice in choices:
+            if choice not in self.choices:
+                raise ValueError('"{}" is not a valid choice for "{}". Expected one of: {}'.format(
+                    choice,
+                    self.token,
+                    self.choices
+                ))
+            if choice in found_choices:
+                raise ValueError('"{}" is already present in this annotation'.format(choice))
+            found_choices.append(choice)
+
+        return choices
+
+
 class AnnotationConfig(object):
     """
     Configuration shared among all Code Annotations commands.
@@ -32,8 +200,7 @@ class AnnotationConfig(object):
             source_path_override: Path to search if we're static code searching, if overridden on the command line
         """
         self.groups = {}
-        self.choices = {}
-        self.annotation_tokens = []
+        self.annotation_tokens = {}
         self.annotation_regexes = []
         self.mgr = None
 
@@ -95,36 +262,13 @@ class AnnotationConfig(object):
         """
         return isinstance(token_or_group, list)
 
-    def _is_choice_group(self, token_or_group):
-        """
-        Determine if an annotation is a choice group.
-
-        Args:
-            token_or_group: The annotation being checked
-
-        Returns:
-            True if the type of the annotation is correct for a choice group, otherwise False
-        """
-        return isinstance(token_or_group, dict)
-
-    def _is_annotation_token(self, token_or_group):
-        """
-        Determine if an annotation is a free-form text type.
-
-        Args:
-            token_or_group: The annotation being checked
-
-        Returns:
-            True if the type of the annotation is correct for a text type, otherwise False
-        """
-        return token_or_group is None
-
-    def _add_annotation_token(self, token):
-        if token in self.annotation_tokens:
-            raise ConfigurationException('{} is configured more than once, tokens must be unique.'.format(token))
-        self.annotation_tokens.append(token)
-
     def _configure_coverage(self, coverage_target):
+        """
+        Perform coverage setup based on the global configuration.
+
+        Args:
+            coverage_target:
+        """
         if coverage_target:
             try:
                 self.coverage_target = float(coverage_target)
@@ -153,34 +297,60 @@ class AnnotationConfig(object):
         """
         self.groups[group_name] = []
 
-        if not group or len(group) == 1:
-            raise ConfigurationException('Group "{}" must have more than one annotation.'.format(group_name))
+        if not group:
+            raise ConfigurationException('Group "{}" has no annotations.'.format(group_name))
 
         for annotation in group:
             for annotation_token in annotation:
                 annotation_value = annotation[annotation_token]
 
-                # The annotation comment is a choice group
-                if self._is_choice_group(annotation_value):
-                    self._configure_choices(annotation_token, annotation_value)
-
-                # Otherwise it should be a text type, if not then error out
-                elif not self._is_annotation_token(annotation_value):
-                    raise ConfigurationException('{} is an unknown annotation type.'.format(annotation))
-
                 self.groups[group_name].append(annotation_token)
-                self._add_annotation_token(annotation_token)
+                self._add_configured_annotation(annotation_token, annotation_value)
                 self.annotation_regexes.append(re.escape(annotation_token))
 
-    def _configure_choices(self, annotation_token, annotation):
+    def _create_annotation_from_config(self, annotation_token, annotation_config):
         """
-        Configure the choices list for an annotation.
+        Create a typed object that inherits from BaseAnnotation and return it.
 
         Args:
-            annotation_token: The annotation token we are setting choices for
-            annotation: The annotation body (list of choices)
+            annotation_config: The Python representation of the annotation definition
+
+        Returns:
+            An object that inherits from BaseAnnotation, differing based on the passed in type
         """
-        self.choices[annotation_token] = annotation['choices']
+        known_types = {
+            'string': StringAnnotation,
+            'int': IntAnnotation,
+            'float': FloatAnnotation,
+            'choice': ChoiceAnnotation,
+            'multichoice': MultiChoiceAnnotation,
+        }
+
+        try:
+            return known_types[annotation_config['type']](annotation_token, annotation_config)
+        except (KeyError, TypeError):
+            raise ConfigurationException("{} is an unknown annotation type.".format(annotation_config))
+
+    def _add_configured_annotation(self, annotation_token, annotation_config):
+        """
+        Take an annotation from configuration and add it to self.annotation_tokens.
+
+        Args:
+            annotation_token: The token that identifies this annotation type
+            annotation_config: The Python representation of the configured annotation
+
+        Returns:
+
+        """
+        if annotation_token in self.annotation_tokens:
+            raise ConfigurationException('{} is configured more than once, tokens must be unique.'.format(
+                annotation_token
+            ))
+
+        self.annotation_tokens[annotation_token] = self._create_annotation_from_config(
+            annotation_token,
+            annotation_config
+        )
 
     def _configure_annotations(self, raw_config):
         """
@@ -198,22 +368,11 @@ class AnnotationConfig(object):
 
             if self._is_annotation_group(annotation):
                 self._configure_group(annotation_token_or_group_name, annotation)
-
-            elif self._is_choice_group(annotation):
-                self._configure_choices(annotation_token_or_group_name, annotation)
-                self._add_annotation_token(annotation_token_or_group_name)
-                self.annotation_regexes.append(re.escape(annotation_token_or_group_name))
-
-            elif not self._is_annotation_token(annotation):  # pragma: no cover
-                raise TypeError(
-                    '{} is an unknown type, must be strings or lists.'.format(annotation_token_or_group_name)
-                )
             else:
-                self._add_annotation_token(annotation_token_or_group_name)
+                self._add_configured_annotation(annotation_token_or_group_name, annotation)
                 self.annotation_regexes.append(re.escape(annotation_token_or_group_name))
 
         self.echo.echo_v("Groups configured: {}".format(self.groups))
-        self.echo.echo_v("Choices configured: {}".format(self.choices))
         self.echo.echo_v("Annotation tokens configured: {}".format(self.annotation_tokens))
 
     def _plugin_load_failed_handler(self, *args, **kwargs):
@@ -308,59 +467,9 @@ class BaseSearch(object):
             if file_path not in all_results:  # pragma: no cover
                 all_results[file_path] = []
 
-            for annotation in annotations:
-                # If this is a "choices" type of annotation, split the comment into a list.
-                # Actually checking the choice validity happens later in _check_results_choices.
-                if annotation['annotation_token'] in self.config.choices:
-                    annotation['annotation_data'] = re.split(r',\s?|\s', annotation['annotation_data'])
-
             # TODO: De-dupe results? Should only be necessary if more than one
             # Stevedore extension is working on the same file type
             all_results[file_path].extend(annotations)
-
-    def _check_results_choices(self, annotation):
-        """
-        Check that a search result has appropriate choices.
-
-        If the following errors are found:
-            - no choices
-            - multiple of the same choice
-            - a choice which is not configured
-
-        This function will add the error to self.errors.
-
-        Args:
-            annotation: A single search result dict.
-        """
-        # Not a choice type of annotation, nothing to do
-        if annotation['annotation_token'] not in self.config.choices:
-            return
-
-        token = annotation['annotation_token']
-        found_valid_choices = []
-
-        # If the line begins with an annotation token that should have choices, but has no text after the token,
-        # the first split will be empty.
-        if annotation['annotation_data'][0] != "":
-            for choice in annotation['annotation_data']:
-                if choice not in self.config.choices[token]:
-                    self._add_annotation_error(
-                        annotation,
-                        '"{}" is not a valid choice for "{}". Expected one of {}.'.format(
-                            choice,
-                            token,
-                            self.config.choices[token]
-                        )
-                    )
-                elif choice in found_valid_choices:
-                    self._add_annotation_error(annotation, '"{}" is already present in this annotation.'.format(choice))
-                else:
-                    found_valid_choices.append(choice)
-        else:
-            self._add_annotation_error(
-                annotation,
-                'No choices found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
-            )
 
     def _get_group_children(self):
         """
@@ -413,8 +522,14 @@ class BaseSearch(object):
             found_group_members = []
 
             for annotation in all_results[filename]:
-                self._check_results_choices(annotation)
                 token = annotation['annotation_token']
+
+                try:
+                    annotation['annotation_data'] = self.config.annotation_tokens[token].format_annotation_data(
+                        annotation['annotation_data']
+                    )
+                except ValueError as exc:
+                    self._add_annotation_error(annotation, six.text_type(exc))
 
                 # TODO: Clean this up into reasonable methods
                 if current_group:

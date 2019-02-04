@@ -1,0 +1,29 @@
+source_path: ./
+report_path: reports
+safelist_path: .annotation_safe_list.yml
+coverage_target: 50.0
+annotations:
+    ".. string:":
+        type: string
+    ".. multichoice:":
+        type: multichoice
+        choices: [a, b, c, d]
+    ".. choice:":
+        type: choice
+        choices: [a, b, c, d]
+    number_types:
+        - ".. int:":
+            type: int
+        - ".. float:":
+            type: float
+    choice_type:
+        - ".. multichoice2:":
+            type: multichoice
+            choices: [a, b, c, d]
+        - ".. choice2:":
+            type: choice
+            choices: [a, b, c, d]
+extensions:
+    python:
+        - py
+        - pyt

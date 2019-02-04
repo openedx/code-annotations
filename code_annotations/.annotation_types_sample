@@ -1,0 +1,31 @@
+source_path: ../
+report_path: reports
+safelist_path: .annotation_safe_list.yml
+coverage_target: 50.0
+annotations:
+    ".. string:":
+        type: string
+    choice_types:
+        - ".. choice:":
+            type: choice
+            choices: [irrelevant, terrible, silly-silly]
+        - ".. multichoice:":
+            type: multichoice
+            choices: [irrelevant, terrible, silly-silly]
+    number_types:
+        - ".. int:":
+            type: int
+        - ".. float:":
+            type: float
+    time_types:
+        - ".. date:":
+            type: date
+            required: true
+        - ".. time:":
+            type: time
+            required: true
+        - ".. datetime:":
+            type: datetime
+extensions:
+    python:
+        - py

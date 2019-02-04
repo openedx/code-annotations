@@ -39,6 +39,22 @@ def test_missing_config(test_config, expected_message):
     assert expected_message in exc_msg
 
 
+def test_empty_group():
+    with pytest.raises(ConfigurationException) as exception:
+        AnnotationConfig('tests/test_configurations/.annotations_test_group_no_annotations', None, 3)
+
+    exc_msg = str(exception.value)
+    assert 'Group "pii_group" has no annotations' in exc_msg
+
+
+def test_bad_type_in_group():
+    with pytest.raises(ConfigurationException) as exception:
+        AnnotationConfig('tests/test_configurations/.annotations_test_group_bad_type', None, 3)
+
+    exc_msg = str(exception.value)
+    assert "{'type': 'unknown_type'} is an unknown annotation type." in exc_msg
+
+
 @pytest.mark.parametrize("test_config,expected_message", [
     ('.annotations_test_coverage_negative', "Invalid coverage target. -50.0 is not between 0 and 100."),
     ('.annotations_test_coverage_over_100', "Invalid coverage target. 150.0 is not between 0 and 100."),
@@ -60,9 +76,8 @@ def test_coverage_target_int():
 @pytest.mark.parametrize("test_config,expected_message", [
     ('.annotations_test_duplicate_token', ".. no_pii: is configured more than once, tokens must be unique."),
     ('.annotations_test_duplicate_token_2_groups', ".. no_pii: is configured more than once, tokens must be unique."),
-    ('.annotations_test_group_no_annotations', 'Group "pii_group" must have more than one annotation.'),
-    ('.annotations_test_group_one_token', 'Group "pii_group" must have more than one annotation.'),
-    ('.annotations_test_group_bad_type', "{'.. pii:': ['bad', 'type']} is an unknown annotation type."),
+    ('.annotations_test_group_no_annotations', 'Group "pii_group" has no annotations.'),
+    ('.annotations_test_group_bad_type', "{'type': 'unknown_type'} is an unknown annotation type."),
 ])
 def test_annotation_configuration_errors(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
@@ -175,3 +190,7 @@ def test_format_results_for_report():
                     else:
                         assert fake['expected_group_id'] == formatted['report_group_id']
                     break
+
+
+def test_configure_annotation_types():
+    AnnotationConfig('tests/test_configurations/{}'.format('.all_annotation_types'), None, 3)
