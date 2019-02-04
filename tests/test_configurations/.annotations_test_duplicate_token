@@ -8,11 +8,11 @@ annotations:
         choices: [irrelevant, terrible, silly-silly]
     "pii_group":
         - ".. pii:":
-            - bad
-            - type
         - ".. pii_types:":
-            - bad
-            - type
+            choices: [id, name, other]
+        - ".. pii_retirement:":
+            choices: [retained, local_api, consumer_api, third_party]
+        - ".. no_pii:":
 extensions:
     python:
         - pyt

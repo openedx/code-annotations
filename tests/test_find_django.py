@@ -21,7 +21,7 @@ from tests.fake_models import (
     FakeChildModelSingleAnnotation,
     FakeChildModelSingleWithAnnotation
 )
-from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script_isolated
+from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script, call_script_isolated
 
 
 @patch.multiple(
@@ -443,6 +443,28 @@ def test_get_models_requiring_annotations(mock_get_app_configs, mock_is_non_loca
     assert list(non_local_models)[0] == FakeBaseModelBoring
     assert total == 2
     assert len(needing_annotations) == 2
+
+
+@patch('code_annotations.find_django.DjangoSearch.setup_django')
+@patch('code_annotations.find_django.DjangoSearch.get_models_requiring_annotations')
+def test_find_django_no_coverage_configured(mock_get_models, mock_setup_django):
+    """
+    Tests the basic case where all models have annotations, with an empty safelist.
+    """
+    mock_get_models.return_value = ([], [], 0, [])
+    mock_setup_django.return_value = True
+
+    result = call_script(
+        [
+            'django_find_annotations',
+            '--config_file', 'tests/test_configurations/.annotations_test_missing_coverage_target',
+            '--coverage',
+            '-vvv',
+        ]
+    )
+
+    assert result.exit_code == EXIT_CODE_FAILURE
+    assert "Please add 'coverage_target' to your configuration before running --coverage" in result.output
 
 
 @patch('code_annotations.find_django.django.setup')
