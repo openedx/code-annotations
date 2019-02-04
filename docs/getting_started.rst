@@ -95,13 +95,21 @@ In your ``source_path`` add some comments with annotations in them. Examples:
     // .. annotation_token: And this!
 
 
-Run a static annotation search
-------------------------------
+Run an annotation search
+------------------------
+
+.. code-block:: bash
+
+    $ code_annotations static_find_annotations --config_file /path/to/your/config
+
+
+If you have ``DJANGO_SETTINGS_MODULE`` correctly configured and have annotated some models you can also run a Django
+model annotation search:
 
 .. code-block:: bash
 
     $ code_annotations django_find_annotations --config_file /path/to/your/config
-    $ code_annotations static_find_annotations --config_file /path/to/your/config
+
 
 If all went well you should see a message telling you the name of the report file that was written out. Take a look in
 your favorite text editor to make sure all of your annotations were found. Different verbosity levels are available for
