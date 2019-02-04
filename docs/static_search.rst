@@ -46,6 +46,9 @@ annotations, grouped by file. Each annotation entry has the following keys:
         'annotation_data': 'This model contains no PII.',  # The comment, or choices, found with the annotation token
     }
 
+If an annotation is in a group, there will also be a `report_group_id`. This key is unique for each found group,
+allowing tools further down the toolchain to keep them together for presentation.
+
 Extensions can also send back some additional data in an ``extra`` key, if desired. The Django Model Search Tool does
 this to return the Django app and model name.
 

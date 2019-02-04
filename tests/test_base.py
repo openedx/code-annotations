@@ -1,6 +1,8 @@
 """
 Tests for code_annotations/base.py
 """
+from collections import OrderedDict
+
 import pytest
 
 from code_annotations.base import AnnotationConfig, ConfigurationException
@@ -16,15 +18,11 @@ def test_get_group_for_token_missing_token():
 def test_get_group_for_token_multiple_groups():
     config = FakeConfig()
     config.groups = {
-        'group1': [
-            {'token1': None}
-        ],
-        'group2': [
-            {'token2': None, 'foo': None}
-        ]
+        'group1': ['token1'],
+        'group2': ['token2', 'foo']
     }
     search = FakeSearch(config)
-    assert search._get_group_for_token('foo') is None  # pylint: disable=protected-access
+    assert search._get_group_for_token('foo') == 'group2'  # pylint: disable=protected-access
 
 
 @pytest.mark.parametrize("test_config,expected_message", [
@@ -72,3 +70,108 @@ def test_annotation_configuration_errors(test_config, expected_message):
 
     exc_msg = str(exception.value)
     assert expected_message in exc_msg
+
+
+def test_format_results_for_report():
+    """
+    Test that report formatting puts annotations into groups correctly
+    """
+    config = FakeConfig()
+    config.echo.set_verbosity(3)
+    config.groups = {
+        'group1': ['token1'],
+        'group2': ['token2', 'foo']
+    }
+
+    search = FakeSearch(config)
+
+    # Create a fake result set for _format_results_for_report to work on
+    fake_results = OrderedDict()
+
+    # First file has 6 annotations. expected_group_id is a special key for this test, allowing us to loop through
+    # these below and know what group each result should be in.
+    fake_results['foo/bar.py'] = [
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 1,
+                'annotation_token': 'token2',
+                'annotation_data': 'file 1 annotation 1',
+                'expected_group_id': 1
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 2,
+                'annotation_token': 'foo',
+                'annotation_data': 'file 1 annotation 2',
+                'expected_group_id': 1
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 4,
+                'annotation_token': 'not_in_a_group',
+                'annotation_data': 'file 1 annotation 3',
+                'expected_group_id': None
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 10,
+                'annotation_token': 'token1',
+                'annotation_data': 'file 1 annotation 4',
+                'expected_group_id': 2
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 12,
+                'annotation_token': 'token2',
+                'annotation_data': 'file 1 annotation 5',
+                'expected_group_id': 3
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 13,
+                'annotation_token': 'foo',
+                'annotation_data': 'file 1 annotation 6',
+                'expected_group_id': 3
+            },
+        ]
+
+    fake_results['foo/baz.py'] = [
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 1,
+                'annotation_token': 'token2',
+                'annotation_data': 'file 2 annotation 1',
+                'expected_group_id': 4
+            },
+            {
+                'found_by': 'test',
+                'filename': 'foo/bar.py',
+                'line_number': 2,
+                'annotation_token': 'foo',
+                'annotation_data': 'file 1 annotation 2',
+                'expected_group_id': 4
+            }
+        ]
+
+    # Run the format function
+    results = search._format_results_for_report(fake_results)  # pylint: disable=protected-access
+
+    for filename in fake_results:
+        for fake in fake_results[filename]:
+            for formatted in results[filename]:
+                # When we find the same annotation, make sure that grouping is correct
+                if fake['annotation_data'] == formatted['annotation_data']:
+                    # Ungrouped annotations should not have the 'report_group_id' key
+                    if fake['expected_group_id'] is None:
+                        assert 'report_group_id' not in formatted
+                    # Otherwise it should match our expected value
+                    else:
+                        assert fake['expected_group_id'] == formatted['report_group_id']
+                    break
