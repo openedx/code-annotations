@@ -7,12 +7,13 @@ below is executed within the virtualenv.
 .. _virtualenv: https://virtualenvwrapper.readthedocs.org/en/latest/
 
 
-Install the tool
-----------------
+Install the requirements
+------------------------
+This will also install the Code Annotations package as editable, to allow access to the Stevedore plugins.
+
 .. code-block:: bash
 
     $ make requirements
-    $ pip install -e .
 
 
 Run the tests
