@@ -26,9 +26,9 @@ def test_get_group_for_token_multiple_groups():
 
 
 @pytest.mark.parametrize("test_config,expected_message", [
-    ('.annotations_test_missing_source_path', "source_path"),
-    ('.annotations_test_missing_report_path', "report_path"),
-    ('.annotations_test_missing_safelist_path', "safelist_path"),
+    ('test_missing_source_path.yaml', "source_path"),
+    ('test_missing_report_path.yaml', "report_path"),
+    ('test_missing_safelist_path.yaml', "safelist_path"),
 ])
 def test_missing_config(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
@@ -41,7 +41,7 @@ def test_missing_config(test_config, expected_message):
 
 def test_empty_group():
     with pytest.raises(ConfigurationException) as exception:
-        AnnotationConfig('tests/test_configurations/.annotations_test_group_no_annotations', None, 3)
+        AnnotationConfig('tests/test_configurations/test_group_no_annotations.yaml', None, 3)
 
     exc_msg = str(exception.value)
     assert 'Group "pii_group" has no annotations' in exc_msg
@@ -49,16 +49,16 @@ def test_empty_group():
 
 def test_bad_type_in_group():
     with pytest.raises(ConfigurationException) as exception:
-        AnnotationConfig('tests/test_configurations/.annotations_test_group_bad_type', None, 3)
+        AnnotationConfig('tests/test_configurations/test_group_bad_type.yaml', None, 3)
 
     exc_msg = str(exception.value)
     assert "{'type': 'unknown_type'} is an unknown annotation type." in exc_msg
 
 
 @pytest.mark.parametrize("test_config,expected_message", [
-    ('.annotations_test_coverage_negative', "Invalid coverage target. -50.0 is not between 0 and 100."),
-    ('.annotations_test_coverage_over_100', "Invalid coverage target. 150.0 is not between 0 and 100."),
-    ('.annotations_test_coverage_nan', 'Coverage target must be a number between 0 and 100 not "not a number".'),
+    ('test_coverage_negative.yaml', "Invalid coverage target. -50.0 is not between 0 and 100."),
+    ('test_coverage_over_100.yaml', "Invalid coverage target. 150.0 is not between 0 and 100."),
+    ('test_coverage_nan.yaml', 'Coverage target must be a number between 0 and 100 not "not a number".'),
 ])
 def test_bad_coverage_targets(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
@@ -70,14 +70,14 @@ def test_bad_coverage_targets(test_config, expected_message):
 
 def test_coverage_target_int():
     # We just care that this doesn't throw an exception
-    AnnotationConfig('tests/test_configurations/{}'.format('.annotations_test_coverage_int'), None, 3)
+    AnnotationConfig('tests/test_configurations/{}'.format('test_coverage_int.yaml'), None, 3)
 
 
 @pytest.mark.parametrize("test_config,expected_message", [
-    ('.annotations_test_duplicate_token', ".. no_pii: is configured more than once, tokens must be unique."),
-    ('.annotations_test_duplicate_token_2_groups', ".. no_pii: is configured more than once, tokens must be unique."),
-    ('.annotations_test_group_no_annotations', 'Group "pii_group" has no annotations.'),
-    ('.annotations_test_group_bad_type', "{'type': 'unknown_type'} is an unknown annotation type."),
+    ('test_duplicate_token.yaml', ".. no_pii: is configured more than once, tokens must be unique."),
+    ('test_duplicate_token_2_groups.yaml', ".. no_pii: is configured more than once, tokens must be unique."),
+    ('test_group_no_annotations.yaml', 'Group "pii_group" has no annotations.'),
+    ('test_group_bad_type.yaml', "{'type': 'unknown_type'} is an unknown annotation type."),
 ])
 def test_annotation_configuration_errors(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
@@ -193,4 +193,4 @@ def test_format_results_for_report():
 
 
 def test_configure_annotation_types():
-    AnnotationConfig('tests/test_configurations/{}'.format('.all_annotation_types'), None, 3)
+    AnnotationConfig('tests/test_configurations/{}'.format('all_annotation_types.yaml'), None, 3)

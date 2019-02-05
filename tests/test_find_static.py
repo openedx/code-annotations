@@ -10,7 +10,7 @@ def test_all_annotation_types():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.all_annotation_types',
+        'tests/test_configurations/all_annotation_types.yaml',
         '--source_path=tests/extensions/python_test_files/all_annotation_types.pyt',
         '-vvv'
     ))
@@ -22,7 +22,7 @@ def test_missing_extension():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test_missing_extension',
+        'tests/test_configurations/test_missing_extension.yaml',
         '--source_path=tests/extensions/javascript_test_files/simple_success.js',
         '-vv'
     ))
@@ -36,7 +36,7 @@ def test_bad_extension():
         result = call_script((
             'static_find_annotations',
             '--config_file',
-            'tests/test_configurations/.annotations_test',
+            'tests/test_configurations/annotations_test.yaml',
             '--source_path=tests/extensions/javascript_test_files/simple_success.js',
             '-vv'
         ))
@@ -48,7 +48,7 @@ def test_unknown_file_extension():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test',
+        'tests/test_configurations/annotations_test.yaml',
         '--source_path=tests/simple_success.nothing',
         '-vvv'
     ))
@@ -61,7 +61,7 @@ def test_file_walking():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test',
+        'tests/test_configurations/annotations_test.yaml',
         '--source_path=tests/extensions/javascript_test_files',
         '-v'
     ))
@@ -76,7 +76,7 @@ def test_source_path_from_file():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test',
+        'tests/test_configurations/annotations_test.yaml',
         '-v',
 
     ))
@@ -88,7 +88,7 @@ def test_report_path_from_command():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test',
+        'tests/test_configurations/annotations_test.yaml',
         '--report_path=test_reports_2'
         '-v',
     ))
@@ -100,7 +100,7 @@ def test_no_extension_results():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test_python_only',
+        'tests/test_configurations/test_python_only.yaml',
         '--source_path=tests/extensions/python_test_files/no_annotations.pyt',
         '-v',
     ))
@@ -112,7 +112,7 @@ def test_no_report():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test_python_only',
+        'tests/test_configurations/test_python_only.yaml',
         '--source_path=tests/extensions/python_test_files/simple_success.pyt',
         '--no_report',
         '-v',
@@ -127,7 +127,7 @@ def test_no_lint():
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test_python_only',
+        'tests/test_configurations/test_python_only.yaml',
         '--source_path=tests/extensions/python_test_files/simple_success.pyt',
         '--no_lint',
         '-v',

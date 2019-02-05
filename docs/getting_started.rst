@@ -40,8 +40,8 @@ or
 Create a configuration file
 ---------------------------
 Configuration for code-annotations is done via a yaml file, The default filename of which is ``.annotations``. The
-following is an example of a minimal configuration file. See ``.annotations_sample`` for a more thorough example and
-:doc:`configuration` for more details. In this example the Code Annotations tools will search for the string
+following is an example of a minimal configuration file. See ``annotations_config_sample.yaml`` for a more thorough
+example and :doc:`configuration` for more details. In this example the Code Annotations tools will search for the string
 ``.. annotation_token:`` in the comments of Python and Javascript files using the built-in extensions.
 
 .. code-block:: yaml

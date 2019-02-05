@@ -24,7 +24,7 @@ def test_grouping_and_choice_failures(test_file, expected_exit_code, expected_me
     result = call_script((
         'static_find_annotations',
         '--config_file',
-        'tests/test_configurations/.annotations_test',
+        'tests/test_configurations/annotations_test.yaml',
         '--source_path=tests/extensions/javascript_test_files/' + test_file,
         '-vv'
     ))

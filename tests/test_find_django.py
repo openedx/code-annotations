@@ -457,7 +457,7 @@ def test_find_django_no_coverage_configured(mock_get_models, mock_setup_django):
     result = call_script(
         [
             'django_find_annotations',
-            '--config_file', 'tests/test_configurations/.annotations_test_missing_coverage_target',
+            '--config_file', 'tests/test_configurations/test_missing_coverage_target.yaml',
             '--coverage',
             '-vvv',
         ]
