@@ -1,8 +1,8 @@
 """
 Command line interface for code annotation tools.
 """
-import datetime
 import traceback
+from timeit import default_timer as timer
 
 import click
 
@@ -58,7 +58,7 @@ def django_find_annotations(
     Subcommand for dealing with annotations in Django models.
     """
     try:
-        start_time = datetime.datetime.now()
+        start_time = timer()
         config = AnnotationConfig(config_file, report_path, verbosity)
         searcher = DjangoSearch(config)
 
@@ -103,8 +103,8 @@ def django_find_annotations(
             for filename in annotated_models:
                 annotation_count += len(annotated_models[filename])
 
-            elapsed = datetime.datetime.now() - start_time
-            click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
+            elapsed = round(timer() - start_time, 3)
+            click.echo("Search found {} annotations in {} seconds.".format(annotation_count, elapsed))
 
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
@@ -132,7 +132,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
     Subcommand to find annotations via static file analysis.
     """
     try:
-        start_time = datetime.datetime.now()
+        start_time = timer()
         config = AnnotationConfig(config_file, report_path, verbosity, source_path)
         searcher = StaticSearch(config)
         all_results = searcher.search()
@@ -156,14 +156,13 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
             report_filename = searcher.report(all_results)
             click.echo("Report written to {}.".format(report_filename))
 
-        elapsed = datetime.datetime.now() - start_time
+        elapsed = round(timer() - start_time, 3)
         annotation_count = 0
 
         for filename in all_results:
             annotation_count += len(all_results[filename])
 
-        click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
-
+        click.echo("Search found {} annotations in {} seconds.".format(annotation_count, elapsed))
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
         fail(str(exc))
