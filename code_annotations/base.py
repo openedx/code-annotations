@@ -570,12 +570,13 @@ class BaseSearch(object):
 
         return formatted_results
 
-    def report(self, all_results):
+    def report(self, all_results, report_prefix=''):
         """
         Genrates the YAML report of all search results.
 
         Args:
             all_results: Dict of found annotations, indexed by filename
+            report_prefix: Prefix to add to report filename
 
         Returns:
             Filename of generated report
@@ -583,7 +584,9 @@ class BaseSearch(object):
         self.echo.echo_vv(yaml.dump(all_results, default_flow_style=False))
 
         now = datetime.datetime.now()
-        report_filename = os.path.join(self.config.report_path, '{}.yaml'.format(now.strftime('%Y-%d-%m-%H-%M-%S')))
+        report_filename = os.path.join(self.config.report_path, '{}{}.yaml'.format(
+            report_prefix, now.strftime('%Y-%d-%m-%H-%M-%S')
+        ))
 
         formatted_results = self._format_results_for_report(all_results)
 
