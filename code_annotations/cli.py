@@ -39,6 +39,7 @@ def entry_point():
     show_default=True,
     help='List all locally defined models (in the current repo) that require annotations.',
 )
+@click.option('--app_name', default='', help='(Optional) App name for which coverage is generated.')
 @click.option('--report_path', default=None, help='Location to write the report')
 @click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
 @click.option('--lint/--no_lint', help='Enable or disable linting checks', default=False, show_default=True)
@@ -48,6 +49,7 @@ def django_find_annotations(
         config_file,
         seed_safelist,
         list_local_models,
+        app_name,
         report_path,
         verbosity,
         lint,
@@ -96,7 +98,7 @@ def django_find_annotations(
                 click.echo("Coverage passed without errors.")
 
             if report:
-                searcher.report(annotated_models)
+                searcher.report(annotated_models, app_name)
 
             annotation_count = 0
 
@@ -104,7 +106,9 @@ def django_find_annotations(
                 annotation_count += len(annotated_models[filename])
 
             elapsed = datetime.datetime.now() - start_time
-            click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
+            click.echo("Search found {} annotations in {} seconds.".format(
+                annotation_count, elapsed.total_seconds()
+            ))
 
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
