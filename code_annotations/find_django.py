@@ -7,13 +7,15 @@ import pprint
 import re
 import sys
 
+# pylint: disable=ungrouped-imports
 import django
+import yaml
 from django.apps import apps
 from django.db import models
 from six import text_type
 
 from code_annotations.base import BaseSearch
-from code_annotations.helpers import fail, get_annotation_regex, yaml_ordered_dump, yaml_ordered_load
+from code_annotations.helpers import fail, get_annotation_regex
 
 DEFAULT_SAFELIST_FILE_PATH = '.annotation_safe_list.yml'
 
@@ -75,7 +77,7 @@ class DjangoSearch(BaseSearch):
 
 """
             safelist_file.write(safelist_comment.lstrip())
-            yaml_ordered_dump(safelist_data, stream=safelist_file, default_flow_style=False)
+            yaml.safe_dump(safelist_data, stream=safelist_file, default_flow_style=False)
 
         self.echo('Successfully created safelist file "{}".'.format(self.config.safelist_path), fg='red')
         self.echo('Now, you need to:', fg='red')
@@ -175,7 +177,7 @@ class DjangoSearch(BaseSearch):
         if os.path.exists(self.config.safelist_path):
             self.echo('Found safelist at {}. Reading.\n'.format(self.config.safelist_path))
             with open(self.config.safelist_path) as safelist_file:
-                safelisted_models = yaml_ordered_load(safelist_file)
+                safelisted_models = yaml.safe_load(safelist_file)
             self._increment_count('safelisted', len(safelisted_models))
 
             if safelisted_models:

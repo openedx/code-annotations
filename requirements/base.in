@@ -2,6 +2,7 @@
 
 click>=7.0,<8.0
 Django>=1.11,<2.0          # Web application framework
-pyyaml
-stevedore
 Jinja2
+pyyaml
+python-slugify
+stevedore

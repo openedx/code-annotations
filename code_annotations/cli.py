@@ -1,17 +1,15 @@
 """
 Command line interface for code annotation tools.
 """
-import collections
 import datetime
 import traceback
 
 import click
-import jinja2
-import yaml
 
 from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
 from code_annotations.find_static import StaticSearch
+from code_annotations.generate_docs import ReportRenderer
 from code_annotations.helpers import fail
 
 
@@ -181,42 +179,39 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
     '--config_file',
     default='.annotations',
     help='Path to the configuration file',
-    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
+    type=click.Path(exists=True, dir_okay=False)
 )
-@click.argument("report", type=click.File('r'))
-@click.argument("output", type=click.File('w'))
+@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
+@click.argument("report_files", type=click.File('r'), nargs=-1)
 def generate_docs(
         config_file,
-        report,
-        output,
+        verbosity,
+        report_files
 ):
     """
     Generate documentation from a code annotations report.
     """
-    config = AnnotationConfig(config_file)
-    report = yaml.safe_load(report)
-    annotations = []
-    for anns in report.values():
-        annotations.extend(anns)
-    groupeds = collections.defaultdict(list)
-    for ann in annotations:
-        groupeds[ann['report_group_id']].append(ann)
+    start_time = datetime.datetime.now()
 
-    groups = []
-    for anns in groupeds.values():
-        group = {}
-        anns.sort(key=lambda ann: ann['line_number'])
-        group['filename'] = anns[0]['filename']
-        group['line_number'] = anns[0]['line_number']
-        for ann in anns:
-            key = ann['annotation_token'].strip(".: ")
-            value = ann['annotation_data']
-            group[key] = value
-        groups.append(group)
+    try:
+        config = AnnotationConfig(config_file, verbosity)
 
-    rst_template = config.rst_template
-    if not rst_template:
-        raise Exception("No rst_template key in {config_file}".format(config_file=config_file))
-    with open(config.rst_template) as ftemplate:
-        template = jinja2.Template(ftemplate.read())
-    output.write(template.render(groups=groups))
+        for key in (
+                'report_template_dir',
+                'rendered_report_dir',
+                'rendered_report_file_extension',
+                'rendered_report_source_link_prefix'
+        ):
+            if not getattr(config, key):
+                raise ConfigurationException("No {key} key in {config_file}".format(key=key, config_file=config_file))
+
+        config.echo("Rendering the following reports: \n{}".format("\n".join([r.name for r in report_files])))
+
+        renderer = ReportRenderer(config, report_files)
+        renderer.render()
+
+        elapsed = datetime.datetime.now() - start_time
+        click.echo("Report rendered in {} seconds.".format(elapsed.total_seconds()))
+    except Exception as exc:  # pylint: disable=broad-except
+        click.echo(traceback.print_exc())
+        fail(str(exc))

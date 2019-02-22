@@ -58,14 +58,36 @@ class FakeSearch(BaseSearch):
         pass
 
 
-def call_script(args_list, delete_test_reports=True):
+def delete_report_files(file_extension):
+    """
+    Delete all files with the given extension from the test_reports directory.
+
+    Args:
+        file_extension: All files with this extension will be deleted
+    """
+    if not os.path.exists('test_reports'):
+        return
+
+    filelist = [f for f in os.listdir('test_reports') if f.endswith(file_extension)]
+
+    try:
+        for f in filelist:
+            os.remove(os.path.join('test_reports', f))
+    except Exception:  # pylint: disable=broad-except
+        pass
+
+
+def call_script(args_list, delete_test_reports=True, delete_test_docs=True):
     """
     Call the code_annotations script with the given params and a generic config file.
 
     Args:
         args_list: Arguments to pass to the script.
-        delete_test_reports: Bool, whether to try to delete any created report files. Make this false if you want
+        delete_test_reports: Bool, whether to try to delete any created report YAML files. Make this false if you want
             to keep the report around for debugging a test.
+        delete_test_docs: Bool, whether to try to delete any created report RST files. Make this false if you want
+            to keep the report around for debugging a test.
+
     Returns:
         click.testing.Result: Result from the `CliRunner.invoke()` call.
     """
@@ -79,12 +101,10 @@ def call_script(args_list, delete_test_reports=True):
     print(result.output)
 
     if delete_test_reports:
-        try:
-            filelist = [f for f in os.listdir('test_reports') if f.endswith(".yaml")]
-            for f in filelist:
-                os.remove(os.path.join('test_reports', f))
-        except Exception:  # pylint: disable=broad-except
-            pass
+        delete_report_files('.yaml')
+    if delete_test_docs:
+        delete_report_files('.rst')
+
     return result
 
 
@@ -142,3 +162,20 @@ def call_script_isolated(
                 pass
 
     return result
+
+
+def get_report_filename_from_output(output):
+    """
+    Find the report filename in a find_static or find_django output and return it.
+
+    Args:
+        output: The full text output of the call_script or call_script_isolated
+
+    Returns:
+        Filename of the found report, or None of no name is found
+
+    """
+    try:
+        return re.search(r'Generating report to (.*)', output).groups()[0]
+    except IndexError:
+        return None
