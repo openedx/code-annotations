@@ -9,6 +9,7 @@ import click
 from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
 from code_annotations.find_static import StaticSearch
+from code_annotations.generate_docs import ReportRenderer
 from code_annotations.helpers import fail
 
 
@@ -168,6 +169,49 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
 
         click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
 
+    except Exception as exc:  # pylint: disable=broad-except
+        click.echo(traceback.print_exc())
+        fail(str(exc))
+
+
+@entry_point.command("generate_docs")
+@click.option(
+    '--config_file',
+    default='.annotations',
+    help='Path to the configuration file',
+    type=click.Path(exists=True, dir_okay=False)
+)
+@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
+@click.argument("report_files", type=click.File('r'), nargs=-1)
+def generate_docs(
+        config_file,
+        verbosity,
+        report_files
+):
+    """
+    Generate documentation from a code annotations report.
+    """
+    start_time = datetime.datetime.now()
+
+    try:
+        config = AnnotationConfig(config_file, verbosity)
+
+        for key in (
+                'report_template_dir',
+                'rendered_report_dir',
+                'rendered_report_file_extension',
+                'rendered_report_source_link_prefix'
+        ):
+            if not getattr(config, key):
+                raise ConfigurationException("No {key} key in {config_file}".format(key=key, config_file=config_file))
+
+        config.echo("Rendering the following reports: \n{}".format("\n".join([r.name for r in report_files])))
+
+        renderer = ReportRenderer(config, report_files)
+        renderer.render()
+
+        elapsed = datetime.datetime.now() - start_time
+        click.echo("Report rendered in {} seconds.".format(elapsed.total_seconds()))
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
         fail(str(exc))

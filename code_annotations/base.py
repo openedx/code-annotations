@@ -21,7 +21,7 @@ class AnnotationConfig(object):
     Configuration shared among all Code Annotations commands.
     """
 
-    def __init__(self, config_file_path, report_path_override, verbosity, source_path_override=None):
+    def __init__(self, config_file_path, report_path_override=None, verbosity=1, source_path_override=None):
         """
          Initialize AnnotationConfig.
 
@@ -41,7 +41,7 @@ class AnnotationConfig(object):
         self.echo = VerboseEcho()
 
         with open(config_file_path) as config_file:
-            raw_config = yaml.load(config_file)
+            raw_config = yaml.safe_load(config_file)
 
         self._check_raw_config_keys(raw_config)
 
@@ -58,6 +58,11 @@ class AnnotationConfig(object):
         self.echo("Configured for source path: {}".format(self.source_path))
 
         self._configure_coverage(raw_config.get('coverage_target', None))
+        self.report_template_dir = raw_config.get('report_template_dir')
+        self.rendered_report_dir = raw_config.get('rendered_report_dir')
+        self.rendered_report_file_extension = raw_config.get('rendered_report_file_extension')
+        self.rendered_report_source_link_prefix = raw_config.get('rendered_report_source_link_prefix')
+
         self._configure_annotations(raw_config)
         self._configure_extensions()
 
@@ -599,6 +604,6 @@ class BaseSearch(object):
                 raise
 
         with open(report_filename, 'w+') as report_file:
-            yaml.dump(formatted_results, report_file, default_flow_style=False)
+            yaml.safe_dump(formatted_results, report_file, default_flow_style=False)
 
         return report_filename

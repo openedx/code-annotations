@@ -3,10 +3,8 @@ Helpers for code_annotations scripts.
 """
 import os
 import sys
-from collections import OrderedDict
 
 import click
-import yaml
 
 
 def fail(msg):
@@ -18,76 +16,6 @@ def fail(msg):
     """
     click.secho(msg, fg="red")
     sys.exit(-1)
-
-
-def yaml_ordered_load(stream):
-    """
-    Load YAML files in an ordered way.
-
-    We use this to maintain the order of annotations in the safelist. Slighty modified from
-    https://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts/21048064#21048064
-
-    Args:
-        stream: File-like handle to load
-
-    Returns:
-        Ordered Python representation of the YAML file
-    """
-    class OrderedLoader(yaml.SafeLoader):
-        """
-        A dummy object that we can safely modify using `add_constructor`.
-        """
-
-        pass
-
-    def construct_mapping(loader, node):
-        """
-        Handle actually ordering the data on a node-by-node basis.
-
-        Args:
-            loader: A PyYAML resolver
-            node: The node to be constructed
-
-        Returns:
-            OrderedDict of the mapped pairs
-        """
-        loader.flatten_mapping(node)
-        return OrderedDict(loader.construct_pairs(node))
-
-    OrderedLoader.add_constructor(
-        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        construct_mapping
-    )
-
-    return yaml.load(stream, OrderedLoader)
-
-
-def yaml_ordered_dump(data, stream, **kwargs):
-    """
-    Dump data to YAML files in an ordered way.
-
-    We use this to maintain the order of annotations in the safelist. Slighty modified from
-    https://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts/21048064#21048064
-
-    Args:
-        data: Python object to be dumped
-        stream: File-like handle to write to
-        **kwargs:
-
-    Returns:
-        Results of the yaml.dump
-    """
-    class OrderedDumper(yaml.SafeDumper):
-        pass
-
-    def _dict_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            data.items()
-        )
-
-    OrderedDumper.add_representer(OrderedDict, _dict_representer)
-    return yaml.dump(data, stream, OrderedDumper, **kwargs)
 
 
 class VerboseEcho(object):
@@ -177,7 +105,7 @@ def clean_abs_path(filename_to_clean, parent_path):
     # If we are operating on only one file we don't know what to strip off here,
     # just return the whole thing.
     if filename_to_clean == parent_path:
-        return parent_path
+        return os.path.basename(filename_to_clean)
     return os.path.relpath(filename_to_clean, parent_path)
 
 
