@@ -1,5 +1,7 @@
 # Core requirements for using this application
 
+-c constraints.txt
+
 click>=7.0,<8.0
 Django>=1.11,<2.0          # Web application framework
 Jinja2
