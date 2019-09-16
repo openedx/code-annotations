@@ -460,8 +460,8 @@ class BaseSearch(object):
                             )
 
                         found_group_members = [token]
-                        self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
-                            current_group, token, annotation['line_number'])
+                        self.echo.echo_vv('Starting new group for "{}" token "{}", line {} in {}'.format(
+                            current_group, token, annotation['line_number'], filename)
                         )
 
                 # If we have all members, this group is done
