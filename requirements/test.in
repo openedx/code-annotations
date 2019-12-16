@@ -5,4 +5,3 @@
 
 pytest-cov                # pytest extension for code coverage statistics
 mock                      # python3 already has unittest.mock, but python2 needs this to be installed
-more-itertools<6          # Pinning this dependency of pytest as 6+ does not support Python 2

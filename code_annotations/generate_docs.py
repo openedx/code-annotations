@@ -49,6 +49,16 @@ class ReportRenderer(object):
                 self.group_mapping[token] = group_name
 
     def _add_report_file_to_full_report(self, report_file, report):
+        """
+        Add a specified report file to a report.
+
+        Args:
+            report_file:
+            report:
+
+        Returns:
+
+        """
         loaded_report = yaml.safe_load(report_file)
 
         for filename in loaded_report:

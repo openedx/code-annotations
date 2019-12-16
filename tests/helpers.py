@@ -10,7 +10,7 @@ from code_annotations.base import BaseSearch, VerboseEcho
 from code_annotations.cli import entry_point
 
 EXIT_CODE_SUCCESS = 0
-EXIT_CODE_FAILURE = -1
+EXIT_CODE_FAILURE = 1
 DEFAULT_FAKE_SAFELIST_PATH = 'fake_safelist_path.yaml'
 
 FAKE_CONFIG_FILE = """
@@ -55,7 +55,6 @@ class FakeSearch(BaseSearch):
         """
         Override for abstract base method.
         """
-        pass
 
 
 def delete_report_files(file_extension):

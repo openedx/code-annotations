@@ -130,6 +130,15 @@ class AnnotationConfig(object):
         self.annotation_tokens.append(token)
 
     def _configure_coverage(self, coverage_target):
+        """
+        Set coverage_target to the specified value.
+
+        Args:
+            coverage_target:
+
+        Returns:
+
+        """
         if coverage_target:
             try:
                 self.coverage_target = float(coverage_target)
@@ -339,7 +348,7 @@ class BaseSearch(object):
         """
         # Not a choice type of annotation, nothing to do
         if annotation['annotation_token'] not in self.config.choices:
-            return
+            return None
 
         token = annotation['annotation_token']
         found_valid_choices = []
@@ -366,6 +375,7 @@ class BaseSearch(object):
                 annotation,
                 'No choices found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
             )
+        return None
 
     def _get_group_children(self):
         """
@@ -394,6 +404,7 @@ class BaseSearch(object):
         for group in self.config.groups:
             if token in self.config.groups[group]:
                 return group
+        return None
 
     def check_results(self, all_results):
         """
@@ -452,7 +463,7 @@ class BaseSearch(object):
                     if token in group_children:
                         current_group = self._get_group_for_token(token)
 
-                        if current_group is None:  # pragma: no cover
+                        if not current_group:  # pragma: no cover
                             # If we get here there is a problem with check_results' group_children not matching up with
                             # our config's groups. That puts us in an unknown state, so we should quit.
                             raise Exception(
@@ -473,7 +484,7 @@ class BaseSearch(object):
             if current_group:
                 self.errors.append('File finished with an incomplete group {}!'.format(current_group))
 
-        return False if self.errors else True
+        return not self.errors
 
     def _add_annotation_error(self, annotation, message):
         """
@@ -506,7 +517,6 @@ class BaseSearch(object):
         Returns:
             Dict of {filename: annotations} for all files with found annotations.
         """
-        pass  # pragma: no cover
 
     def _format_results_for_report(self, all_results):
         """

@@ -7,7 +7,6 @@ import pprint
 import re
 import sys
 
-# pylint: disable=ungrouped-imports
 import django
 import yaml
 from django.apps import apps

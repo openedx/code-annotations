@@ -1,4 +1,9 @@
 # pylintrc tweaks for use with edx_lint.
 [MASTER]
-ignore = migrations
-load-plugins = caniusepython3.pylint_checker,edx_lint.pylint,pylint_django,pylint_celery
+ignore+= ,migrations, settings, wsgi.py
+
+[BASIC]
+const-rgx = (([A-Z_][A-Z0-9_]*)|(__.*__)|log|urlpatterns|logger|User)$
+
+[MESSAGES CONTROL]
+DISABLE+= ,invalid-name,useless-object-inheritance

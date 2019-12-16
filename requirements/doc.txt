@@ -6,54 +6,51 @@
 #
 alabaster==0.7.12         # via sphinx
 atomicwrites==1.3.0
-attrs==19.1.0
+attrs==19.3.0
 babel==2.7.0              # via sphinx
 bleach==3.1.0             # via readme-renderer
-certifi==2019.3.9         # via requests
+certifi==2019.11.28       # via requests
 chardet==3.0.4            # via doc8, requests
 click==7.0
-configparser==3.7.4
-contextlib2==0.5.5
-coverage==4.5.3
-django==1.11.21
+coverage==4.5.4
+django==1.11.26
 doc8==0.8.0
-docutils==0.14            # via doc8, readme-renderer, restructuredtext-lint, sphinx
-edx-sphinx-theme==1.4.0
+docutils==0.15.2          # via doc8, readme-renderer, restructuredtext-lint, sphinx
+edx-sphinx-theme==1.5.0
 funcsigs==1.0.2
 idna==2.8                 # via requests
 imagesize==1.1.0          # via sphinx
-importlib-metadata==0.18
-jinja2==2.10.1
+importlib-metadata==1.3.0
+jinja2==2.10.3
 markupsafe==1.1.1
 mock==3.0.5
 more-itertools==5.0.0
-packaging==19.0
-pathlib2==2.3.3
-pbr==5.3.0
-pluggy==0.12.0
+packaging==19.2
+pathlib2==2.3.5
+pbr==5.4.4
+pluggy==0.13.1
 py==1.8.0
-pygments==2.4.2           # via readme-renderer, sphinx
-pyparsing==2.4.0
-pytest-cov==2.7.1
-pytest==4.6.3
-python-slugify==3.0.2
-pytz==2019.1
-pyyaml==5.1.1
+pygments==2.5.2           # via readme-renderer, sphinx
+pyparsing==2.4.5          # via packaging
+pytest-cov==2.8.1
+pytest==4.6.7
+python-slugify==4.0.0
+pytz==2019.3
+pyyaml==5.2
 readme-renderer==24.0
 requests==2.22.0          # via sphinx
 restructuredtext-lint==1.3.0  # via doc8
-scandir==1.10.0
-six==1.12.0
-snowballstemmer==1.2.1    # via sphinx
+scandir==1.10.0           # via pathlib2
+six==1.13.0
+snowballstemmer==2.0.0    # via sphinx
 sphinx==1.8.5
 sphinxcontrib-websupport==1.1.2  # via sphinx
-stevedore==1.30.1
-text-unidecode==1.2
-typing==3.6.6             # via sphinx
-urllib3==1.25.3           # via requests
+stevedore==1.31.0
+text-unidecode==1.3
+typing==3.7.4.1           # via sphinx
+urllib3==1.25.7           # via requests
 wcwidth==0.1.7
 webencodings==0.5.1       # via bleach
-zipp==0.5.1
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.0.1        # via sphinx
+# setuptools

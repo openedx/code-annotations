@@ -2,6 +2,7 @@
 Command line interface for code annotation tools.
 """
 import datetime
+import sys
 import traceback
 
 import click
@@ -18,7 +19,6 @@ def entry_point():
     """
     Top level click command for the code annotation tools.
     """
-    pass
 
 
 @entry_point.command('django_find_annotations')
@@ -88,13 +88,13 @@ def django_find_annotations(
                     click.secho("---------------------------------", fg="red")
                     click.echo("\n".join(searcher.errors))
                     # If there are any errors, do not continue
-                    exit(-1)
+                    sys.exit(1)
                 click.echo("Linting passed without errors.")
 
             if coverage:
                 if not searcher.check_coverage():
                     # If there are any errors, do not continue
-                    exit(-1)
+                    sys.exit(1)
 
                 click.echo("Coverage passed without errors.")
 
@@ -153,7 +153,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
                 click.secho("{} errors:".format(len(searcher.errors)), fg="red")
                 click.secho("---------------------------------", fg="red")
                 click.echo("\n".join(searcher.errors))
-                exit(-1)
+                sys.exit(1)
             click.echo("Linting passed without errors.")
 
         if report:

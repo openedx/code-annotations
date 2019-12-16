@@ -15,7 +15,7 @@ def fail(msg):
         msg: Message to log
     """
     click.secho(msg, fg="red")
-    sys.exit(-1)
+    sys.exit(1)
 
 
 class VerboseEcho(object):
