@@ -2,41 +2,24 @@
 
 language: python
 
-matrix:
-  include:
-    - python: 2.7
-      env: TOXENV=py27-django111
-    - python: 3.5
-      env: TOXENV=py35-django111
-    - python: 3.5
-      env: TOXENV=py35-django111
-    - python: 3.5
-      env: TOXENV=py35-django20
-    - python: 3.5
-      env: TOXENV=py35-django21
-    - python: 3.5
-      env: TOXENV=py35-django22
-    - python: 3.5
-      env: TOXENV=quality
-    - python: 3.5
-      env: TOXENV=docs
-    - python: 3.6
-      env: TOXENV=py36-django111
-    - python: 3.6
-      env: TOXENV=py36-django20
-    - python: 3.6
-      env: TOXENV=py36-django21
-    - python: 3.6
-      env: TOXENV=py36-django22
+python:
+  - 3.5
+  - 3.8
+
+env:
+  - TOXENV=django22
+  - TOXENV=quality
+  - TOXENV=docs
 
 cache:
   - pip
-  
+
 before_install:
   - pip install --upgrade pip
 
 install:
   - pip install -r requirements/travis.txt
+  - pip install pip==20.0.2
 
 script:
   - tox
@@ -52,6 +35,7 @@ deploy:
   distributions: sdist bdist_wheel
   on:
     tags: true
+    python: 3.5
     condition: '$TOXENV = quality'
   password:
     secure: Q+rwwfNHu5nHSowWdT2K0pDr7pwccsFlTHvwXMUaSK7D7tXRYju9fHWGA3zVHJzYxD8V2UvSYapAdQldkwws5jcspZsDK8wyGS8W66lQ/W/5SnEo/u4+G4OAcSJAb7WIv1K9qI15xqQ+o25sh3kZa+8DSX9Aot+jLkm1vuxv8Togj8MGmdxhBnajlonfaTuK6asAkqvKbJqStcMgv10Vy3Yq2vqYLAqgS4aVpruLLb7F+BA0gY/FGgZNXTtFH/X6EX8L7IZIocp3eQylFq9yeQlGS9nIkTagYbBZcmN0khgJoqRksfuTDsleEsJ8kEKnOo56HjuNByljN/Fh5jpQDb7j2IqocwwarKGz7rDdEH28KN/r/GgUIDquuMLxNvqGTjpLeTjAYlHM1GRbOYlqgCMbWpl7/lcawHkSvkYW47gHl6YqmtI4KX/Nm+/SAWZvxjG0sDY5vUtqmLzH7L6FmAMn0C46H5o+MJ9ChdjRnRDU7BJFrXhKerKOwT1jdk7Dj99Uf39mSkLVsE3RC7+8xDCbBY3+qxmD0XsD6uX4CFfmOQrJEoeDlLbTIkQg8vFetEBedRaBrVbBztnWG9wgAWQYA0oxo+s/67BOTd/UkQrReNTwTaMIwuTaibDEl0OEa7jBtkBAbUKJWg+6Ih0HT0J67dULrswPoZ1V8UHVMsQ=
