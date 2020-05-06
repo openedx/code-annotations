@@ -8,9 +8,5 @@
 # pin when possible.  Writing an issue against the offending project and
 # linking to it here is good.
 
-# This package is a  backport which can only be installed on Python 2.7
-futures ; python_version == "2.7"
-
-# These packages are being constrained to versions that are compatible with python 2.7.
-more-itertools<6 
-pytest==4.6.7
+# stay on an lts release
+django<2.3
