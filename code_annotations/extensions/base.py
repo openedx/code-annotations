@@ -4,7 +4,7 @@ Abstract and base classes to support plugins.
 import re
 from abc import ABCMeta, abstractmethod
 
-from code_annotations.helpers import clean_abs_path, get_annotation_regex
+from code_annotations.helpers import clean_abs_path, clean_annotation, get_annotation_regex
 
 
 class AnnotationExtension(object, metaclass=ABCMeta):
@@ -56,24 +56,9 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
     Returns a 2-tuple of:
      - ("Comment text", None) in the case of a multi-line comment OR
      - (None, "Comment text") in the case of a single-line comment
-
-    TODO: Make this handle multi-line annotation comments again.
     """
     comment_regex_fmt = r'{multi_start}([\d\D]*?){multi_end}|{single}(.*)'
 
-    r"""
-    This format string/regex finds our annotation token and choices / comments inside a comment:
-
-    [\s\S]*? - Strip out any characters between the start of the comment and the annotation
-    ({})     - {} is a Python format string that will be replaced with a regex escaped and
-               then or-joined to make a list of the annotation tokens we're looking for
-               Ex: (\.\.\ pii\:\:|\.\.\ pii\_types\:\:)
-    (.*)     - and capture all characters until the end of the line
-
-    Returns a 2-tuple of found annotation token and annotation comment
-
-    TODO: Make multi line annotation comments work again.
-    """
     def __init__(self, config, echo):
         """
         Set up the extension and create the regexes used to do searches.
@@ -126,25 +111,23 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
                     # annotation token itself.
                     line = txt.count('\n', 0, match.start()) + 1
 
-                    # No matter how long the regex is, there should only be 2 non-None items,
-                    # with the first being the annotation token and the 2nd being the comment.
-                    cleaned_groups = [item for item in inner_match.groups() if item is not None]
-
-                    if len(cleaned_groups) != 2:  # pragma: no cover
-                        raise Exception('{}::{}: Number of found items in the list is not 2. Found: {}'.format(
+                    try:
+                        annotation_token = inner_match.group('token')
+                        annotation_data = inner_match.group('data')
+                    except IndexError:
+                        # pragma: no cover
+                        raise ValueError('{}::{}: Could not find "data" or "token" groups. Found: {}'.format(
                             fname,
                             line,
-                            cleaned_groups
+                            inner_match.groupdict()
                         ))
-
-                    annotation, comment = cleaned_groups
-
+                    annotation_token, annotation_data = clean_annotation(annotation_token, annotation_data)
                     found_annotations.append({
                         'found_by': self.extension_name,
                         'filename': fname,
                         'line_number': line,
-                        'annotation_token': annotation.strip(),
-                        'annotation_data': comment.strip()
+                        'annotation_token': annotation_token,
+                        'annotation_data': annotation_data,
                     })
 
         return found_annotations
