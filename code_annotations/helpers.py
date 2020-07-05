@@ -2,6 +2,7 @@
 Helpers for code_annotations scripts.
 """
 import os
+import re
 import sys
 
 import click
@@ -112,6 +113,7 @@ def clean_abs_path(filename_to_clean, parent_path):
 def get_annotation_regex(annotation_regexes):
     """
     Return the full regex to search inside comments for configured annotations.
+    A match against the regex will returns a 2-tuple of found annotation token and annotation comment
 
     Args:
         annotation_regexes: List of re.escaped annotation tokens to search for.
@@ -123,15 +125,13 @@ def get_annotation_regex(annotation_regexes):
     r"""
     This format string/regex finds our annotation token and choices / comments inside a comment:
 
-    [\s\S]*? - Strip out any characters between the start of the comment and the annotation
-    ({})     - {} is a Python format string that will be replaced with a regex escaped and
-               then or-joined to make a list of the annotation tokens we're looking for
-               Ex: (\.\.\ pii\:\:|\.\.\ pii\_types\:\:)
-    (.*)     - and capture all characters until the end of the line
-
-    Returns a 2-tuple of found annotation token and annotation comment
-
-    TODO: Make multi line annotation comments work again.
     """
-    annotation_regex = r'[\s\S]*?({})(.*)'
-    return annotation_regex.format('|'.join(annotation_regexes))
+    annotation_regex = r"""
+    [\s\S]*?                   # Strip out any characters between the start of the comment and the annotation
+    ({})                       # Python format string that will be replaced with a regex escaped and
+                               # then or-joined to make a list of the annotation tokens we're looking for
+                               # Ex: (\.\.\ pii\:\:|\.\.\ pii\_types\:\:)
+    (.*)                       # capture all characters until the end of the line
+    """
+    annotation_regex = annotation_regex.format('|'.join(annotation_regexes))
+    return re.compile(annotation_regex, flags=re.VERBOSE)

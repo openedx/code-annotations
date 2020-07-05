@@ -88,14 +88,16 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
             raise ValueError('Subclasses of SimpleRegexAnnotationExtension must define lang_comment_definition!')
 
         # pylint: disable=not-a-mapping
-        self.comment_regex = self.comment_regex_fmt.format(**self.lang_comment_definition)
+        self.comment_regex = re.compile(
+            self.comment_regex_fmt.format(**self.lang_comment_definition)
+        )
 
         # Parent class will allow this class to populate self.strings_to_search via
         # calls to _add_annotation_token or _add_annotation_group for each configured
         # annotation.
         self.query = get_annotation_regex(self.config.annotation_regexes)
 
-        self.ECHO.echo_v("{} extension regex query: {}".format(self.extension_name, self.query))
+        self.ECHO.echo_v("{} extension regex query: {}".format(self.extension_name, self.query.pattern))
 
     def search(self, file_handle):
         """
@@ -115,10 +117,10 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         if any(anno in txt for anno in self.config.annotation_tokens):
             fname = clean_abs_path(file_handle.name, self.config.source_path)
 
-            for match in re.finditer(self.comment_regex, txt):
+            for match in self.comment_regex.finditer(txt):
                 # Should only be one match
                 comment_content = [item for item in match.groups() if item is not None][0]
-                for inner_match in re.finditer(self.query, comment_content):
+                for inner_match in self.query.finditer(comment_content):
                     # Get the line number by counting newlines + 1 (for the first line).
                     # Note that this is the line number of the beginning of the comment, not the
                     # annotation token itself.

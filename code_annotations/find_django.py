@@ -4,7 +4,6 @@ Annotation searcher for Django model comment searching Django introspection.
 import inspect
 import os
 import pprint
-import re
 import sys
 
 import django
@@ -109,7 +108,7 @@ class DjangoSearch(BaseSearch):
         with open(filename, 'r') as file_handle:
             txt = file_handle.read()
 
-        for inner_match in re.finditer(query, model_type.__doc__):
+        for inner_match in query.finditer(model_type.__doc__):
             # TODO: This is duplicated code with extensions/base.py
             # No matter how long the regex is, there should only be 2 non-None items,
             # with the first being the annotation token and the 2nd being the comment.
