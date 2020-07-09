@@ -1,15 +1,19 @@
 """
 Docstring
 
-.. pii: Annotation 1
-.. pii_types: id, name
+.. pii: Annotation 1 with:
+     
+     Multi-line and multi-paragraph.
 """
 # Should be able to finish the group outside of the same comment if necessary
+# .. pii_types: id, name
 # .. pii_retirement: local_api, consumer_api
 
 
 def do():
-    """.. pii: Annotation 2
+    """.. pii: Annotation 2 with:
+     
+           Multi-line and multi-paragraph.
         .. pii_types: id, name
         .. pii_retirement: local_api, consumer_api
     """
@@ -17,7 +21,9 @@ def do():
 
 
 def re():
-    """.. pii: Annotation 3
+    """.. pii: Annotation 3 with:
+    
+         Multi-line and multi-paragraph.
     .. pii_retirement: local_api, consumer_api
     .. pii_types: id, name"""
     pass
@@ -26,7 +32,9 @@ def re():
 def mi():
     """
     Comment above annotation
-    .. pii: Annotation 4
+    .. pii: Annotation 4 with:
+    
+         Multi-line and multi-paragraph.
     .. pii_types: id, name
     .. pii_retirement: local_api, consumer_api
     Comment below annotation
@@ -35,7 +43,9 @@ def mi():
 
 
 def fa():
-    """.. no_pii: Annotation 5"""
+    """.. no_pii: Annotation 5 with:
+    
+         Multi-line and multi-paragraph."""
     pass
 
 
