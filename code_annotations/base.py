@@ -8,7 +8,6 @@ import pprint
 import re
 from abc import ABCMeta, abstractmethod
 
-import six
 import yaml
 from stevedore import named
 
@@ -282,8 +281,7 @@ class AnnotationConfig(object):
             ))
 
 
-@six.add_metaclass(ABCMeta)
-class BaseSearch(object):
+class BaseSearch(object, metaclass=ABCMeta):
     """
     Base class for searchers.
     """

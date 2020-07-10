@@ -4,13 +4,10 @@ Abstract and base classes to support plugins.
 import re
 from abc import ABCMeta, abstractmethod
 
-import six
-
 from code_annotations.helpers import clean_abs_path, get_annotation_regex
 
 
-@six.add_metaclass(ABCMeta)
-class AnnotationExtension(object):
+class AnnotationExtension(object, metaclass=ABCMeta):
     """
     Abstract base class that annotation extensions will inherit from.
     """
@@ -36,8 +33,7 @@ class AnnotationExtension(object):
         raise NotImplementedError('search called on base class!')
 
 
-@six.add_metaclass(ABCMeta)
-class SimpleRegexAnnotationExtension(AnnotationExtension):
+class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
     """
     Abstract base class for languages that have comments which can be reasonably searched using regular expressions.
     """

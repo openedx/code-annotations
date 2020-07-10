@@ -11,7 +11,6 @@ import django
 import yaml
 from django.apps import apps
 from django.db import models
-from six import text_type
 
 from code_annotations.base import BaseSearch
 from code_annotations.helpers import fail, get_annotation_regex
@@ -162,7 +161,7 @@ class DjangoSearch(BaseSearch):
                 'annotation_data': comment.strip(),
                 'extra': {
                     'object_id': model_id,
-                    'full_comment': text_type(safelisted_models[model_id])
+                    'full_comment': str(safelisted_models[model_id])
                 }
             })
 
