@@ -26,7 +26,7 @@ Configuration for a "fun fact" annotation type, denoted by the annotation token 
 .. code-block:: yaml
 
     annotations:
-        ".. fun_fact::":
+        ".. fun_fact:":
 
 There are no choices given, so this is a free form comment type of annotation. Note the trailing colon! It would be used
 in Python like this:
