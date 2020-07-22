@@ -13,8 +13,10 @@ comments into two parts- the annotation token, and the annotation data.
 
 - Annotation data
     Annotation data can either be a simple free text comment that is on the same line as the token, or a choice list.
-    The choices in a choice list are configured in the configuration file and can be separated by spaces or commas when
-    used in comments. As such, the choices themselves should not contain spaces or commas.
+    Free text annotations can span multiple lines, provided all lines after the first
+    are indented by at least two spaces. The choices in a choice list are configured in
+    the configuration file and can be separated by spaces or commas when used in
+    comments. As such, the choices themselves should not contain spaces or commas.
 
 The information below applies to both the Static Search and Django Model Search tools, with the exception that the
 Django Model Search only looks in model docstrings.
@@ -26,7 +28,7 @@ Configuration for a "fun fact" annotation type, denoted by the annotation token 
 .. code-block:: yaml
 
     annotations:
-        ".. fun_fact::":
+        ".. fun_fact:":
 
 There are no choices given, so this is a free form comment type of annotation. Note the trailing colon! It would be used
 in Python like this:
@@ -50,6 +52,30 @@ When a report is run against this code an entry like this will be generated in t
       line_number: 33
 
 *Note that the rest of the comment is ignored in the report.*
+
+An annotation can also span multiple lines. For instance:
+
+.. code-block:: python
+
+    """
+        This function handles setting the price on an item in the database.
+
+        .. fun_fact: This code is the only remaining piece of our first commit!
+          To write long texts, prepend at least two additional spaces at the start
+          of every line after the first.
+    """
+
+This code would result in the following report:
+
+.. code-block:: yaml
+
+    - annotation_data: "This code is the only remaining piece of our first commit!\n \
+        \     To write long texts, prepend at least two additional spaces at the start\n\
+        \      of every line after the first."
+      annotation_token: '.. fun_fact:'
+      filename: foo/bar/something.py
+      found_by: python
+      line_number: 1
 
 Configuration for an "async" annotation type, denoted by the annotation token ``.. async:`` and choices denoting the
 types of asynchronous processors hooked up to it:

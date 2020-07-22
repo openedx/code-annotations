@@ -3,6 +3,9 @@ Tests for the Python static extension
 """
 import pytest
 
+from code_annotations.base import AnnotationConfig
+from code_annotations.extensions.python import PythonAnnotationExtension
+from code_annotations.helpers import VerboseEcho
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
 
 
@@ -31,3 +34,57 @@ def test_grouping_and_choice_failures(test_file, expected_exit_code, expected_me
 
     if expected_exit_code == EXIT_CODE_FAILURE:
         assert "Search failed due to linting errors!" in result.output
+
+
+@pytest.mark.parametrize('test_file,annotations', [
+    (
+        'multiline_simple.pyt',
+        [
+            ('.. pii:', """A long description that
+  spans multiple
+  lines"""),
+            ('.. pii_types:', 'id, name'),
+        ]
+    ),
+    (
+        'multiline_indented.pyt',
+        [
+            ('.. pii:', """A long description that
+        spans multiple indented
+        lines"""),
+            ('.. pii_types:', 'id, name'),
+        ]
+    ),
+    (
+        'multiline_empty_first_line.pyt',
+        [
+            ('.. pii:', """This is an annotation that
+  spans multiple lines and allows developers to
+  write more extensive docs."""),
+        ]
+    ),
+    (
+        'multiline_paragraphs.pyt',
+        [
+            ('.. pii:', """This is an annotation that
+  spans multiple paragraphs.
+
+  This allows developers to write even more
+  extensive docs."""),
+            ('.. pii:', """Annotation 1 with:
+
+     Multi-line and multi-paragraph.""")
+        ]
+    ),
+])
+def test_multi_line_annotations(test_file, annotations):
+    config = AnnotationConfig('tests/test_configurations/.annotations_test')
+    annotator = PythonAnnotationExtension(config, VerboseEcho())
+
+    with open('tests/extensions/python_test_files/{}'.format(test_file)) as fi:
+        result_annotations = annotator.search(fi)
+
+    assert len(annotations) == len(result_annotations)
+    for annotation, result_annotation in zip(annotations, result_annotations):
+        assert result_annotation['annotation_token'] == annotation[0]
+        assert result_annotation['annotation_data'] == annotation[1]

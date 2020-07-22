@@ -4,7 +4,6 @@ Annotation searcher for Django model comment searching Django introspection.
 import inspect
 import os
 import pprint
-import re
 import sys
 
 import django
@@ -13,7 +12,7 @@ from django.apps import apps
 from django.db import models
 
 from code_annotations.base import BaseSearch
-from code_annotations.helpers import fail, get_annotation_regex
+from code_annotations.helpers import clean_annotation, fail, get_annotation_regex
 
 DEFAULT_SAFELIST_FILE_PATH = '.annotation_safe_list.yml'
 
@@ -109,33 +108,30 @@ class DjangoSearch(BaseSearch):
         with open(filename, 'r') as file_handle:
             txt = file_handle.read()
 
-        for inner_match in re.finditer(query, model_type.__doc__):
-            # TODO: This is duplicated code with extensions/base.py
-            # No matter how long the regex is, there should only be 2 non-None items,
-            # with the first being the annotation token and the 2nd being the comment.
-            cleaned_groups = [item for item in inner_match.groups() if item is not None]
+        # Get the line number by counting newlines + 1 (for the first line).
+        # Note that this is the line number of the beginning of the comment, not the
+        # annotation token itself. We find based on the entire code content of the model
+        # as that seems to be the only way to be sure we're getting the correct line number.
+        # It is slow and should be replaced if we can find a better way that is accurate.
+        line = txt.count('\n', 0, txt.find(inspect.getsource(model_type))) + 1
 
-            if len(cleaned_groups) != 2:  # pragma: no cover
-                raise Exception('{}: Number of found items in the list is not 2. Found: {}'.format(
+        for inner_match in query.finditer(model_type.__doc__):
+            try:
+                annotation_token = inner_match.group('token')
+                annotation_data = inner_match.group('data')
+            except IndexError:
+                # pragma: no cover
+                raise ValueError('{}: Could not find "data" or "token" groups. Found: {}'.format(
                     self.get_model_id(model_type),
-                    cleaned_groups
+                    inner_match.groupdict()
                 ))
-
-            annotation, comment = cleaned_groups
-
-            # Get the line number by counting newlines + 1 (for the first line).
-            # Note that this is the line number of the beginning of the comment, not the
-            # annotation token itself. We find based on the entire code content of the model
-            # as that seems to be the only way to be sure we're getting the correct line number.
-            # It is slow and should be replaced if we can find a better way that is accurate.
-            line = txt.count('\n', 0, txt.find(inspect.getsource(model_type))) + 1
-
+            annotation_token, annotation_data = clean_annotation(annotation_token, annotation_data)
             model_annotations.append({
                 'found_by': "django",
                 'filename': filename,
                 'line_number': line,
-                'annotation_token': annotation.strip(),
-                'annotation_data': comment.strip(),
+                'annotation_token': annotation_token,
+                'annotation_data': annotation_data,
                 'extra': {
                     'object_id': model_id,
                     'full_comment': model_type.__doc__.strip()

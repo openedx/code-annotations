@@ -2,6 +2,7 @@
 Helpers for code_annotations scripts.
 """
 import os
+import re
 import sys
 
 import click
@@ -113,25 +114,58 @@ def get_annotation_regex(annotation_regexes):
     """
     Return the full regex to search inside comments for configured annotations.
 
+    A successful match against the regex will return two groups of interest: 'token'
+    and 'data'.
+
+    This regular expression supports annotation tokens that span multiple lines. To do
+    so, prefix each line after the first by at least two leading spaces. E.g:
+
+        .. pii: First line
+          second line
+
+    Unfortunately, the indenting spaces will find their way to the content of the "token" group.
+
     Args:
         annotation_regexes: List of re.escaped annotation tokens to search for.
 
     Returns:
         Regex ready for searching comments for annotations.
     """
-    # pylint: disable=pointless-string-statement
-    r"""
-    This format string/regex finds our annotation token and choices / comments inside a comment:
-
-    [\s\S]*? - Strip out any characters between the start of the comment and the annotation
-    ({})     - {} is a Python format string that will be replaced with a regex escaped and
-               then or-joined to make a list of the annotation tokens we're looking for
-               Ex: (\.\.\ pii\:\:|\.\.\ pii\_types\:\:)
-    (.*)     - and capture all characters until the end of the line
-
-    Returns a 2-tuple of found annotation token and annotation comment
-
-    TODO: Make multi line annotation comments work again.
+    annotation_regex = r"""
+    (?P<space>[\ \t]*)               # Leading empty spaces
+    (?P<token>{tokens})              # Python format string that will be replaced with a
+                                     # regex, escaped and then or-joined to make a list
+                                     # of the annotation tokens we're looking for
+                                     # Ex: (\.\.\ pii\:\:|\.\.\ pii\_types\:\:)
+    (?P<data>                        # Captured annotation data
+        (?:                          # non-capture mode
+            .                        # any non-newline character
+            |                        # or new line of multi-line annotation data
+            (?:                      # non-capture mode
+                \n{{1,}}             # at least one newline,
+                (?P=space)           # followed by as much space as the prefix,
+                (?P<indent>\ {{2,}}) # at least two spaces,
+                (?=[^\ ])            # and a non-space character (look-ahead)
+                (?!{tokens})         # that does not match any of the token regexes
+            )                        #
+        )*                           # any number of times
+    )
     """
-    annotation_regex = r'[\s\S]*?({})(.*)'
-    return annotation_regex.format('|'.join(annotation_regexes))
+    annotation_regex = annotation_regex.format(tokens='|'.join(annotation_regexes))
+    return re.compile(annotation_regex, flags=re.VERBOSE)
+
+
+def clean_annotation(token, data):
+    """
+    Clean annotation token and data by stripping all trailing/prefix empty spaces.
+
+    Args:
+        token (str)
+        data (str)
+
+    Returns:
+        (str, str): Tuple of cleaned token, data
+    """
+    token = token.strip()
+    data = data.strip()
+    return token, data
