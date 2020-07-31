@@ -15,6 +15,8 @@ annotating code which stores personally identifiable information (PII), these
 tools are optimized for that use case but can be generalized for other types of
 annotations.
 
+Additionally, a logically separate part of this repository will contain specific annotation configurations and supporting tools, such as Sphinx extensions for documenting specific annotation types. See ``config_and_tools``.
+
 Documentation
 -------------
 
