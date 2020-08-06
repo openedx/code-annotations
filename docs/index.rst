@@ -18,6 +18,7 @@ Contents:
    static_search
    django_search
    configuration
+   sphinx_extensions
    extensions
    testing
    modules
