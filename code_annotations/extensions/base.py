@@ -42,22 +42,24 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
     # Javascript and Python extensions for examples.
     lang_comment_definition = None
 
-    r"""
+    """
     This format string/regex finds all comments in the file. The format tokens will be replaced with the
     language-specific comment definitions defined in the sub-classes.
 
-    {multi_start} - start of the language-specific multi-line comment (ex. /*)
-    ([\d\D]*?)    - capture all of the characters...
-    {multi_end}   - until you find the end of the language-specific multi-line comment (ex. */)
-    |             - If you don't find any of those...
-    {single}      - start by finding the single-line comment token (ex. //)
-    (.*)          - and capture all characters until the end of the line
-
-    Returns a 2-tuple of:
-     - ("Comment text", None) in the case of a multi-line comment OR
-     - (None, "Comment text") in the case of a single-line comment
+    Returns two named values: multiline_comment and singleline_comment.
     """
-    comment_regex_fmt = r'{multi_start}([\d\D]*?){multi_end}|{single}(.*)'
+    comment_regex_fmt = r"""
+    {multi_start}   # start of the language-specific multi-line comment (ex. /*)
+    (?P<multiline_comment>
+        [\d\D]*?    # capture all of the characters...
+    )
+    {multi_end}     # until you find the end of the language-specific multi-line comment (ex. */)
+    |               # If you don't find any of those...
+    {single}        # start by finding the single-line comment token (ex. //)
+    (?P<singleline_comment>
+    .*              # and capture all characters until the end of the line
+    )
+    """
 
     def __init__(self, config, echo):
         """
@@ -74,7 +76,8 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
 
         # pylint: disable=not-a-mapping
         self.comment_regex = re.compile(
-            self.comment_regex_fmt.format(**self.lang_comment_definition)
+            self.comment_regex_fmt.format(**self.lang_comment_definition),
+            flags=re.VERBOSE
         )
 
         # Parent class will allow this class to populate self.strings_to_search via
@@ -102,15 +105,15 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         if any(anno in txt for anno in self.config.annotation_tokens):
             fname = clean_abs_path(file_handle.name, self.config.source_path)
 
+            # Iterate on all comments: both multi- and single-line.
             for match in self.comment_regex.finditer(txt):
+                # Get the line number by counting newlines + 1 (for the first line).
+                # Note that this is the line number of the beginning of the comment, not the
+                # annotation token itself.
+                line = txt.count('\n', 0, match.start()) + 1
                 # Should only be one match
-                comment_content = [item for item in match.groups() if item is not None][0]
+                comment_content = match.groupdict()["multiline_comment"] or match.groupdict()["singleline_comment"]
                 for inner_match in self.query.finditer(comment_content):
-                    # Get the line number by counting newlines + 1 (for the first line).
-                    # Note that this is the line number of the beginning of the comment, not the
-                    # annotation token itself.
-                    line = txt.count('\n', 0, match.start()) + 1
-
                     try:
                         annotation_token = inner_match.group('token')
                         annotation_data = inner_match.group('data')
