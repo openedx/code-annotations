@@ -115,6 +115,10 @@ class FeatureToggles(SphinxDirective):
                 ),
             )
             yield nodes.paragraph(text=toggle.get(".. toggle_description:", ""))
+            if toggle.get(".. toggle_warnings:") not in (None, "None", "n/a", "N/A"):
+                yield nodes.warning(
+                    "", nodes.paragraph("", toggle[".. toggle_warnings:"])
+                )
 
 
 def quote_value(value):
