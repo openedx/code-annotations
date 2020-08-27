@@ -76,6 +76,15 @@ def test_grouping_and_choice_failures(test_file, expected_exit_code, expected_me
      Multi-line and multi-paragraph.""")
         ]
     ),
+    (
+        'multiline_singlelinecomment.pyt',
+        [
+            ('.. pii:', """A long description that
+  spans multiple
+  lines"""),
+            ('.. pii_types:', 'id, name'),
+        ]
+    ),
 ])
 def test_multi_line_annotations(test_file, annotations):
     config = AnnotationConfig('tests/test_configurations/.annotations_test')

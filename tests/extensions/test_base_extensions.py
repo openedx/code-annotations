@@ -28,3 +28,19 @@ def test_nothing_found():
     r = FakeExtension(config, VerboseEcho())
     with open('tests/extensions/base_test_files/empty.foo') as f:
         r.search(f)
+
+
+def test_strip_single_line_comment_tokens():
+    config = FakeConfig()
+
+    extension = FakeExtension(config, VerboseEcho())
+    text = """baz line1
+  baz line2
+bazline3
+baz   line4"""
+    expected_result = """ line1
+ line2
+line3
+   line4"""
+    # pylint: disable=protected-access
+    assert expected_result == extension._strip_single_line_comment_tokens(text)
