@@ -11,17 +11,15 @@ annotations:
   feature_toggle:
     - ".. toggle_name:":
     - ".. toggle_implementation:":
-        choices: [ExperimentWaffleFlag, WaffleFlag, WaffleSwitch, CourseWaffleFlag, ConfigurationModel, DjangoSetting]
+        choices: [WaffleFlag, WaffleSwitch, CourseWaffleFlag, ExperimentWaffleFlag, SettingToggle, SettingDictToggle, ConfigurationModel, DjangoSetting]
     - ".. toggle_default:":
     - ".. toggle_description:":
-    - ".. toggle_category:":
     - ".. toggle_use_cases:":
-        choices: [incremental_release, launch_date, monitored_rollout, graceful_degradation, beta_testing, vip, opt_out, opt_in, open_edx]
+        choices: [temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
     - ".. toggle_creation_date:":
-    - ".. toggle_expiration_date:":
+    - ".. toggle_target_removal_date:":
     - ".. toggle_warnings:":
     - ".. toggle_tickets:":
-    - ".. toggle_status:":
 extensions:
     python:
         - py
