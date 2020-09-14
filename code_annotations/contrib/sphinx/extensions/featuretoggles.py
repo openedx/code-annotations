@@ -20,7 +20,7 @@ def find_feature_toggles(source_path):
     """
     config_path = pkg_resources.resource_filename(
         "code_annotations",
-        os.path.join("config_and_tools", "config", "feature_toggle_annotations.yaml"),
+        os.path.join("contrib", "config", "feature_toggle_annotations.yaml"),
     )
     return find_annotations(source_path, config_path, ".. toggle_name:")
 

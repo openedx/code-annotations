@@ -21,7 +21,7 @@ def find_settings(source_path):
     """
     config_path = pkg_resources.resource_filename(
         "code_annotations",
-        os.path.join("config_and_tools", "config", "setting_annotations.yaml"),
+        os.path.join("contrib", "config", "setting_annotations.yaml"),
     )
     return find_annotations(source_path, config_path, ".. setting_name:")
 

@@ -11,7 +11,7 @@ This package can be used to document a couple things in your code case. The foll
 Feature toggles are an Open edX mechanism by which features can be individually enabled or disabled. To document these feature toggles,
 add the following to your ``conf.py``::
 
-    extensions = ["code_annotations.config_and_tools.sphinx.extensions.featuretoggles"]
+    extensions = ["code_annotations.contrib.sphinx.extensions.featuretoggles"]
     featuretoggles_source_path = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..")
     )
@@ -32,7 +32,7 @@ Then, in an ``.rst`` file::
 
 This package also comes with tooling to annotate Django settings. Settings that should be annotated include non-standard Django settings, and settings that do not correspond to feature toggles (in which case feature toggle annotations should be used instead). Similar to feature toggles, Django setting annotations can also be parsed to generate human-readable documentation. Add the following to your ``conf.py``::
 
-    extensions = ["code_annotations.config_and_tools.sphinx.extensions.settings"]
+    extensions = ["code_annotations.contrib.sphinx.extensions.settings"]
 
 Define the following variables, just like for the :ref:`featuretoggles <sphinx_featuretoggles>` extension::
 
