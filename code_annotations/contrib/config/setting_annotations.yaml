@@ -1,0 +1,12 @@
+source_path: ./
+report_path: reports
+safelist_path: .annotation_safe_list.yml
+annotations:
+  setting:
+    - ".. setting_name:":
+    - ".. setting_default:":
+    - ".. setting_description:":
+    - ".. setting_warning:":
+extensions:
+    python:
+        - py

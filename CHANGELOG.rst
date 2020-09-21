@@ -11,6 +11,11 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
+[0.8.0] - 2020-09-10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Add ``settings`` Sphinx extension with setting annotation configuration file
+
 [0.7.0] - 2020-09-07
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -30,7 +35,7 @@ Change Log
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Add ``featuretoggles`` Sphinx extension
-* Include ``config_and_tools`` folder in pip-installable package
+* Include ``contrib`` folder in pip-installable package
 * Add ADR 0001-config-and-tools.rst for adding a place in this repository for shared annotation configs and supporting tools.
 
 [0.4.0] - 2020-07-22

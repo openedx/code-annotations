@@ -21,7 +21,7 @@ The new instances of annotation configs arose to support documenting Open edX fe
 Decision
 ========
 
-The code annotation tool is generic and specific annotation configs are logically separate. At the same time, it was decided that having a single place for annotation configs and there supporting tools would be efficient for our engineers, as well as potentially beneficial for sharing outside of Open edX. Additionally, we decided not to add the overhead of managing a separate repository at this time. Instead, we will add a ``config_and_tools`` directory in this repository to contain any shared annotation config files and supporting tools.
+The code annotation tool is generic and specific annotation configs are logically separate. At the same time, it was decided that having a single place for annotation configs and there supporting tools would be efficient for our engineers, as well as potentially beneficial for sharing outside of Open edX. Additionally, we decided not to add the overhead of managing a separate repository at this time. Instead, we will add a ``contrib`` directory in this repository to contain any shared annotation config files and supporting tools.
 
 It is acknowledged that this need not be a permanent solution, but is a useful place to begin.
 
@@ -30,4 +30,4 @@ Any affect on how the PII annotations are implemented, or where they are stored,
 Consequences
 ============
 
-We will move the new toggles annotations and its supporting tools to the new ``config_and_tools`` directory.
+We will move the new toggles annotations and its supporting tools to the new ``contrib`` directory.

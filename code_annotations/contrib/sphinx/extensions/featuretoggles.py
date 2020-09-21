@@ -5,10 +5,10 @@ import os
 
 import pkg_resources
 
-from code_annotations.base import AnnotationConfig
-from code_annotations.find_static import StaticSearch
 from docutils import nodes
 from sphinx.util.docutils import SphinxDirective
+
+from .base import find_annotations, quote_value
 
 
 def find_feature_toggles(source_path):
@@ -20,30 +20,9 @@ def find_feature_toggles(source_path):
     """
     config_path = pkg_resources.resource_filename(
         "code_annotations",
-        os.path.join("config_and_tools", "config", "feature_toggle_annotations.yaml"),
+        os.path.join("contrib", "config", "feature_toggle_annotations.yaml"),
     )
-    config = AnnotationConfig(
-        config_path, verbosity=0, source_path_override=source_path
-    )
-    results = StaticSearch(config).search()
-
-    toggles = {}
-    current_entry = {}
-    for filename, entries in results.items():
-        for entry in entries:
-            key = entry["annotation_token"]
-            value = entry["annotation_data"]
-            if key == ".. toggle_name:":
-                toggle_name = value
-                toggles[toggle_name] = {
-                    "filename": filename,
-                    "line_number": entry["line_number"],
-                }
-                current_entry = toggles[toggle_name]
-            else:
-                current_entry[key] = value
-
-    return toggles
+    return find_annotations(source_path, config_path, ".. toggle_name:")
 
 
 class FeatureToggles(SphinxDirective):
@@ -119,22 +98,6 @@ class FeatureToggles(SphinxDirective):
                 yield nodes.warning(
                     "", nodes.paragraph("", toggle[".. toggle_warnings:"])
                 )
-
-
-def quote_value(value):
-    """
-    Quote a Python object if it is string-like.
-    """
-    if value in ("True", "False", "None"):
-        return str(value)
-    try:
-        float(value)
-        return str(value)
-    except ValueError:
-        pass
-    if isinstance(value, str):
-        return '"{}"'.format(value)
-    return str(value)
 
 
 def setup(app):
