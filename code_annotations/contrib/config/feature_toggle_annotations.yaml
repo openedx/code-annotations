@@ -5,9 +5,6 @@ report_path: reports
 safelist_path: .annotation_safe_list.yml
 coverage_target: 50.0
 annotations:
-  documented_elsewhere:
-    - ".. documented_elsewhere:":
-    - ".. documented_elsewhere_name:":
   feature_toggle:
     - ".. toggle_name:":
     - ".. toggle_implementation:":
