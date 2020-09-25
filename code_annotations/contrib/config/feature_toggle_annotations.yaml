@@ -9,6 +9,7 @@ annotations:
     - ".. documented_elsewhere:":
     - ".. documented_elsewhere_name:":
   feature_toggle:
+    # See annotation format documentation: https://edx-toggles.readthedocs.io/en/latest/how_to/documenting_new_feature_toggles.html
     - ".. toggle_name:":
     - ".. toggle_implementation:":
         choices: [WaffleFlag, WaffleSwitch, CourseWaffleFlag, ExperimentWaffleFlag, SettingToggle, SettingDictToggle, ConfigurationModel, DjangoSetting]
