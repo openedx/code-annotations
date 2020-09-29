@@ -5,9 +5,6 @@ report_path: reports
 safelist_path: .annotation_safe_list.yml
 coverage_target: 50.0
 annotations:
-  documented_elsewhere:
-    - ".. documented_elsewhere:":
-    - ".. documented_elsewhere_name:":
   feature_toggle:
     # See annotation format documentation: https://edx-toggles.readthedocs.io/en/latest/how_to/documenting_new_feature_toggles.html
     - ".. toggle_name:":
