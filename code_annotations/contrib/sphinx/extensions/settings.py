@@ -66,8 +66,7 @@ class Settings(SphinxDirective):
         Return:
             nodes (list): nodes to be appended to the resulting document.
         """
-        toggle_nodes = list(self.iter_nodes())
-        return [nodes.section("", *toggle_nodes, ids=["settings"])]
+        return list(self.iter_nodes())
 
     def iter_nodes(self):
         """
@@ -79,13 +78,14 @@ class Settings(SphinxDirective):
         settings = find_settings(source_path)
         for setting_name in sorted(settings):
             setting = settings[setting_name]
-            yield nodes.title(text=setting_name)
             setting_default_value = setting.get(".. setting_default:", "Not defined")
             setting_default_node = nodes.literal(
                 text=quote_value(setting_default_value)
             )
-            yield nodes.paragraph("", "Default: ", setting_default_node)
-            yield nodes.paragraph(
+            setting_section = nodes.section("", ids=["setting-{}".format(setting_name)])
+            setting_section += nodes.title(text=setting_name)
+            setting_section += nodes.paragraph("", "Default: ", setting_default_node)
+            setting_section += nodes.paragraph(
                 "",
                 "Source: ",
                 nodes.reference(
@@ -100,11 +100,14 @@ class Settings(SphinxDirective):
                     ),
                 ),
             )
-            yield nodes.paragraph(text=setting.get(".. setting_description:", ""))
+            setting_section += nodes.paragraph(
+                text=setting.get(".. setting_description:", "")
+            )
             if setting.get(".. setting_warning:") not in (None, "None", "n/a", "N/A"):
-                yield nodes.warning(
+                setting_section += nodes.warning(
                     "", nodes.paragraph("", setting[".. setting_warning:"])
                 )
+            yield setting_section
 
 
 def setup(app):
