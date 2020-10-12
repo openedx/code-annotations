@@ -64,8 +64,7 @@ class FeatureToggles(SphinxDirective):
         Return:
             nodes (list): nodes to be appended to the resulting document.
         """
-        toggle_nodes = list(self.iter_nodes())
-        return [nodes.section("", *toggle_nodes, ids=["featuretoggles"])]
+        return list(self.iter_nodes())
 
     def iter_nodes(self):
         """
@@ -74,11 +73,14 @@ class FeatureToggles(SphinxDirective):
         toggles = find_feature_toggles(self.env.config.featuretoggles_source_path)
         for toggle_name in sorted(toggles):
             toggle = toggles[toggle_name]
-            yield nodes.title(text=toggle_name)
             toggle_default_value = toggle.get(".. toggle_default:", "Not defined")
             toggle_default_node = nodes.literal(text=quote_value(toggle_default_value))
-            yield nodes.paragraph("", "Default: ", toggle_default_node)
-            yield nodes.paragraph(
+            toggle_section = nodes.section(
+                "", ids=["featuretoggle-{}".format(toggle_name)]
+            )
+            toggle_section += nodes.title(text=toggle_name)
+            toggle_section += nodes.paragraph("", "Default: ", toggle_default_node)
+            toggle_section += nodes.paragraph(
                 "",
                 "Source: ",
                 nodes.reference(
@@ -93,11 +95,14 @@ class FeatureToggles(SphinxDirective):
                     ),
                 ),
             )
-            yield nodes.paragraph(text=toggle.get(".. toggle_description:", ""))
+            toggle_section += nodes.paragraph(
+                text=toggle.get(".. toggle_description:", "")
+            )
             if toggle.get(".. toggle_warnings:") not in (None, "None", "n/a", "N/A"):
-                yield nodes.warning(
+                toggle_section += nodes.warning(
                     "", nodes.paragraph("", toggle[".. toggle_warnings:"])
                 )
+            yield toggle_section
 
 
 def setup(app):
