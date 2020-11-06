@@ -11,6 +11,13 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
+[unreleased] - 2020-11-06
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Adding incremental_release as another option for toggle_use_case
+Alot of toggles in edx-platform are labeled incremental_release, which seems like a valid choice.
+And this use case didn't seem captured by options that previously existed.
+
 [0.10.0] - 2020-10-12
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
