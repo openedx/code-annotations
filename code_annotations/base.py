@@ -425,7 +425,6 @@ class BaseSearch(object, metaclass=ABCMeta):
         for filename in all_results:
             current_group = None
             found_group_members = []
-
             for annotation in all_results[filename]:
                 self._check_results_choices(annotation)
                 token = annotation['annotation_token']
@@ -478,9 +477,8 @@ class BaseSearch(object, metaclass=ABCMeta):
                     self.echo.echo_vv("Group complete!")
                     current_group = None
                     found_group_members = []
-
             if current_group:
-                self.errors.append('File finished with an incomplete group {}!'.format(current_group))
+                self.errors.append('{}: File finished with an incomplete group {}!'.format(filename, current_group))
 
         return not self.errors
 

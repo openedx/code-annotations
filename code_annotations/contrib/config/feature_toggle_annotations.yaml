@@ -13,7 +13,7 @@ annotations:
     - ".. toggle_default:":
     - ".. toggle_description:":
     - ".. toggle_use_cases:":
-        choices: [temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
+        choices: [incremental_release, temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
     - ".. toggle_creation_date:":
     - ".. toggle_target_removal_date:":
     - ".. toggle_warnings:":
