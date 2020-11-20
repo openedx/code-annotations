@@ -64,8 +64,8 @@ refer to this `list of resources`_ if you need any assistance.
     :target: https://pypi.python.org/pypi/code-annotations/
     :alt: PyPI
 
-.. |travis-badge| image:: https://travis-ci.org/edx/code-annotations.svg?branch=master
-    :target: https://travis-ci.org/edx/code-annotations
+.. |travis-badge| image:: https://travis-ci.com/edx/code-annotations.svg?branch=master
+    :target: https://travis-ci.com/edx/code-annotations
     :alt: Travis
 
 .. |codecov-badge| image:: http://codecov.io/github/edx/code-annotations/coverage.svg?branch=master
