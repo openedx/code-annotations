@@ -480,7 +480,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                     found_group_members = []
 
             if current_group:
-                self.errors.append('File finished with an incomplete group {}!'.format(current_group))
+                self.errors.append('File("{}") finished with an incomplete group {}!'.format(filename, current_group))
 
         return not self.errors
 
