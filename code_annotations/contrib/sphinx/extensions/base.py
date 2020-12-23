@@ -50,5 +50,5 @@ def quote_value(value):
     except ValueError:
         pass
     if isinstance(value, str):
-        return '"{}"'.format(value)
+        return f'"{value}"'
     return str(value)

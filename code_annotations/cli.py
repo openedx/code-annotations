@@ -159,7 +159,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
         if report:
             click.echo("Writing report...")
             report_filename = searcher.report(all_results)
-            click.echo("Report written to {}.".format(report_filename))
+            click.echo(f"Report written to {report_filename}.")
 
         elapsed = datetime.datetime.now() - start_time
         annotation_count = 0
@@ -167,7 +167,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
         for filename in all_results:
             annotation_count += len(all_results[filename])
 
-        click.echo("Search found {} annotations in {}.".format(annotation_count, elapsed))
+        click.echo(f"Search found {annotation_count} annotations in {elapsed}.")
 
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
@@ -203,7 +203,7 @@ def generate_docs(
                 'rendered_report_source_link_prefix'
         ):
             if not getattr(config, key):
-                raise ConfigurationException("No {key} key in {config_file}".format(key=key, config_file=config_file))
+                raise ConfigurationException(f"No {key} key in {config_file}")
 
         config.echo("Rendering the following reports: \n{}".format("\n".join([r.name for r in report_files])))
 
@@ -211,7 +211,7 @@ def generate_docs(
         renderer.render()
 
         elapsed = datetime.datetime.now() - start_time
-        click.echo("Report rendered in {} seconds.".format(elapsed.total_seconds()))
+        click.echo(f"Report rendered in {elapsed.total_seconds()} seconds.")
     except Exception as exc:  # pylint: disable=broad-except
         click.echo(traceback.print_exc())
         fail(str(exc))

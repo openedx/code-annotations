@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for find annotations in Django models.
 """
 import sys
 
-from mock import DEFAULT, patch
+from unittest.mock import DEFAULT, patch
 
 from code_annotations.find_django import DjangoSearch
 from tests.fake_models import (
@@ -404,7 +403,7 @@ def test_is_non_local_site(mock_getsourcefile):
 
     if non_local_path_prefixes:
         for prefix in non_local_path_prefixes:
-            mock_getsourcefile.return_value = '{}/bar.py'.format(prefix)
+            mock_getsourcefile.return_value = f'{prefix}/bar.py'
             assert DjangoSearch.is_non_local(FakeBaseModelAbstract) is True
     else:
         # If there are no prefixes in the test environment, there's really nothing to do here.
@@ -417,7 +416,7 @@ def test_is_non_local_site(mock_getsourcefile):
 @patch('code_annotations.find_django.django.apps.apps.get_app_configs')
 def test_get_models_requiring_annotations(mock_get_app_configs, mock_is_non_local, mock_setup_django, mock_issubclass):
     # Lots of fakery going on here. This class mocks Django AppConfigs to deliver our fake models.
-    class FakeAppConfig(object):
+    class FakeAppConfig:
         def get_models(self):
             return [FakeBaseModelBoring, FakeBaseModelBoringWithAnnotations]
 

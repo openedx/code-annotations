@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 from code_annotations.helpers import clean_abs_path, clean_annotation, get_annotation_regex
 
 
-class AnnotationExtension(object, metaclass=ABCMeta):
+class AnnotationExtension(metaclass=ABCMeta):
     """
     Abstract base class that annotation extensions will inherit from.
     """
@@ -72,7 +72,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
             config: The configuration dict
             echo: VerboseEcho object for logging
         """
-        super(SimpleRegexAnnotationExtension, self).__init__(config, echo)
+        super().__init__(config, echo)
 
         if self.lang_comment_definition is None:  # pragma: no cover
             raise ValueError('Subclasses of SimpleRegexAnnotationExtension must define lang_comment_definition!')
@@ -92,7 +92,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         # annotation.
         self.query = get_annotation_regex(self.config.annotation_regexes)
 
-        self.ECHO.echo_v("{} extension regex query: {}".format(self.extension_name, self.query.pattern))
+        self.ECHO.echo_v(f"{self.extension_name} extension regex query: {self.query.pattern}")
 
     def search(self, file_handle):
         """

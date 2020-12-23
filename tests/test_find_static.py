@@ -1,7 +1,7 @@
 """
 Tests for the `find_annotations` sub-command.
 """
-from mock import patch
+from unittest.mock import patch
 
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
 

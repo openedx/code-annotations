@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for listing local models.
 """
 import pytest
-from mock import DEFAULT, MagicMock, patch
+from unittest.mock import DEFAULT, MagicMock, patch
 
 from tests.helpers import call_script_isolated
 

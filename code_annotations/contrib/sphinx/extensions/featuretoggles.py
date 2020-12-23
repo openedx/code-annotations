@@ -76,7 +76,7 @@ class FeatureToggles(SphinxDirective):
             toggle_default_value = toggle.get(".. toggle_default:", "Not defined")
             toggle_default_node = nodes.literal(text=quote_value(toggle_default_value))
             toggle_section = nodes.section(
-                "", ids=["featuretoggle-{}".format(toggle_name)]
+                "", ids=[f"featuretoggle-{toggle_name}"]
             )
             toggle_section += nodes.title(text=toggle_name)
             toggle_section += nodes.paragraph("", "Default: ", toggle_default_node)
