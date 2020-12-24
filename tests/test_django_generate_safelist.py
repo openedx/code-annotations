@@ -3,9 +3,9 @@
 Tests for seeding the safelist.
 """
 import os
+from unittest.mock import DEFAULT, MagicMock, patch
 
 import pytest
-from unittest.mock import DEFAULT, MagicMock, patch
 
 from code_annotations.find_django import DjangoSearch
 from tests.helpers import DEFAULT_FAKE_SAFELIST_PATH, EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script_isolated

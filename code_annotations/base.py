@@ -141,10 +141,10 @@ class AnnotationConfig:
         if coverage_target:
             try:
                 self.coverage_target = float(coverage_target)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError) as error:
                 raise ConfigurationException(
                     f'Coverage target must be a number between 0 and 100 not "{coverage_target}".'
-                )
+                ) from error
 
             if self.coverage_target < 0.0 or self.coverage_target > 100.0:
                 raise ConfigurationException(

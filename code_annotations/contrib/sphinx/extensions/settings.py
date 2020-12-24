@@ -4,7 +4,6 @@ Sphinx extension for viewing (non-toggle) setting annotations.
 import os
 
 import pkg_resources
-
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective

@@ -4,7 +4,6 @@ Sphinx extension for viewing feature toggle annotations.
 import os
 
 import pkg_resources
-
 from docutils import nodes
 from sphinx.util.docutils import SphinxDirective
 

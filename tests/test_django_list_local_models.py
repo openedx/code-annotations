@@ -2,8 +2,9 @@
 """
 Tests for listing local models.
 """
-import pytest
 from unittest.mock import DEFAULT, MagicMock, patch
+
+import pytest
 
 from tests.helpers import call_script_isolated
 

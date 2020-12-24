@@ -77,7 +77,6 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         if self.lang_comment_definition is None:  # pragma: no cover
             raise ValueError('Subclasses of SimpleRegexAnnotationExtension must define lang_comment_definition!')
 
-        # pylint: disable=not-a-mapping
         self.comment_regex = re.compile(
             self.comment_regex_fmt.format(**self.lang_comment_definition),
             flags=re.VERBOSE
@@ -124,13 +123,13 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
                     try:
                         annotation_token = inner_match.group('token')
                         annotation_data = inner_match.group('data')
-                    except IndexError:
+                    except IndexError as error:
                         # pragma: no cover
                         raise ValueError('{}::{}: Could not find "data" or "token" groups. Found: {}'.format(
                             fname,
                             line,
                             inner_match.groupdict()
-                        ))
+                        )) from error
                     annotation_token, annotation_data = clean_annotation(annotation_token, annotation_data)
                     found_annotations.append({
                         'found_by': self.extension_name,

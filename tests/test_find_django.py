@@ -3,7 +3,6 @@
 Tests for find annotations in Django models.
 """
 import sys
-
 from unittest.mock import DEFAULT, patch
 
 from code_annotations.find_django import DjangoSearch

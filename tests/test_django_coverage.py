@@ -1,8 +1,9 @@
 """
 Tests for the DjangoSearch coverage functionality.
 """
-import pytest
 from unittest.mock import DEFAULT, patch
+
+import pytest
 
 from code_annotations.find_django import DjangoSearch
 from tests.fake_models import (
