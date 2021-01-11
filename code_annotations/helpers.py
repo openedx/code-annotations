@@ -4,6 +4,8 @@ Helpers for code_annotations scripts.
 import os
 import re
 import sys
+from io import StringIO
+from pprint import pprint
 
 import click
 
@@ -90,6 +92,15 @@ class VerboseEcho:
             kwargs: Any additional keyword args to pass to click.echo
         """
         self.echo(output, 3, **kwargs)
+
+    def pprint(self, data, indent=4, verbosity_level=0):
+        """
+        Pretty-print some data with the given verbosity level.
+        """
+        formatted = StringIO()
+        pprint(data, indent=indent, stream=formatted)
+        formatted.seek(0)
+        self.echo(formatted.read(), verbosity_level=verbosity_level)
 
 
 def clean_abs_path(filename_to_clean, parent_path):

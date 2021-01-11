@@ -3,7 +3,6 @@ Annotation searcher for Django model comment searching Django introspection.
 """
 import inspect
 import os
-import pprint
 import sys
 
 import django
@@ -89,7 +88,7 @@ class DjangoSearch(BaseSearch):
             self.echo(
                 'Listing {} local models requiring annotations:'.format(len(self.local_models))
             )
-            pprint.pprint(sorted([self.get_model_id(model) for model in self.local_models]), indent=4)
+            self.echo.pprint(sorted([self.get_model_id(model) for model in self.local_models]), indent=4)
         else:
             self.echo('No local models requiring annotations.')
 
