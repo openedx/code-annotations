@@ -4,7 +4,6 @@ Click command to do static annotation searching via Stevedore plugins.
 import datetime
 import errno
 import os
-import pprint
 import re
 from abc import ABCMeta, abstractmethod
 
@@ -416,8 +415,7 @@ class BaseSearch(metaclass=ABCMeta):
         Returns:
             Boolean indicating whether or not any errors were found
         """
-        if self.config.verbosity >= 2:
-            pprint.pprint(all_results, indent=3)
+        self.echo.pprint(all_results, indent=3, verbosity_level=2)
 
         group_children = self._get_group_children()
 
