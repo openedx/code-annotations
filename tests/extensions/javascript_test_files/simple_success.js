@@ -1,6 +1,7 @@
-/* .. pii: Group 1 - Annotation 1 */
-// .. pii_types: id, name
-// .. pii_retirement: local_api, consumer_api
+/* .. pii: Group 1 - Annotation 1
+.. pii_types: id, name
+.. pii_retirement: local_api, consumer_api
+*/
 
 'use strict';
 
@@ -13,9 +14,9 @@ var bar = [
     /*
     .. pii: Group 2 - Annotation 1 comment is a
     multi line comment
+    .. pii_types: id, name
+    .. pii_retirement: local_api, consumer_api
     */
-    // .. pii_types: id, name
-    // .. pii_retirement: local_api, consumer_api
     /pii\/js/,
     // .. pii: Group 3 - Annotation 1
     // .. pii_types: id, name
