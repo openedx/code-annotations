@@ -417,70 +417,82 @@ class BaseSearch(metaclass=ABCMeta):
         """
         self.echo.pprint(all_results, indent=3, verbosity_level=2)
 
-        group_children = self._get_group_children()
-
         # Spin through the search results
         for filename in all_results:
             current_group = None
-            found_group_members = []
-
+            found_group_tokens = []
             for annotation in all_results[filename]:
-                self._check_results_choices(annotation)
-                token = annotation['annotation_token']
-
-                # TODO: Clean this up into reasonable methods
-                if current_group:
-                    if token not in self.config.groups[current_group]:
-                        self._add_annotation_error(
-                            annotation,
-                            '"{}" is not in the group that starts with "{}". Expecting one of: {}'.format(
-                               token,
-                               current_group,
-                               self.config.groups[current_group]
-                            )
-                        )
-                        current_group = None
-                        found_group_members = []
-                    elif token in found_group_members:
-                        self._add_annotation_error(
-                            annotation,
-                            f'"{token}" is already in the group that starts with "{current_group}"'
-                        )
-                        current_group = None
-                        found_group_members = []
-                    else:
-                        self.echo.echo_vv('Adding "{}", line {} to group {}'.format(
-                            token,
-                            annotation['line_number'],
-                            current_group
-                        ))
-                        found_group_members.append(token)
-                else:
-                    if token in group_children:
-                        current_group = self._get_group_for_token(token)
-
-                        if not current_group:  # pragma: no cover
-                            # If we get here there is a problem with check_results' group_children not matching up with
-                            # our config's groups. That puts us in an unknown state, so we should quit.
-                            raise Exception(
-                                f'group_children is out of sync with config.groups. {token} is not in a group!'
-                            )
-
-                        found_group_members = [token]
-                        self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
-                            current_group, token, annotation['line_number'])
-                        )
-
-                # If we have all members, this group is done
-                if current_group and len(found_group_members) == len(self.config.groups[current_group]):
-                    self.echo.echo_vv("Group complete!")
-                    current_group = None
-                    found_group_members = []
+                current_group = self.check_annotation(annotation, current_group, found_group_tokens)
 
             if current_group:
-                self.errors.append(f'File("{filename}") finished with an incomplete group {current_group}!')
+                self.errors.append('File("{}") finished with an incomplete group {}!'.format(filename, current_group))
 
         return not self.errors
+
+    def check_annotation(self, annotation, current_group, found_group_tokens):
+        """
+        Check an annotation and add annotation errors when necessary.
+
+        Args:
+            annotation (dict): in particular, every annotation contains 'annotation_token' and 'annotation_data' keys.
+            current_group (str): None or the name of a group (from self.config.groups) to which preceding annotations
+                belong.
+            found_group_tokens (list): annotation tokens from the same group that were already found. This list is
+                cleared in case of error or when creating a new group.
+
+        Return:
+            current_group (str or None)
+        """
+        self._check_results_choices(annotation)
+        token = annotation['annotation_token']
+
+        if current_group:
+            # Add to existing group
+            if token not in self.config.groups[current_group]:
+                # Check for token correctness
+                self._add_annotation_error(
+                    annotation,
+                    '"{}" is not in the group that starts with "{}". Expecting one of: {}'.format(
+                       token,
+                       current_group,
+                       self.config.groups[current_group]
+                    )
+                )
+                current_group = None
+                found_group_tokens.clear()
+            elif token in found_group_tokens:
+                # Check for duplicate tokens
+                self._add_annotation_error(
+                    annotation,
+                    '"{}" is already in the group that starts with "{}"'.format(token, current_group)
+                )
+                current_group = None
+                found_group_tokens.clear()
+            else:
+                # Token is correct
+                self.echo.echo_vv('Adding "{}", line {} to group {}'.format(
+                    token,
+                    annotation['line_number'],
+                    current_group
+                ))
+                found_group_tokens.append(token)
+        else:
+            current_group = self._get_group_for_token(token)
+            if current_group:
+                # Start a new group
+                found_group_tokens.clear()
+                found_group_tokens.append(token)
+                self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
+                    current_group, token, annotation['line_number'])
+                )
+
+        # If we have all members, this group is done
+        if current_group and len(found_group_tokens) == len(self.config.groups[current_group]):
+            self.echo.echo_vv("Group complete!")
+            current_group = None
+            found_group_tokens.clear()
+
+        return current_group
 
     def _add_annotation_error(self, annotation, message):
         """
