@@ -31,6 +31,7 @@ class AnnotationConfig:
         """
         self.groups = {}
         self.choices = {}
+        self.optional_groups = []
         self.annotation_tokens = []
         self.annotation_regexes = []
         self.mgr = None
@@ -108,11 +109,23 @@ class AnnotationConfig:
         Returns:
             True if the type of the annotation is correct for a choice group, otherwise False
         """
-        return isinstance(token_or_group, dict)
+        return isinstance(token_or_group, dict) and "choices" in token_or_group
+
+    def _is_optional_group(self, token_or_group):
+        """
+        Determine if an annotation is an optional group.
+
+        Args:
+            token_or_group: The annotation being checked
+
+        Returns:
+            True if the annotation is optional, otherwise False.
+        """
+        return isinstance(token_or_group, dict) and bool(token_or_group.get("optional"))
 
     def _is_annotation_token(self, token_or_group):
         """
-        Determine if an annotation is a free-form text type.
+        Determine if an annotation has the right format.
 
         Args:
             token_or_group: The annotation being checked
@@ -120,7 +133,12 @@ class AnnotationConfig:
         Returns:
             True if the type of the annotation is correct for a text type, otherwise False
         """
-        return token_or_group is None
+        if token_or_group is None:
+            return True
+        if isinstance(token_or_group, dict):
+            # If annotation is a dict, only a few keys are tolerated
+            return set(token_or_group.keys()).issubset({"choices", "optional"})
+        return False
 
     def _add_annotation_token(self, token):
         if token in self.annotation_tokens:
@@ -172,13 +190,15 @@ class AnnotationConfig:
             for annotation_token in annotation:
                 annotation_value = annotation[annotation_token]
 
+                # Otherwise it should be a text type, if not then error out
+                if not self._is_annotation_token(annotation_value):
+                    raise ConfigurationException(f'{annotation} is an unknown annotation type.')
                 # The annotation comment is a choice group
                 if self._is_choice_group(annotation_value):
                     self._configure_choices(annotation_token, annotation_value)
-
-                # Otherwise it should be a text type, if not then error out
-                elif not self._is_annotation_token(annotation_value):
-                    raise ConfigurationException(f'{annotation} is an unknown annotation type.')
+                # The annotation comment is not mandatory
+                if self._is_optional_group(annotation_value):
+                    self.optional_groups.append(annotation_token)
 
                 self.groups[group_name].append(annotation_token)
                 self._add_annotation_token(annotation_token)
@@ -370,7 +390,7 @@ class BaseSearch(metaclass=ABCMeta):
         else:
             self._add_annotation_error(
                 annotation,
-                'No choices found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
+                'no value found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
             )
         return None
 
@@ -419,17 +439,86 @@ class BaseSearch(metaclass=ABCMeta):
 
         # Spin through the search results
         for filename in all_results:
-            current_group = None
-            found_group_tokens = []
-            for annotation in all_results[filename]:
-                current_group = self.check_annotation(annotation, current_group, found_group_tokens)
-
-            if current_group:
-                self.errors.append('File("{}") finished with an incomplete group {}!'.format(filename, current_group))
-
+            for annotations in self.iter_groups(all_results[filename]):
+                self.check_group(annotations)
         return not self.errors
 
-    def check_annotation(self, annotation, current_group, found_group_tokens):
+    def iter_groups(self, annotations):
+        """
+        Iterate on groups of annotations. Annotations are considered as a group when they all have the same
+        `line_number`, which should point to the beginning of the annotation group.
+
+        Yield:
+            annotations (annotation list)
+        """
+        current_group = []
+        current_line_number = None
+        for annotation in annotations:
+            line_number = annotation["line_number"]
+            line_number_changed = line_number != current_line_number
+            if line_number_changed:
+                if current_group:
+                    yield current_group
+                current_group.clear()
+            current_group.append(annotation)
+            current_line_number = line_number
+
+        if current_group:
+            yield current_group
+
+    def check_group(self, annotations):
+        """
+        Perform several linting checks on a group of annotations:
+
+        - Choice fields should have a valid value
+        - Annotation tokens are valid
+        - There is no duplicate
+        - All non-optional tokens are present
+        """
+        found_tokens = set()
+        group_tokens = []
+        group_name = None
+        for annotation in annotations:
+            token = annotation["annotation_token"]
+            if not group_name:
+                group_name = self._get_group_for_token(token)
+                if group_name:
+                    group_tokens = self.config.groups[group_name]
+
+            # Check if choice field
+            self._check_results_choices(annotation)
+
+            # Check token belongs to group
+            if group_name:
+                if token not in group_tokens:
+                    self._add_annotation_error(
+                        annotation,
+                        "'{}' token does not belong to group '{}'. Expected one of: {}".format(
+                           token,
+                           group_name,
+                           group_tokens
+                        )
+                    )
+
+            # Check for duplicates
+            if token in found_tokens:
+                self._add_annotation_error(
+                    annotation,
+                    "found duplicate token '{}'".format(token)
+                )
+            if group_name:
+                found_tokens.add(token)
+
+        # Check for missing tokens
+        for token in group_tokens:
+            if token not in self.config.optional_groups:
+                if token not in found_tokens:
+                    self._add_annotation_error(
+                        annotations[0],
+                        "missing non-optional annotation: '{}'".format(token)
+                    )
+
+    def check_annotation(self, annotation, current_group):
         """
         Check an annotation and add annotation errors when necessary.
 
@@ -459,15 +548,6 @@ class BaseSearch(metaclass=ABCMeta):
                     )
                 )
                 current_group = None
-                found_group_tokens.clear()
-            elif token in found_group_tokens:
-                # Check for duplicate tokens
-                self._add_annotation_error(
-                    annotation,
-                    '"{}" is already in the group that starts with "{}"'.format(token, current_group)
-                )
-                current_group = None
-                found_group_tokens.clear()
             else:
                 # Token is correct
                 self.echo.echo_vv('Adding "{}", line {} to group {}'.format(
@@ -475,22 +555,13 @@ class BaseSearch(metaclass=ABCMeta):
                     annotation['line_number'],
                     current_group
                 ))
-                found_group_tokens.append(token)
         else:
             current_group = self._get_group_for_token(token)
             if current_group:
                 # Start a new group
-                found_group_tokens.clear()
-                found_group_tokens.append(token)
                 self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
                     current_group, token, annotation['line_number'])
                 )
-
-        # If we have all members, this group is done
-        if current_group and len(found_group_tokens) == len(self.config.groups[current_group]):
-            self.echo.echo_vv("Group complete!")
-            current_group = None
-            found_group_tokens.clear()
 
         return current_group
 

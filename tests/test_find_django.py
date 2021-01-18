@@ -292,7 +292,7 @@ def test_find_django_ordering_error(**kwargs):
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
-    assert '".. no_pii:" is not in the group ' in result.output
+    assert "missing non-optional annotation: '.. pii:'" in result.output
 
 
 @patch.multiple(

@@ -12,6 +12,8 @@ annotations:
             choices: [id, name, other]
         - ".. pii_retirement:":
             choices: [retained, local_api, consumer_api, third_party]
+        - ".. pii_optional:":
+            optional: true
 extensions:
     python:
         - pyt

@@ -3,9 +3,8 @@ Docstring
 
 .. pii: Annotation 1
 .. pii_types: id, name
+.. pii_retirement: local_api, consumer_api
 """
-# Should be able to finish the group outside of the same comment if necessary
-# .. pii_retirement: local_api, consumer_api
 
 
 def do():

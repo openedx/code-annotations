@@ -222,3 +222,15 @@ This comment also works even though the ordering is different:
     .. reporting_consumers: Recommendations and email marketing events
     """
 
+If some annotations in a group are optional, you should flag them as such::
+
+  .. code-block:: yaml
+
+      annotations:
+          reporting:
+              - ".. reporting:"
+              - ".. reporting_non_required_field:":
+                  optional: true
+
+Otherwise, linting will trigger an error complaining of a missing annotation when the
+"`.. reporting_non_required_field:`" annotation is not present.
