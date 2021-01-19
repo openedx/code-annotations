@@ -11,7 +11,7 @@ import yaml
 from slugify import slugify
 
 
-class ReportRenderer(object):
+class ReportRenderer:
     """
     Generates human readable documentation from YAML reports.
     """
@@ -106,7 +106,7 @@ class ReportRenderer(object):
 
         full_doc_filename += self.config.rendered_report_file_extension
 
-        self.echo.echo_v('Writing {}'.format(full_doc_filename))
+        self.echo.echo_v(f'Writing {full_doc_filename}')
 
         with open(full_doc_filename, 'w') as output:
             output.write(self.top_level_template.render(
@@ -130,7 +130,7 @@ class ReportRenderer(object):
                     if isinstance(annotation['annotation_data'], list) and choice in annotation['annotation_data']:
                         choice_report[filename].append(annotation)
 
-            self._write_doc_file('choice_{}'.format(choice), choice_report)
+            self._write_doc_file(f'choice_{choice}', choice_report)
 
     def _generate_per_annotation_docs(self):
         """
@@ -143,7 +143,7 @@ class ReportRenderer(object):
                     if report_annotation['annotation_token'] == annotation:
                         annotation_report[filename].append(report_annotation)
 
-            self._write_doc_file('annotation_{}'.format(annotation), annotation_report)
+            self._write_doc_file(f'annotation_{annotation}', annotation_report)
 
     def render(self):
         """

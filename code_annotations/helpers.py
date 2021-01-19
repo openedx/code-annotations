@@ -19,7 +19,7 @@ def fail(msg):
     sys.exit(1)
 
 
-class VerboseEcho(object):
+class VerboseEcho:
     """
     Helper to handle verbosity-dependent logging.
     """
@@ -47,7 +47,7 @@ class VerboseEcho(object):
             kwargs: Any additional keyword args to pass to click.echo
         """
         self.verbosity = verbosity
-        self.echo_v("Verbosity level set to {}".format(verbosity))
+        self.echo_v(f"Verbosity level set to {verbosity}")
 
     def echo(self, output, verbosity_level=0, **kwargs):
         """

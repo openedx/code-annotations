@@ -1,11 +1,11 @@
 """
 Mocked models for testing Django search functionality.
 """
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 
 # Base model with no annotation and its children
-class FakeBaseModelNoAnnotation(object):
+class FakeBaseModelNoAnnotation:
     """
     This is a fake model with no annotations.
     """
@@ -42,7 +42,7 @@ class FakeChildModelMultiAnnotation(FakeChildModelSingleAnnotation):
 
 
 # Base model with an annotation and its children
-class FakeBaseModelWithAnnotation(object):
+class FakeBaseModelWithAnnotation:
     """
     This is a fake model with one annotation.
 
@@ -90,7 +90,7 @@ class FakeChildModelMultiWithAnnotation(FakeChildModelWithAnnotation):
     )
 
 
-class FakeBaseModelWithNoDocstring(object):
+class FakeBaseModelWithNoDocstring:
     _meta = MagicMock(app_label='fake_app_2', object_name='FakeBaseModelWithNoDocstring', abstract=False, proxy=False)
 
 
@@ -111,7 +111,7 @@ class FakeChildModelMultiWithBrokenAnnotations(FakeChildModelWithAnnotation):
 
 
 # Models for testing requires_annotations
-class FakeBaseModelBoring(object):
+class FakeBaseModelBoring:
     """
     This is a fake model with no annotations.
     """
@@ -119,7 +119,7 @@ class FakeBaseModelBoring(object):
     _meta = MagicMock(app_label='fake_app_3', object_name='FakeBaseModelBoring', abstract=False, proxy=False)
 
 
-class FakeBaseModelBoringWithAnnotations(object):
+class FakeBaseModelBoringWithAnnotations:
     """
     This is a fake model with an annotation.
 
@@ -134,7 +134,7 @@ class FakeBaseModelBoringWithAnnotations(object):
     )
 
 
-class FakeBaseModelAbstract(object):
+class FakeBaseModelAbstract:
     """
     This is a fake abstract model.
     """
@@ -142,7 +142,7 @@ class FakeBaseModelAbstract(object):
     _meta = MagicMock(app_label='fake_app_3', object_name='FakeBaseModelAbstract', abstract=True, proxy=False)
 
 
-class FakeBaseModelProxy(object):
+class FakeBaseModelProxy:
     """
     This is a fake proxy model.
     """

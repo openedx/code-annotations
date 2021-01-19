@@ -1,8 +1,9 @@
 """
 Tests for the DjangoSearch coverage functionality.
 """
+from unittest.mock import DEFAULT, patch
+
 import pytest
-from mock import DEFAULT, patch
 
 from code_annotations.find_django import DjangoSearch
 from tests.fake_models import (
@@ -41,7 +42,7 @@ ALL_FAKE_MODELS = (
 @patch('code_annotations.find_django.django.apps.apps.get_app_configs')
 def test_coverage_all_models(mock_get_app_configs, mock_is_non_local, mock_setup_django, mock_issubclass):
     # Lots of fakery going on here. This class mocks Django AppConfigs to deliver our fake models.
-    class FakeAppConfig(object):
+    class FakeAppConfig:
         def get_models(self):
             return ALL_FAKE_MODELS
 

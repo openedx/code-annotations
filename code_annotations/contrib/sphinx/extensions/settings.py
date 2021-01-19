@@ -4,7 +4,6 @@ Sphinx extension for viewing (non-toggle) setting annotations.
 import os
 
 import pkg_resources
-
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
@@ -85,7 +84,7 @@ class Settings(SphinxDirective):
             setting_default_node = nodes.literal(
                 text=quote_value(setting_default_value)
             )
-            setting_section = nodes.section("", ids=["setting-{}".format(setting_name)])
+            setting_section = nodes.section("", ids=[f"setting-{setting_name}"])
             setting_section += nodes.title(text=setting_name)
             setting_section += nodes.paragraph("", "Default: ", setting_default_node)
             setting_section += nodes.paragraph(

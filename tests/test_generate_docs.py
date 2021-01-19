@@ -60,7 +60,7 @@ def _do_find(source_path, new_report_path):
         'static_find_annotations',
         '--config_file',
         'tests/test_configurations/.annotations_test_python_only',
-        '--source_path={}'.format(source_path),
+        f'--source_path={source_path}',
         '--no_lint',
     ), False)
 

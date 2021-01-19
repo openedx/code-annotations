@@ -32,7 +32,7 @@ def test_get_group_for_token_multiple_groups():
 ])
 def test_missing_config(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
-        AnnotationConfig('tests/test_configurations/{}'.format(test_config), None, 3)
+        AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
     exc_msg = str(exception.value)
     assert "required keys are missing from the configuration file" in exc_msg
@@ -46,7 +46,7 @@ def test_missing_config(test_config, expected_message):
 ])
 def test_bad_coverage_targets(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
-        AnnotationConfig('tests/test_configurations/{}'.format(test_config), None, 3)
+        AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
     exc_msg = str(exception.value)
     assert expected_message in exc_msg
@@ -66,7 +66,7 @@ def test_coverage_target_int():
 ])
 def test_annotation_configuration_errors(test_config, expected_message):
     with pytest.raises(ConfigurationException) as exception:
-        AnnotationConfig('tests/test_configurations/{}'.format(test_config), None, 3)
+        AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
     exc_msg = str(exception.value)
     assert expected_message in exc_msg

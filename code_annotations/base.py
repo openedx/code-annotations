@@ -15,7 +15,7 @@ from code_annotations.exceptions import ConfigurationException
 from code_annotations.helpers import VerboseEcho
 
 
-class AnnotationConfig(object):
+class AnnotationConfig:
     """
     Configuration shared among all Code Annotations commands.
     """
@@ -51,10 +51,10 @@ class AnnotationConfig(object):
         self.echo.set_verbosity(verbosity)
 
         self.report_path = report_path_override if report_path_override else raw_config['report_path']
-        self.echo("Configured for report path: {}".format(self.report_path))
+        self.echo(f"Configured for report path: {self.report_path}")
 
         self.source_path = source_path_override if source_path_override else raw_config['source_path']
-        self.echo("Configured for source path: {}".format(self.source_path))
+        self.echo(f"Configured for source path: {self.source_path}")
 
         self._configure_coverage(raw_config.get('coverage_target', None))
         self.report_template_dir = raw_config.get('report_template_dir')
@@ -125,7 +125,7 @@ class AnnotationConfig(object):
 
     def _add_annotation_token(self, token):
         if token in self.annotation_tokens:
-            raise ConfigurationException('{} is configured more than once, tokens must be unique.'.format(token))
+            raise ConfigurationException(f'{token} is configured more than once, tokens must be unique.')
         self.annotation_tokens.append(token)
 
     def _configure_coverage(self, coverage_target):
@@ -141,14 +141,14 @@ class AnnotationConfig(object):
         if coverage_target:
             try:
                 self.coverage_target = float(coverage_target)
-            except (TypeError, ValueError):
+            except (TypeError, ValueError) as error:
                 raise ConfigurationException(
-                    'Coverage target must be a number between 0 and 100 not "{}".'.format(coverage_target)
-                )
+                    f'Coverage target must be a number between 0 and 100 not "{coverage_target}".'
+                ) from error
 
             if self.coverage_target < 0.0 or self.coverage_target > 100.0:
                 raise ConfigurationException(
-                    'Invalid coverage target. {} is not between 0 and 100.'.format(self.coverage_target)
+                    f'Invalid coverage target. {self.coverage_target} is not between 0 and 100.'
                 )
         else:
             self.coverage_target = None
@@ -167,7 +167,7 @@ class AnnotationConfig(object):
         self.groups[group_name] = []
 
         if not group or len(group) == 1:
-            raise ConfigurationException('Group "{}" must have more than one annotation.'.format(group_name))
+            raise ConfigurationException(f'Group "{group_name}" must have more than one annotation.')
 
         for annotation in group:
             for annotation_token in annotation:
@@ -179,7 +179,7 @@ class AnnotationConfig(object):
 
                 # Otherwise it should be a text type, if not then error out
                 elif not self._is_annotation_token(annotation_value):
-                    raise ConfigurationException('{} is an unknown annotation type.'.format(annotation))
+                    raise ConfigurationException(f'{annotation} is an unknown annotation type.')
 
                 self.groups[group_name].append(annotation_token)
                 self._add_annotation_token(annotation_token)
@@ -219,15 +219,15 @@ class AnnotationConfig(object):
 
             elif not self._is_annotation_token(annotation):  # pragma: no cover
                 raise TypeError(
-                    '{} is an unknown type, must be strings or lists.'.format(annotation_token_or_group_name)
+                    f'{annotation_token_or_group_name} is an unknown type, must be strings or lists.'
                 )
             else:
                 self._add_annotation_token(annotation_token_or_group_name)
                 self.annotation_regexes.append(re.escape(annotation_token_or_group_name))
 
-        self.echo.echo_v("Groups configured: {}".format(self.groups))
-        self.echo.echo_v("Choices configured: {}".format(self.choices))
-        self.echo.echo_v("Annotation tokens configured: {}".format(self.annotation_tokens))
+        self.echo.echo_v(f"Groups configured: {self.groups}")
+        self.echo.echo_v(f"Choices configured: {self.choices}")
+        self.echo.echo_v(f"Annotation tokens configured: {self.annotation_tokens}")
 
     def _plugin_load_failed_handler(self, *args, **kwargs):
         """
@@ -281,7 +281,7 @@ class AnnotationConfig(object):
             ))
 
 
-class BaseSearch(object, metaclass=ABCMeta):
+class BaseSearch(metaclass=ABCMeta):
     """
     Base class for searchers.
     """
@@ -365,7 +365,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                         )
                     )
                 elif choice in found_valid_choices:
-                    self._add_annotation_error(annotation, '"{}" is already present in this annotation.'.format(choice))
+                    self._add_annotation_error(annotation, f'"{choice}" is already present in this annotation.')
                 else:
                     found_valid_choices.append(choice)
         else:
@@ -446,7 +446,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                     elif token in found_group_members:
                         self._add_annotation_error(
                             annotation,
-                            '"{}" is already in the group that starts with "{}"'.format(token, current_group)
+                            f'"{token}" is already in the group that starts with "{current_group}"'
                         )
                         current_group = None
                         found_group_members = []
@@ -465,7 +465,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                             # If we get here there is a problem with check_results' group_children not matching up with
                             # our config's groups. That puts us in an unknown state, so we should quit.
                             raise Exception(
-                                'group_children is out of sync with config.groups. {} is not in a group!'.format(token)
+                                f'group_children is out of sync with config.groups. {token} is not in a group!'
                             )
 
                         found_group_members = [token]
@@ -480,7 +480,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                     found_group_members = []
 
             if current_group:
-                self.errors.append('File("{}") finished with an incomplete group {}!'.format(filename, current_group))
+                self.errors.append(f'File("{filename}") finished with an incomplete group {current_group}!')
 
         return not self.errors
 
@@ -531,7 +531,7 @@ class BaseSearch(object, metaclass=ABCMeta):
         current_group_id = 0
 
         for filename in all_results:
-            self.echo.echo_vv("report_format: formatting {}".format(filename))
+            self.echo.echo_vv(f"report_format: formatting {filename}")
             formatted_results[filename] = []
             current_group = None
 
@@ -539,7 +539,7 @@ class BaseSearch(object, metaclass=ABCMeta):
 
             for annotation in all_results[filename]:
                 token = annotation['annotation_token']
-                self.echo.echo_vvv("report_format: formatting annotation token {}".format(token))
+                self.echo.echo_vvv(f"report_format: formatting annotation token {token}")
 
                 if current_group:
                     if token not in self.config.groups[current_group]:
@@ -572,7 +572,7 @@ class BaseSearch(object, metaclass=ABCMeta):
                             current_group_id, current_group, token, annotation['line_number'])
                         )
                     else:
-                        self.echo.echo_vv('Adding single token {}.'.format(token))
+                        self.echo.echo_vv(f'Adding single token {token}.')
                         formatted_results[filename].append(annotation)
 
                 # If we have all members, this group is done
@@ -603,7 +603,7 @@ class BaseSearch(object, metaclass=ABCMeta):
 
         formatted_results = self._format_results_for_report(all_results)
 
-        self.echo("Generating report to {}".format(report_filename))
+        self.echo(f"Generating report to {report_filename}")
 
         try:
             os.makedirs(self.config.report_path)

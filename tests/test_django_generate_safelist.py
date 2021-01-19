@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Tests for seeding the safelist.
 """
 import os
+from unittest.mock import DEFAULT, MagicMock, patch
 
 import pytest
-from mock import DEFAULT, MagicMock, patch
 
 from code_annotations.find_django import DjangoSearch
 from tests.helpers import DEFAULT_FAKE_SAFELIST_PATH, EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script_isolated
@@ -49,7 +48,7 @@ def test_seeding_safelist(local_models, non_local_models, **kwargs):
 
     def test_safelist_callback():
         assert os.path.exists(DEFAULT_FAKE_SAFELIST_PATH)
-        with open(DEFAULT_FAKE_SAFELIST_PATH, 'r') as fake_safelist_file:
+        with open(DEFAULT_FAKE_SAFELIST_PATH) as fake_safelist_file:
             fake_safelist = fake_safelist_file.read()
         for model in non_local_models:
             assert DjangoSearch.get_model_id(model) in fake_safelist

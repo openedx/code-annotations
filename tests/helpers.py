@@ -34,7 +34,7 @@ extensions:
 """.format(DEFAULT_FAKE_SAFELIST_PATH)
 
 
-class FakeConfig(object):
+class FakeConfig:
     """
     Simple config for testing without reading a config file.
     """
@@ -152,7 +152,7 @@ def call_script_isolated(
         if test_filesystem_report_cb:
             try:
                 report_file = re.search(r'Generating report to (.*)', result.output).groups()[0]
-                with open(report_file, 'r') as f:
+                with open(report_file) as f:
                     report_contents = f.read()
 
                 test_filesystem_report_cb(report_contents)
