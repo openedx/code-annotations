@@ -16,8 +16,11 @@ annotations:
         choices: [temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
     - ".. toggle_creation_date:":
     - ".. toggle_target_removal_date:":
+        optional: true
     - ".. toggle_warnings:":
+        optional: true
     - ".. toggle_tickets:":
+        optional: true
 extensions:
     python:
         - py
