@@ -11,6 +11,13 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
+[1.0.0] - 2021-01-25
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* BREAKING CHANGE: Improvement of some error messages
+* BREAKING CHANGE: Refactor linting in a way that breaks backward compatibility of certain edge cases
+* Implement optional annotation fields
+
 [0.10.3] - 2020-12-15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
