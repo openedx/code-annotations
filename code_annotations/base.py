@@ -445,8 +445,10 @@ class BaseSearch(metaclass=ABCMeta):
 
     def iter_groups(self, annotations):
         """
-        Iterate on groups of annotations. Annotations are considered as a group when they all have the same
-        `line_number`, which should point to the beginning of the annotation group.
+        Iterate on groups of annotations.
+
+        Annotations are considered as a group when they all have the same `line_number`, which should point to the
+        beginning of the annotation group.
 
         Yield:
             annotations (annotation list)
@@ -468,7 +470,9 @@ class BaseSearch(metaclass=ABCMeta):
 
     def check_group(self, annotations):
         """
-        Perform several linting checks on a group of annotations:
+        Perform several linting checks on a group of annotations.
+
+        The following checks are performed:
 
         - Choice fields should have a valid value
         - Annotation tokens are valid
