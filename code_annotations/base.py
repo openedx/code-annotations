@@ -447,23 +447,28 @@ class BaseSearch(metaclass=ABCMeta):
         """
         Iterate on groups of annotations.
 
-        Annotations are considered as a group when they all have the same `line_number`, which should point to the
-        beginning of the annotation group.
+        Annotations are considered as a group when they all have the same `line_number` and optional
+        `extra['object_id']`. The line number points to the beginning of the annotation group. The `object_id` is set
+        mostly for annotations parsed from a safelist.
 
         Yield:
             annotations (annotation list)
         """
         current_group = []
         current_line_number = None
+        current_object_id = None
         for annotation in annotations:
             line_number = annotation["line_number"]
+            object_id = annotation.get("extra", {}).get("object_id")
             line_number_changed = line_number != current_line_number
-            if line_number_changed:
+            object_id_changed = object_id != current_object_id
+            if line_number_changed or object_id_changed:
                 if current_group:
                     yield current_group
                 current_group.clear()
             current_group.append(annotation)
             current_line_number = line_number
+            current_object_id = object_id
 
         if current_group:
             yield current_group
