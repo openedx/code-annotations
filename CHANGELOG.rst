@@ -11,7 +11,12 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
-[1.0.0] - 2021-01-25
+[1.0.1] - 2021-01-22
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Fix grouping of safelisted annotations
+
+[1.0.0] - 2021-01-21
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * BREAKING CHANGE: Improvement of some error messages
