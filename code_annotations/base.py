@@ -10,6 +10,7 @@ from abc import ABCMeta, abstractmethod
 import yaml
 from stevedore import named
 
+from code_annotations import annotation_errors
 from code_annotations.exceptions import ConfigurationException
 from code_annotations.helpers import VerboseEcho
 
@@ -314,7 +315,11 @@ class BaseSearch(metaclass=ABCMeta):
         """
         self.config = config
         self.echo = self.config.echo
+        # errors contains formatted error messages
         self.errors = []
+        # annotation_errors contains (annotation, AnnotationErrorType, args) tuples
+        # This attribute may be parsed by 3rd-parties, such as edx-lint.
+        self.annotation_errors = []
 
     def format_file_results(self, all_results, results):
         """
@@ -377,20 +382,18 @@ class BaseSearch(metaclass=ABCMeta):
                 if choice not in self.config.choices[token]:
                     self._add_annotation_error(
                         annotation,
-                        '"{}" is not a valid choice for "{}". Expected one of {}.'.format(
-                            choice,
-                            token,
-                            self.config.choices[token]
-                        )
+                        annotation_errors.InvalidChoice,
+                        (choice, token, self.config.choices[token])
                     )
                 elif choice in found_valid_choices:
-                    self._add_annotation_error(annotation, f'"{choice}" is already present in this annotation.')
+                    self._add_annotation_error(annotation, annotation_errors.DuplicateChoiceValue, (choice,))
                 else:
                     found_valid_choices.append(choice)
         else:
             self._add_annotation_error(
                 annotation,
-                'no value found for "{}". Expected one of {}.'.format(token, self.config.choices[token])
+                annotation_errors.MissingChoiceValue,
+                (token, self.config.choices[token])
             )
         return None
 
@@ -502,7 +505,8 @@ class BaseSearch(metaclass=ABCMeta):
                 if token not in group_tokens:
                     self._add_annotation_error(
                         annotation,
-                        "'{}' token does not belong to group '{}'. Expected one of: {}".format(
+                        annotation_errors.InvalidToken,
+                        (
                            token,
                            group_name,
                            group_tokens
@@ -513,7 +517,8 @@ class BaseSearch(metaclass=ABCMeta):
             if token in found_tokens:
                 self._add_annotation_error(
                     annotation,
-                    "found duplicate token '{}'".format(token)
+                    annotation_errors.DuplicateToken,
+                    (token,)
                 )
             if group_name:
                 found_tokens.add(token)
@@ -524,69 +529,26 @@ class BaseSearch(metaclass=ABCMeta):
                 if token not in found_tokens:
                     self._add_annotation_error(
                         annotations[0],
-                        "missing non-optional annotation: '{}'".format(token)
+                        annotation_errors.MissingToken,
+                        (token,)
                     )
 
-    def check_annotation(self, annotation, current_group):
-        """
-        Check an annotation and add annotation errors when necessary.
-
-        Args:
-            annotation (dict): in particular, every annotation contains 'annotation_token' and 'annotation_data' keys.
-            current_group (str): None or the name of a group (from self.config.groups) to which preceding annotations
-                belong.
-            found_group_tokens (list): annotation tokens from the same group that were already found. This list is
-                cleared in case of error or when creating a new group.
-
-        Return:
-            current_group (str or None)
-        """
-        self._check_results_choices(annotation)
-        token = annotation['annotation_token']
-
-        if current_group:
-            # Add to existing group
-            if token not in self.config.groups[current_group]:
-                # Check for token correctness
-                self._add_annotation_error(
-                    annotation,
-                    '"{}" is not in the group that starts with "{}". Expecting one of: {}'.format(
-                       token,
-                       current_group,
-                       self.config.groups[current_group]
-                    )
-                )
-                current_group = None
-            else:
-                # Token is correct
-                self.echo.echo_vv('Adding "{}", line {} to group {}'.format(
-                    token,
-                    annotation['line_number'],
-                    current_group
-                ))
-        else:
-            current_group = self._get_group_for_token(token)
-            if current_group:
-                # Start a new group
-                self.echo.echo_vv('Starting new group for "{}" token "{}", line {}'.format(
-                    current_group, token, annotation['line_number'])
-                )
-
-        return current_group
-
-    def _add_annotation_error(self, annotation, message):
+    def _add_annotation_error(self, annotation, error_type, args=None):
         """
         Add an error message to self.errors, formatted nicely.
 
         Args:
             annotation: A single annotation dict found in search()
-            message: Custom error message to be added
+            error_type (annotation_errors.AnnotationErrorType): error type from which the error message will be
+                generated.
+            args (tuple): arguments for error message formatting.
         """
-        if 'extra' in annotation and 'object_id' in annotation['extra']:
-            error = "{}::{}: {}".format(annotation['filename'], annotation['extra']['object_id'], message)
-        else:
-            error = "{}::{}: {}".format(annotation['filename'], annotation['line_number'], message)
-        self.errors.append(error)
+        args = args or tuple()
+        error_message = error_type.message % args
+        location = annotation.get("extra", {}).get("object_id", annotation["line_number"])
+        message = "{}::{}: {}".format(annotation['filename'], location, error_message)
+        self.annotation_errors.append((annotation, error_type, args))
+        self._add_error(message)
 
     def _add_error(self, message):
         """
