@@ -285,6 +285,7 @@ disable =
 	unused-wildcard-import,
 	global-statement,
 	no-else-return,
+	django-not-configured,
 	
 	apply-builtin,
 	backtick,

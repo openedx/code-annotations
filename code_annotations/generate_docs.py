@@ -68,7 +68,7 @@ class ReportRenderer:
                     for report_annotation in report[filename]:
                         index_keys = ('line_number', 'annotation_token', 'annotation_data')
 
-                        if all([loaded_annotation[k] == report_annotation[k] for k in index_keys]):
+                        if all(loaded_annotation[k] == report_annotation[k] for k in index_keys):
                             report_annotation.update(loaded_annotation)
                             found = True
                             break
