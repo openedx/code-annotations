@@ -3,10 +3,11 @@ Sphinx extension for viewing (non-toggle) setting annotations.
 """
 import os
 
-import pkg_resources
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
+
+from code_annotations.contrib.config import SETTING_ANNOTATIONS_CONFIG_PATH
 
 from .base import find_annotations, quote_value
 
@@ -18,11 +19,7 @@ def find_settings(source_path):
     Return:
         settings (dict): Django settings indexed by name.
     """
-    config_path = pkg_resources.resource_filename(
-        "code_annotations",
-        os.path.join("contrib", "config", "setting_annotations.yaml"),
-    )
-    return find_annotations(source_path, config_path, ".. setting_name:")
+    return find_annotations(source_path, SETTING_ANNOTATIONS_CONFIG_PATH, ".. setting_name:")
 
 
 class Settings(SphinxDirective):

@@ -15,25 +15,24 @@ def find_annotations(source_path, config_path, group_by_key):
         toggles (dict): feature toggles indexed by name.
     """
     config = AnnotationConfig(
-        config_path, verbosity=0, source_path_override=source_path
+        config_path, verbosity=-1, source_path_override=source_path
     )
-    results = StaticSearch(config).search()
-
+    search = StaticSearch(config)
+    all_results = search.search()
     toggles = {}
-    current_entry = {}
-    for filename, entries in results.items():
-        for entry in entries:
-            key = entry["annotation_token"]
-            value = entry["annotation_data"]
-            if key == group_by_key:
-                toggle_name = value
-                toggles[toggle_name] = {
-                    "filename": filename,
-                    "line_number": entry["line_number"],
-                }
-                current_entry = toggles[toggle_name]
-            else:
-                current_entry[key] = value
+    for filename in all_results:
+        for annotations in search.iter_groups(all_results[filename]):
+            current_entry = {}
+            for annotation in annotations:
+                key = annotation["annotation_token"]
+                value = annotation["annotation_data"]
+                if key == group_by_key:
+                    toggle_name = value
+                    toggles[toggle_name] = current_entry
+                    current_entry["filename"] = filename
+                    current_entry["line_number"] = annotation["line_number"]
+                else:
+                    current_entry[key] = value
 
     return toggles
 

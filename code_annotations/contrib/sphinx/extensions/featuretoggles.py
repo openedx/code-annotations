@@ -3,9 +3,10 @@ Sphinx extension for viewing feature toggle annotations.
 """
 import os
 
-import pkg_resources
 from docutils import nodes
 from sphinx.util.docutils import SphinxDirective
+
+from code_annotations.contrib.config import FEATURE_TOGGLE_ANNOTATIONS_CONFIG_PATH
 
 from .base import find_annotations, quote_value
 
@@ -17,11 +18,9 @@ def find_feature_toggles(source_path):
     Return:
         toggles (dict): feature toggles indexed by name.
     """
-    config_path = pkg_resources.resource_filename(
-        "code_annotations",
-        os.path.join("contrib", "config", "feature_toggle_annotations.yaml"),
+    return find_annotations(
+        source_path, FEATURE_TOGGLE_ANNOTATIONS_CONFIG_PATH, ".. toggle_name:"
     )
-    return find_annotations(source_path, config_path, ".. toggle_name:")
 
 
 class FeatureToggles(SphinxDirective):
@@ -74,9 +73,7 @@ class FeatureToggles(SphinxDirective):
             toggle = toggles[toggle_name]
             toggle_default_value = toggle.get(".. toggle_default:", "Not defined")
             toggle_default_node = nodes.literal(text=quote_value(toggle_default_value))
-            toggle_section = nodes.section(
-                "", ids=[f"featuretoggle-{toggle_name}"]
-            )
+            toggle_section = nodes.section("", ids=[f"featuretoggle-{toggle_name}"])
             toggle_section += nodes.title(text=toggle_name)
             toggle_section += nodes.paragraph("", "Default: ", toggle_default_node)
             toggle_section += nodes.paragraph(
@@ -109,7 +106,9 @@ def setup(app):
     Declare the Sphinx extension.
     """
     app.add_config_value(
-        "featuretoggles_source_path", os.path.abspath(".."), "env",
+        "featuretoggles_source_path",
+        os.path.abspath(".."),
+        "env",
     )
     app.add_config_value("featuretoggles_repo_url", "", "env")
     app.add_config_value("featuretoggles_repo_version", "master", "env")

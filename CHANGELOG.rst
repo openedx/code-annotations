@@ -11,6 +11,11 @@ Change Log
 
 .. There should always be an "Unreleased" section for changes pending release.
 
+Unreleased
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Internal refactoring of the sphinx utilities
+
 [1.1.0] - 2021-01-28
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
