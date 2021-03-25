@@ -14,7 +14,7 @@ Change Log
 Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Internal refactoring of the sphinx utilities
+* Internal refactoring of the sphinx utilities and the report generation code
 
 [1.1.0] - 2021-01-28
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
