@@ -102,7 +102,7 @@ def test_format_results_for_report():
             {
                 'found_by': 'test',
                 'filename': 'foo/bar.py',
-                'line_number': 2,
+                'line_number': 1,
                 'annotation_token': 'foo',
                 'annotation_data': 'file 1 annotation 2',
                 'expected_group_id': 1
@@ -113,7 +113,7 @@ def test_format_results_for_report():
                 'line_number': 4,
                 'annotation_token': 'not_in_a_group',
                 'annotation_data': 'file 1 annotation 3',
-                'expected_group_id': None
+                'expected_group_id': 2
             },
             {
                 'found_by': 'test',
@@ -121,7 +121,7 @@ def test_format_results_for_report():
                 'line_number': 10,
                 'annotation_token': 'token1',
                 'annotation_data': 'file 1 annotation 4',
-                'expected_group_id': 2
+                'expected_group_id': 3
             },
             {
                 'found_by': 'test',
@@ -129,15 +129,15 @@ def test_format_results_for_report():
                 'line_number': 12,
                 'annotation_token': 'token2',
                 'annotation_data': 'file 1 annotation 5',
-                'expected_group_id': 3
+                'expected_group_id': 4
             },
             {
                 'found_by': 'test',
                 'filename': 'foo/bar.py',
-                'line_number': 13,
+                'line_number': 12,
                 'annotation_token': 'foo',
                 'annotation_data': 'file 1 annotation 6',
-                'expected_group_id': 3
+                'expected_group_id': 4
             },
         ]
 
@@ -148,15 +148,15 @@ def test_format_results_for_report():
                 'line_number': 1,
                 'annotation_token': 'token2',
                 'annotation_data': 'file 2 annotation 1',
-                'expected_group_id': 4
+                'expected_group_id': 5
             },
             {
                 'found_by': 'test',
                 'filename': 'foo/bar.py',
-                'line_number': 2,
+                'line_number': 1,
                 'annotation_token': 'foo',
                 'annotation_data': 'file 1 annotation 2',
-                'expected_group_id': 4
+                'expected_group_id': 5
             }
         ]
 
@@ -168,10 +168,5 @@ def test_format_results_for_report():
             for formatted in results[filename]:
                 # When we find the same annotation, make sure that grouping is correct
                 if fake['annotation_data'] == formatted['annotation_data']:
-                    # Ungrouped annotations should not have the 'report_group_id' key
-                    if fake['expected_group_id'] is None:
-                        assert 'report_group_id' not in formatted
-                    # Otherwise it should match our expected value
-                    else:
-                        assert fake['expected_group_id'] == formatted['report_group_id']
+                    assert fake['expected_group_id'] == formatted['report_group_id']
                     break

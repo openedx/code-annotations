@@ -578,66 +578,34 @@ class BaseSearch(metaclass=ABCMeta):
         Returns:
             Dict of results arranged for reporting
         """
-        group_children = self._get_group_children()
         formatted_results = {}
         current_group_id = 0
-
         for filename in all_results:
             self.echo.echo_vv(f"report_format: formatting {filename}")
             formatted_results[filename] = []
-            current_group = None
-
-            found_group_members = []
-
-            for annotation in all_results[filename]:
-                token = annotation['annotation_token']
-                self.echo.echo_vvv(f"report_format: formatting annotation token {token}")
-
-                if current_group:
-                    if token not in self.config.groups[current_group]:
-                        self.echo.echo_vv(
-                            "report_format: {} is not a group member, finishing group id {}".format(
-                                token,
-                                current_group_id
-                            )
+            for annotation_group in self.iter_groups(all_results[filename]):
+                current_group_id += 1
+                for annotation_index, annotation in enumerate(annotation_group):
+                    token = annotation['annotation_token']
+                    self.echo.echo_vvv(f"report_format: formatting annotation token {token}")
+                    if annotation_index == 0:
+                        self.echo.echo_vv('Starting group id {} for "{}" token "{}", line {}'.format(
+                            current_group_id, annotation_group, token, annotation["line_number"])
                         )
-                        current_group = None
-                        found_group_members = []
-                        formatted_results[filename].append(annotation)
-                    else:
-                        self.echo.echo_vv("report_format: Adding {} to group id {}".format(
+                    self.echo.echo_vv(
+                        "report_format: Adding {} to group id {}".format(
                             token,
                             current_group_id
-                        ))
-                        annotation['report_group_id'] = current_group_id
-                        formatted_results[filename].append(annotation)
-                        found_group_members.append(token)
-                else:
-                    if token in group_children:
-                        current_group = self._get_group_for_token(token)
-                        current_group_id += 1
-                        found_group_members = [token]
-                        annotation['report_group_id'] = current_group_id
-                        formatted_results[filename].append(annotation)
-
-                        self.echo.echo_vv('Starting group id {} for "{}" token "{}", line {}'.format(
-                            current_group_id, current_group, token, annotation['line_number'])
                         )
-                    else:
-                        self.echo.echo_vv(f'Adding single token {token}.')
-                        formatted_results[filename].append(annotation)
-
-                # If we have all members, this group is done
-                if current_group and len(found_group_members) == len(self.config.groups[current_group]):
-                    self.echo.echo_vv("report_format: Group complete!")
-                    current_group = None
-                    found_group_members = []
+                    )
+                    annotation["report_group_id"] = current_group_id
+                    formatted_results[filename].append(annotation)
 
         return formatted_results
 
     def report(self, all_results, report_prefix=''):
         """
-        Genrates the YAML report of all search results.
+        Generate the YAML report of all search results.
 
         Args:
             all_results: Dict of found annotations, indexed by filename
