@@ -470,6 +470,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3.6', None),
     'django': ('https://docs.djangoproject.com/en/1.11/', 'https://docs.djangoproject.com/en/1.11/_objects/'),
     'model_utils': ('https://django-model-utils.readthedocs.io/en/latest/', None),
+    'edx_toggles': ('https://edx.readthedocs.io/projects/edx-toggles/en/latest/', None),
 }
 
 
