@@ -29,6 +29,7 @@ Contents:
    :caption: Contrib Code
 
    decisions/0001-config-and-tools
+   contrib/how_to/add_new_annotations_and_extracted_docs
    contrib/sphinx_extensions
    contrib/how_to/documenting_django_settings
 
