@@ -11,19 +11,27 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
+   :caption: General
 
-   readme
+   README <readme>
    getting_started
    writing_annotations
    static_search
    django_search
    configuration
-   sphinx_extensions
    extensions
    testing
-   modules
+   Package Reference <modules>
    changelog
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contrib Code
+
+   decisions/0001-config-and-tools
+   contrib/how_to/add_new_annotations_and_extracted_docs
+   contrib/sphinx_extensions
+   contrib/how_to/documenting_django_settings
 
 Indices and tables
 ==================
