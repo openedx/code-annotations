@@ -1,0 +1,5 @@
+# Additional Django dependencies for running django based annotation checks.
+
+-c constraints.txt
+
+django          # Required for django apps & models annotations

@@ -3,7 +3,6 @@
 -c constraints.txt
 
 click>=7.0,<8.0
-Django           # Web application framework
 Jinja2
 pyyaml
 python-slugify

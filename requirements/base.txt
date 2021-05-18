@@ -5,25 +5,23 @@
 #    make upgrade
 #
 click==7.1.2
-    # via -r requirements/base.in
-django==2.2.22
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/base.in
 jinja2==2.11.3
-    # via -r requirements/base.in
+    # via
+    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
+    #   -r requirements/base.in
 markupsafe==1.1.1
-    # via jinja2
+    # via
+    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
+    #   jinja2
 pbr==5.6.0
     # via stevedore
 python-slugify==5.0.2
     # via -r requirements/base.in
-pytz==2021.1
-    # via django
 pyyaml==5.4.1
     # via -r requirements/base.in
-sqlparse==0.4.1
-    # via django
 stevedore==3.3.0
     # via -r requirements/base.in
 text-unidecode==1.3

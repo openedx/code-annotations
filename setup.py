@@ -89,6 +89,7 @@ setup(
     },
     include_package_data=True,
     install_requires=load_requirements('requirements/base.in'),
+    extras_require={"django": ["Django>=2.2,<2.3"]},
     license="AGPL 3.0",
     zip_safe=False,
     keywords='edx pii code annotations',
