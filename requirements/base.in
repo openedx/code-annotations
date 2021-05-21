@@ -2,7 +2,7 @@
 
 -c constraints.txt
 
-click>=7.0,<8.0
+click
 Jinja2
 pyyaml
 python-slugify

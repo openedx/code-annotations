@@ -14,6 +14,12 @@ Change Log
 Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+[1.1.2] - 2021-05-21
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Django is not a base requirement for the package now.
+* Removed the click constraint from base requirements.
+
 [1.1.1] - 2021-03-30
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
