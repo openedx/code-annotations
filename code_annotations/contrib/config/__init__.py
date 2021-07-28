@@ -13,3 +13,8 @@ SETTING_ANNOTATIONS_CONFIG_PATH = pkg_resources.resource_filename(
     "code_annotations",
     os.path.join("contrib", "config", "setting_annotations.yaml"),
 )
+
+EVENTS_ANNOTATIONS_CONFIG_PATH = pkg_resources.resource_filename(
+    "code_annotations",
+    os.path.join("contrib", "config", "events_annotations.yaml"),
+)
