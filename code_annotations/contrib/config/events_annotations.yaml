@@ -8,8 +8,6 @@ annotations:
     - ".. event_name:":
     - ".. event_description:":
     - ".. event_data:":
-    - ".. event_status:":
-        choices: [provisional, active, deprecated, removed, replaced]
 extensions:
     python:
         - py
