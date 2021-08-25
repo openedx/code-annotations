@@ -4,11 +4,7 @@
 #
 #    make upgrade
 #
-appdirs==1.4.4
-    # via
-    #   -r requirements/travis.txt
-    #   virtualenv
-astroid==2.5.6
+astroid==2.7.2
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -17,62 +13,65 @@ attrs==21.2.0
     # via
     #   -r requirements/quality.txt
     #   pytest
-certifi==2020.12.5
+backports.entry-points-selectable==1.1.0
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
+    #   virtualenv
+certifi==2021.5.30
+    # via
+    #   -r requirements/ci.txt
     #   requests
 chardet==4.0.0
+    # via diff-cover
+charset-normalizer==2.0.4
     # via
-    #   -r requirements/travis.txt
-    #   diff-cover
+    #   -r requirements/ci.txt
     #   requests
 click-log==0.3.2
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-click==7.1.2
+click==8.0.1
     # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
     #   click-log
     #   code-annotations
     #   edx-lint
     #   pip-tools
-code-annotations==1.1.1
+code-annotations==1.2.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-codecov==2.1.11
-    # via -r requirements/travis.txt
-coverage[toml]==5.5
+codecov==2.1.12
+    # via -r requirements/ci.txt
+coverage==5.5
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   codecov
     #   pytest-cov
-diff-cover==5.1.1
+diff-cover==6.3.4
     # via -r requirements/dev.in
-distlib==0.3.1
+distlib==0.3.2
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   virtualenv
-django==2.2.23
+django==2.2.24
     # via
     #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
-    #   code-annotations
     #   edx-lint
 edx-lint==5.0.0
     # via -r requirements/quality.txt
 filelock==3.0.12
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   tox
     #   virtualenv
-idna==2.10
+idna==3.2
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   requests
 inflect==5.3.0
     # via jinja2-pluralize
@@ -80,15 +79,14 @@ iniconfig==1.1.1
     # via
     #   -r requirements/quality.txt
     #   pytest
-isort==5.8.0
+isort==5.9.3
     # via
     #   -r requirements/quality.txt
     #   pylint
 jinja2-pluralize==0.3.0
     # via diff-cover
-jinja2==2.11.3
+jinja2==3.0.1
     # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
     #   code-annotations
     #   diff-cover
@@ -97,9 +95,8 @@ lazy-object-proxy==1.6.0
     # via
     #   -r requirements/quality.txt
     #   astroid
-markupsafe==1.1.1
+markupsafe==2.0.1
     # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
     #   -r requirements/quality.txt
     #   jinja2
 mccabe==0.6.1
@@ -108,40 +105,46 @@ mccabe==0.6.1
     #   pylint
 mock==4.0.3
     # via -r requirements/quality.txt
-packaging==20.9
+packaging==21.0
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   pytest
     #   tox
 pbr==5.6.0
     # via
     #   -r requirements/quality.txt
     #   stevedore
-pep517==0.10.0
+pep517==0.11.0
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-pip-tools==6.1.0
+pip-tools==6.2.0
     # via -r requirements/pip-tools.txt
+platformdirs==2.2.0
+    # via
+    #   -r requirements/ci.txt
+    #   -r requirements/quality.txt
+    #   pylint
+    #   virtualenv
 pluggy==0.13.1
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   diff-cover
     #   pytest
     #   tox
 py==1.10.0
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   pytest
     #   tox
 pycodestyle==2.7.0
     # via -r requirements/quality.txt
 pydocstyle==6.1.1
     # via -r requirements/quality.txt
-pygments==2.9.0
+pygments==2.10.0
     # via diff-cover
 pylint-celery==0.3
     # via
@@ -156,7 +159,7 @@ pylint-plugin-utils==0.6
     #   -r requirements/quality.txt
     #   pylint-celery
     #   pylint-django
-pylint==2.8.2
+pylint==2.10.2
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -165,10 +168,10 @@ pylint==2.8.2
     #   pylint-plugin-utils
 pyparsing==2.4.7
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   packaging
-pytest-cov==2.12.0
+pytest-cov==2.12.1
     # via -r requirements/quality.txt
 pytest==6.2.4
     # via
@@ -186,14 +189,14 @@ pyyaml==5.4.1
     # via
     #   -r requirements/quality.txt
     #   code-annotations
-requests==2.25.1
+requests==2.26.0
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   codecov
 six==1.16.0
     # via
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
     #   edx-lint
     #   tox
     #   virtualenv
@@ -205,7 +208,7 @@ sqlparse==0.4.1
     # via
     #   -r requirements/quality.txt
     #   django
-stevedore==3.3.0
+stevedore==3.4.0
     # via
     #   -r requirements/quality.txt
     #   code-annotations
@@ -215,28 +218,34 @@ text-unidecode==1.3
     #   python-slugify
 toml==0.10.2
     # via
-    #   -r requirements/pip-tools.txt
+    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
-    #   -r requirements/travis.txt
-    #   coverage
-    #   pep517
     #   pylint
     #   pytest
+    #   pytest-cov
     #   tox
+tomli==1.2.1
+    # via
+    #   -r requirements/pip-tools.txt
+    #   pep517
 tox-battery==0.6.1
-    # via -r requirements/travis.txt
-tox==3.23.1
+    # via -r requirements/ci.txt
+tox==3.24.3
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   tox-battery
-urllib3==1.26.4
+urllib3==1.26.6
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   requests
-virtualenv==20.4.6
+virtualenv==20.7.2
     # via
-    #   -r requirements/travis.txt
+    #   -r requirements/ci.txt
     #   tox
+wheel==0.37.0
+    # via
+    #   -r requirements/pip-tools.txt
+    #   pip-tools
 wrapt==1.12.1
     # via
     #   -r requirements/quality.txt
@@ -244,3 +253,4 @@ wrapt==1.12.1
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
+# setuptools

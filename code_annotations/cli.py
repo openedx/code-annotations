@@ -103,8 +103,8 @@ def django_find_annotations(
 
             annotation_count = 0
 
-            for filename in annotated_models:
-                annotation_count += len(annotated_models[filename])
+            for key, val in annotated_models.items():
+                annotation_count += len(val)
 
             elapsed = datetime.datetime.now() - start_time
             click.echo("Search found {} annotations in {} seconds.".format(
@@ -164,8 +164,8 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
         elapsed = datetime.datetime.now() - start_time
         annotation_count = 0
 
-        for filename in all_results:
-            annotation_count += len(all_results[filename])
+        for key, val in all_results.items():
+            annotation_count += len(val)
 
         click.echo(f"Search found {annotation_count} annotations in {elapsed}.")
 

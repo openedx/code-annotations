@@ -90,7 +90,7 @@ def test_multi_line_annotations(test_file, annotations):
     config = AnnotationConfig('tests/test_configurations/.annotations_test')
     annotator = PythonAnnotationExtension(config, VerboseEcho())
 
-    with open(f'tests/extensions/python_test_files/{test_file}') as fi:
+    with open(f'tests/extensions/python_test_files/{test_file}', encoding="utf-8") as fi:
         result_annotations = annotator.search(fi)
 
     assert len(annotations) == len(result_annotations)

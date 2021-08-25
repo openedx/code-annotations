@@ -60,7 +60,7 @@ class DjangoSearch(BaseSearch):
 
         safelist_data = {self.get_model_id(model): {} for model in self.non_local_models}
 
-        with open(self.config.safelist_path, 'w') as safelist_file:
+        with open(self.config.safelist_path, 'w', encoding="utf-8") as safelist_file:
             safelist_comment = """
 # This is a Code Annotations automatically-generated Django model safelist file.
 # These models must be annotated as follows in order to be counted in the coverage report.
@@ -104,7 +104,7 @@ class DjangoSearch(BaseSearch):
         """
         # Read in the source file to get the line number
         filename = inspect.getsourcefile(model_type)
-        with open(filename) as file_handle:
+        with open(filename, encoding="utf-8") as file_handle:
             txt = file_handle.read()
 
         # Get the line number by counting newlines + 1 (for the first line).
@@ -169,7 +169,7 @@ class DjangoSearch(BaseSearch):
         """
         if os.path.exists(self.config.safelist_path):
             self.echo(f'Found safelist at {self.config.safelist_path}. Reading.\n')
-            with open(self.config.safelist_path) as safelist_file:
+            with open(self.config.safelist_path, encoding="utf-8") as safelist_file:
                 safelisted_models = yaml.safe_load(safelist_file)
             self._increment_count('safelisted', len(safelisted_models))
 

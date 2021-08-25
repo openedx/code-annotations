@@ -48,7 +48,7 @@ def test_seeding_safelist(local_models, non_local_models, **kwargs):
 
     def test_safelist_callback():
         assert os.path.exists(DEFAULT_FAKE_SAFELIST_PATH)
-        with open(DEFAULT_FAKE_SAFELIST_PATH) as fake_safelist_file:
+        with open(DEFAULT_FAKE_SAFELIST_PATH, encoding="utf-8") as fake_safelist_file:
             fake_safelist = fake_safelist_file.read()
         for model in non_local_models:
             assert DjangoSearch.get_model_id(model) in fake_safelist

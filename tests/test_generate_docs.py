@@ -87,7 +87,7 @@ def test_generate_report_multiple_files():
     # having two plugins that find different things in the same file.
     report_file_4 = 'test_reports/test4.yaml'
 
-    with open(report_file_1) as in_tmp:
+    with open(report_file_1, encoding="utf-8") as in_tmp:
         tmp_report = yaml.safe_load(in_tmp)
 
     tmp_report['simple_success.pyt'].append(
@@ -100,7 +100,7 @@ def test_generate_report_multiple_files():
          }
     )
 
-    with open(report_file_4, 'w') as out_tmp:
+    with open(report_file_4, 'w', encoding="utf-8") as out_tmp:
         yaml.safe_dump(tmp_report, out_tmp)
 
     report_result = call_script(
@@ -125,7 +125,7 @@ def test_generate_report_multiple_files():
         assert os.path.exists(created_doc)
 
     # Annotations from all files are present
-    with open('test_reports/index.rst') as full_report_file:
+    with open('test_reports/index.rst', encoding="utf-8") as full_report_file:
         full_doc = full_report_file.read()
 
     # The first file

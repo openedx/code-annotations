@@ -59,7 +59,7 @@ class StaticSearch(BaseSearch):
         self.echo.echo_vvv(full_name)
 
         # TODO: This should probably be a generator so we don't have to store all results in memory
-        with open(full_name) as file_handle:
+        with open(full_name, encoding="utf-8") as file_handle:
             # Call search_extension on all loaded extensions
             results = self.config.mgr.map(self.search_extension, file_handle, file_extensions_map, filename_extension)
 

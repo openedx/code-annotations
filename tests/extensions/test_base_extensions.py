@@ -26,7 +26,7 @@ def test_nothing_found():
     config = FakeConfig()
 
     r = FakeExtension(config, VerboseEcho())
-    with open('tests/extensions/base_test_files/empty.foo') as f:
+    with open('tests/extensions/base_test_files/empty.foo', encoding="utf-8") as f:
         r.search(f)
 
 

@@ -131,11 +131,11 @@ def call_script_isolated(
     """
     runner = CliRunner()
     with runner.isolated_filesystem():
-        with open('test_config.yml', 'w') as f:
+        with open('test_config.yml', 'w', encoding="utf-8") as f:
             f.write(FAKE_CONFIG_FILE)
 
         if fake_safelist_data:
-            with open(DEFAULT_FAKE_SAFELIST_PATH, 'w') as f:
+            with open(DEFAULT_FAKE_SAFELIST_PATH, 'w', encoding="utf-8") as f:
                 f.write(fake_safelist_data)
 
         result = runner.invoke(
@@ -152,7 +152,7 @@ def call_script_isolated(
         if test_filesystem_report_cb:
             try:
                 report_file = re.search(r'Generating report to (.*)', result.output).groups()[0]
-                with open(report_file) as f:
+                with open(report_file, encoding="utf-8") as f:
                     report_contents = f.read()
 
                 test_filesystem_report_cb(report_contents)

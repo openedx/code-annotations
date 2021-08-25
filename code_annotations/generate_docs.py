@@ -108,7 +108,7 @@ class ReportRenderer:
 
         self.echo.echo_v(f'Writing {full_doc_filename}')
 
-        with open(full_doc_filename, 'w') as output:
+        with open(full_doc_filename, 'w', encoding="utf-8") as output:
             output.write(self.top_level_template.render(
                 create_time=self.create_time,
                 report=doc_data,

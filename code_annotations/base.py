@@ -40,7 +40,7 @@ class AnnotationConfig:
         # Global logger, other objects can hold handles to this
         self.echo = VerboseEcho()
 
-        with open(config_file_path) as config_file:
+        with open(config_file_path, encoding="utf-8") as config_file:
             raw_config = yaml.safe_load(config_file)
 
         self._check_raw_config_keys(raw_config)
@@ -631,7 +631,7 @@ class BaseSearch(metaclass=ABCMeta):
             if e.errno != errno.EEXIST:
                 raise
 
-        with open(report_filename, 'w+') as report_file:
+        with open(report_filename, 'w+', encoding="utf-8") as report_file:
             yaml.safe_dump(formatted_results, report_file, default_flow_style=False)
 
         return report_filename

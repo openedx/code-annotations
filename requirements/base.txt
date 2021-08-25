@@ -4,25 +4,19 @@
 #
 #    make upgrade
 #
-click==7.1.2
-    # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
-    #   -r requirements/base.in
-jinja2==2.11.3
-    # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
-    #   -r requirements/base.in
-markupsafe==1.1.1
-    # via
-    #   -c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
-    #   jinja2
+click==8.0.1
+    # via -r requirements/base.in
+jinja2==3.0.1
+    # via -r requirements/base.in
+markupsafe==2.0.1
+    # via jinja2
 pbr==5.6.0
     # via stevedore
 python-slugify==5.0.2
     # via -r requirements/base.in
 pyyaml==5.4.1
     # via -r requirements/base.in
-stevedore==3.3.0
+stevedore==3.4.0
     # via -r requirements/base.in
 text-unidecode==1.3
     # via python-slugify
