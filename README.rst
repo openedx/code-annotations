@@ -1,7 +1,7 @@
 code-annotations
 =============================
 
-|pypi-badge| |travis-badge| |codecov-badge| |doc-badge| |pyversions-badge|
+|pypi-badge| |CI| |codecov-badge| |doc-badge| |pyversions-badge|
 |license-badge|
 
 Extensible tools for parsing annotations in codebases
@@ -64,9 +64,9 @@ refer to this `list of resources`_ if you need any assistance.
     :target: https://pypi.python.org/pypi/code-annotations/
     :alt: PyPI
 
-.. |travis-badge| image:: https://travis-ci.com/edx/code-annotations.svg?branch=master
-    :target: https://travis-ci.com/edx/code-annotations
-    :alt: Travis
+.. |CI| image:: https://github.com/edx/code-annotations/workflows/Python%20CI/badge.svg?branch=master
+    :target: https://github.com/edx/code-annotations/actions?query=workflow%3A%22Python+CI%22
+    :alt: CI
 
 .. |codecov-badge| image:: http://codecov.io/github/edx/code-annotations/coverage.svg?branch=master
     :target: http://codecov.io/github/edx/code-annotations?branch=master
