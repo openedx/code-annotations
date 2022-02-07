@@ -6,4 +6,4 @@ ignore+= ,migrations, settings, wsgi.py
 const-rgx = (([A-Z_][A-Z0-9_]*)|(__.*__)|log|urlpatterns|logger|User)$
 
 [MESSAGES CONTROL]
-DISABLE+= ,invalid-name,useless-object-inheritance
+DISABLE+= ,invalid-name,useless-object-inheritance,django-not-configured,consider-using-dict-items,consider-using-with
