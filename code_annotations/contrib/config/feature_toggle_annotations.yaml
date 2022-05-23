@@ -17,7 +17,7 @@ annotations:
     - ".. toggle_creation_date:":
     - ".. toggle_target_removal_date:":
         optional: true
-    - ".. toggle_warnings:":
+    - ".. toggle_warning:":
         optional: true
     - ".. toggle_tickets:":
         optional: true
