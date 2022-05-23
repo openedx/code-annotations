@@ -94,9 +94,9 @@ class FeatureToggles(SphinxDirective):
             toggle_section += nodes.paragraph(
                 text=toggle.get(".. toggle_description:", "")
             )
-            if toggle.get(".. toggle_warnings:") not in (None, "None", "n/a", "N/A"):
+            if toggle.get(".. toggle_warning:") not in (None, "None", "n/a", "N/A"):
                 toggle_section += nodes.warning(
-                    "", nodes.paragraph("", toggle[".. toggle_warnings:"])
+                    "", nodes.paragraph("", toggle[".. toggle_warning:"])
                 )
             yield toggle_section
 
