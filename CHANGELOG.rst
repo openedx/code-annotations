@@ -17,7 +17,7 @@ Unreleased
 [1.4.0] - 2022-05-23
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Rename toggle_warnings to toggle_warning
+* Rename toggle_warnings to toggle_warning for consistency with setting_warning.
 
 [1.3.0] - 2022-02-07
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
