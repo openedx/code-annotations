@@ -72,6 +72,7 @@ setup(
     version=VERSION,
     description="""Extensible tools for parsing annotations in codebases""",
     long_description=README + '\n\n' + CHANGELOG,
+    long_description_content_type='text/x-rst',
     author='edX',
     author_email='oscm@edx.org',
     url='https://github.com/edx/code-annotations',
