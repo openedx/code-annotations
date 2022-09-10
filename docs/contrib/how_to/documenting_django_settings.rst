@@ -61,4 +61,4 @@ There are a variety of tips in `certain sections of the how-to for documenting f
 Additional resources
 ====================
 
-The documentation format used to annotate non-boolean Django settings is also available from code-annotations repository: `setting_annotations.yaml <https://github.com/edx/code-annotations/blob/master/code_annotations/contrib/config/setting_annotations.yaml>`__.
+The documentation format used to annotate non-boolean Django settings is also available from code-annotations repository: `setting_annotations.yaml <https://github.com/openedx/code-annotations/blob/master/code_annotations/contrib/config/setting_annotations.yaml>`__.

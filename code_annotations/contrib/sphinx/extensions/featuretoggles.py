@@ -39,7 +39,7 @@ class FeatureToggles(SphinxDirective):
 
     - ``featuretoggles_repo_url``: Github repository where the code is hosted. E.g:
 
-        featuretoggles_repo_url = "https://github.com/edx/myrepo"
+        featuretoggles_repo_url = "https://github.com/openedx/myrepo"
 
     - ``featuretoggles_repo_version``: current version of the git repository. E.g:
 

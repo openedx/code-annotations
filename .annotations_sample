@@ -5,7 +5,7 @@ coverage_target: 50.0
 report_template_dir: code_annotations/report_templates/
 rendered_report_dir: code_annotations/reports/
 rendered_report_file_extension: .rst
-rendered_report_source_link_prefix: https://github.com/edx/edx-platform/tree/master/
+rendered_report_source_link_prefix: https://github.com/openedx/edx-platform/tree/master/
 annotations:
     ".. no_pii:":
     ".. ignored:":

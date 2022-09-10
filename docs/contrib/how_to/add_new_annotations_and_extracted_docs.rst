@@ -13,7 +13,7 @@ Annotations are a great way to keep documentation close to the code, but also be
 
 As an example, we have added `feature toggle annotations to the edx-platform codebase`_. A `Readthedocs document with the edx-platform feature toggles`_ has been generated from them.
 
-.. _feature toggle annotations to the edx-platform codebase: https://github.com/edx/edx-platform/search?q=toggle_name
+.. _feature toggle annotations to the edx-platform codebase: https://github.com/openedx/edx-platform/search?q=toggle_name
 .. _Readthedocs document with the edx-platform feature toggles: https://edx.readthedocs.io/projects/edx-platform-technical/en/latest/featuretoggles.html
 
 Add your own annotations and docs
@@ -27,7 +27,7 @@ The following steps need to be performed to document new types of annotations in
 * Add a new documentation page in the `edx-platform technical docs that will use this Sphinx extension`_.  Adapt this step as needed for other services.
 * As required, add `custom linting for the new annotations to edx-lint`_. Again, follow the toggle and setting checkers as examples.
 
-.. _new annotation format in code_annotations/contrib/config: https://github.com/edx/code-annotations/tree/master/code_annotations/contrib/config
-.. _Sphinx extension to collect these annotations: https://github.com/edx/code-annotations/tree/master/code_annotations/contrib/sphinx/extensions
-.. _edx-platform technical docs that will use this Sphinx extension: https://github.com/edx/edx-platform/tree/master/docs/technical
-.. _custom linting for the new annotations to edx-lint: https://github.com/edx/edx-lint/blob/master/edx_lint/pylint/annotations_check.py
+.. _new annotation format in code_annotations/contrib/config: https://github.com/openedx/code-annotations/tree/master/code_annotations/contrib/config
+.. _Sphinx extension to collect these annotations: https://github.com/openedx/code-annotations/tree/master/code_annotations/contrib/sphinx/extensions
+.. _edx-platform technical docs that will use this Sphinx extension: https://github.com/openedx/edx-platform/tree/master/docs/technical
+.. _custom linting for the new annotations to edx-lint: https://github.com/openedx/edx-lint/blob/master/edx_lint/pylint/annotations_check.py

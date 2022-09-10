@@ -75,7 +75,7 @@ setup(
     long_description_content_type='text/x-rst',
     author='edX',
     author_email='oscm@edx.org',
-    url='https://github.com/edx/code-annotations',
+    url='https://github.com/openedx/code-annotations',
     packages=[
         'code_annotations',
     ],

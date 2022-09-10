@@ -15,7 +15,7 @@ add the following to your ``conf.py``::
     featuretoggles_source_path = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..")
     )
-    featuretoggles_repo_url = "https://github.com/edx/yourrepo"
+    featuretoggles_repo_url = "https://github.com/openedx/yourrepo"
     try:
         featuretoggles_repo_version = git.Repo(search_parent_directories=True).head.object.hexsha
     except git.InvalidGitRepositoryError:
