@@ -15,8 +15,8 @@ The original usage of this generic tool was for annotating PII in the Open edX p
 
 The new instances of annotation configs arose to support documenting Open edX feature toggles and non-toggle settings. Each of these will also have Sphinx extensions to support documentation. To start, the `feature toggles annotation config`_ was added to the ``edx-toggles`` repository, but there was no good home for the non-toggle settings annotation config, nor the documentation tools.
 
-.. _PII annotations: https://github.com/edx/edx-cookiecutters/blob/7cf718093e7cca5c701a29fcbaa84660326b09ed/cookiecutter-django-app/%7B%7Bcookiecutter.repo_name%7D%7D/.pii_annotations.yml
-.. _feature toggles annotation config: https://github.com/edx/edx-toggles/blob/0986b10a806944fd4d00847501ff4f7e3904a2cb/feature_toggle_annotations.yaml
+.. _PII annotations: https://github.com/openedx/edx-cookiecutters/blob/7cf718093e7cca5c701a29fcbaa84660326b09ed/cookiecutter-django-app/%7B%7Bcookiecutter.repo_name%7D%7D/.pii_annotations.yml
+.. _feature toggles annotation config: https://github.com/openedx/edx-toggles/blob/0986b10a806944fd4d00847501ff4f7e3904a2cb/feature_toggle_annotations.yaml
 
 Decision
 ========

@@ -39,7 +39,7 @@ class Settings(SphinxDirective):
 
     - ``settings_repo_url``: Github repository where the code is hosted. E.g:
 
-        settings_repo_url = "https://github.com/edx/myrepo"
+        settings_repo_url = "https://github.com/openedx/myrepo"
 
     - ``settings_repo_version``: current version of the git repository. E.g:
 
