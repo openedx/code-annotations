@@ -74,9 +74,9 @@ class FeatureToggles(SphinxDirective):
             toggle_default_value = toggle.get(".. toggle_default:", "Not defined")
             toggle_default_node = nodes.literal(text=quote_value(toggle_default_value))
             toggle_section = nodes.section("", ids=[f"featuretoggle-{toggle_name}"])
-            toggle_section += nodes.title(text=toggle_name, ids="name")
+            toggle_section += nodes.title(text=toggle_name, ids=[f"name-{toggle_name}"])
             toggle_section += nodes.paragraph(
-                "", "Default: ", toggle_default_node, ids="default"
+                "", "Default: ", toggle_default_node, ids=[f"default-{toggle_name}"]
             )
             toggle_section += nodes.paragraph(
                 "",
@@ -92,15 +92,15 @@ class FeatureToggles(SphinxDirective):
                         toggle["line_number"],
                     ),
                 ),
-                ids="source",
+                ids=[f"source-{toggle_name}"],
             )
             toggle_section += nodes.paragraph(
                 text=f'Desc: {toggle.get(".. toggle_description:", "NaN")}',
-                ids="description",
+                ids=[f"description-{toggle_name}"],
             )
             if toggle.get(".. toggle_warning:") not in (None, "None", "n/a", "N/A"):
                 toggle_section += nodes.warning(
-                    "", nodes.paragraph("", toggle[".. toggle_warning:"]), ids="warning"
+                    "", nodes.paragraph("", toggle[".. toggle_warning:"]), ids=[f"warning-{toggle_name}"]
                 )
             optional_attrs = [
                 "creation_date",
@@ -112,7 +112,7 @@ class FeatureToggles(SphinxDirective):
                 if toggle.get(f".. toggle_{opt}:") not in (None, "None", "n/a", "N/A"):
                     toggle_section += nodes.paragraph(
                         text=f'{opt.title().replace("_"," ")}: {toggle[f".. toggle_{opt}:"]}',
-                        ids=opt,
+                        ids=[f"{opt}-{toggle_name}"],
                     )
             yield toggle_section
 

@@ -86,9 +86,9 @@ class Settings(SphinxDirective):
                 text=quote_value(setting_default_value)
             )
             setting_section = nodes.section("", ids=[f"setting-{setting_name}"])
-            setting_section += nodes.title(text=setting_name, ids="title")
+            setting_section += nodes.title(text=setting_name, ids=[f"title-{setting_name}"])
             setting_section += nodes.paragraph(
-                "", "Default: ", setting_default_node, ids="default"
+                "", "Default: ", setting_default_node, ids=[f"default-{setting_name}"]
             )
             setting_section += nodes.paragraph(
                 "",
@@ -104,17 +104,17 @@ class Settings(SphinxDirective):
                         setting["line_number"],
                     ),
                 ),
-                ids="source",
+                ids=[f"source-{setting_name}"],
             )
             setting_section += nodes.paragraph(
                 text=setting.get(".. setting_description:", ""),
-                ids="description",
+                ids=[f"description-{setting_name}"],
             )
             if setting.get(".. setting_warning:") not in (None, "None", "n/a", "N/A"):
                 setting_section += nodes.warning(
                     "",
                     nodes.paragraph("", setting[".. setting_warning:"]),
-                    ids="warning",
+                    ids=[f"warning-{setting_name}"],
                 )
             yield setting_section
 
