@@ -19,7 +19,9 @@ def find_settings(source_path):
     Return:
         settings (dict): Django settings indexed by name.
     """
-    return find_annotations(source_path, SETTING_ANNOTATIONS_CONFIG_PATH, ".. setting_name:")
+    return find_annotations(
+        source_path, SETTING_ANNOTATIONS_CONFIG_PATH, ".. setting_name:"
+    )
 
 
 class Settings(SphinxDirective):
@@ -72,7 +74,9 @@ class Settings(SphinxDirective):
         source_path = os.path.join(self.env.config.settings_source_path, folder_path)
         settings = find_settings(source_path)
         # folder_path can point to a file or directory
-        root_folder = folder_path if os.path.isdir(source_path) else os.path.dirname(folder_path)
+        root_folder = (
+            folder_path if os.path.isdir(source_path) else os.path.dirname(folder_path)
+        )
         for setting_name in sorted(settings):
             setting = settings[setting_name]
             # setting["filename"] is relative to the root_path
@@ -82,8 +86,10 @@ class Settings(SphinxDirective):
                 text=quote_value(setting_default_value)
             )
             setting_section = nodes.section("", ids=[f"setting-{setting_name}"])
-            setting_section += nodes.title(text=setting_name)
-            setting_section += nodes.paragraph("", "Default: ", setting_default_node)
+            setting_section += nodes.title(text=setting_name, ids=[f"title-{setting_name}"])
+            setting_section += nodes.paragraph(
+                "", "Default: ", setting_default_node, ids=[f"default-{setting_name}"]
+            )
             setting_section += nodes.paragraph(
                 "",
                 "Source: ",
@@ -98,13 +104,17 @@ class Settings(SphinxDirective):
                         setting["line_number"],
                     ),
                 ),
+                ids=[f"source-{setting_name}"],
             )
             setting_section += nodes.paragraph(
-                text=setting.get(".. setting_description:", "")
+                text=setting.get(".. setting_description:", ""),
+                ids=[f"description-{setting_name}"],
             )
             if setting.get(".. setting_warning:") not in (None, "None", "n/a", "N/A"):
                 setting_section += nodes.warning(
-                    "", nodes.paragraph("", setting[".. setting_warning:"])
+                    "",
+                    nodes.paragraph("", setting[".. setting_warning:"]),
+                    ids=[f"warning-{setting_name}"],
                 )
             yield setting_section
 
@@ -114,7 +124,9 @@ def setup(app):
     Declare the Sphinx extension.
     """
     app.add_config_value(
-        "settings_source_path", os.path.abspath(".."), "env",
+        "settings_source_path",
+        os.path.abspath(".."),
+        "env",
     )
     app.add_config_value("settings_repo_url", "", "env")
     app.add_config_value("settings_repo_version", "master", "env")
