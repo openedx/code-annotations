@@ -25,7 +25,7 @@ The full documentation is at https://code-annotations.readthedocs.org.
 License
 -------
 
-The code in this repository is licensed under the AGPL 3.0 unless
+The code in this repository is licensed under the Apache Software License 2.0 unless
 otherwise noted.
 
 Please see ``LICENSE.txt`` for details.
