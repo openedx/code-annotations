@@ -15,8 +15,10 @@ annotations:
     - ".. toggle_use_cases:":
         choices: [temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
     - ".. toggle_creation_date:":
-    - ".. toggle_target_removal_date:":
+    - ".. toggle_removal_ticket:":
         optional: true
+    - ".. toggle_target_removal_date:":
+        optional: true            
     - ".. toggle_warning:":
         optional: true
     - ".. toggle_tickets:":
@@ -25,17 +27,3 @@ extensions:
     python:
         - py
 rst_template: doc.rst.j2
-
-# .. toggle_name: SOME_FEATURE_NAME
-# .. toggle_implementation: WaffleFlag OR WaffleSwitch OR CourseWaffleFlag OR ExperimentWaffleFlag OR ConfigurationModel OR SettingToggle OR SettingDictToggle OR DjangoSetting
-# .. toggle_default: True OR False
-# .. toggle_description: Add here a detailed description of the consequences of enabling this feature toggle.
-#   Note that all annotations can be spread over multiple lines by prefixing every line after the first by
-#   at least three spaces (two spaces plus the leading space).
-# .. toggle_warning: (Optional) Add here additional instructions that users should be aware of. For instance, dependency
-#   on additional settings or feature toggles should be referenced here. If this field is not needed, simply remove it.
-# .. toggle_use_cases: temporary OR circuit_breaker OR vip OR opt_out OR opt_in OR open_edx
-# .. toggle_creation_date: 2020-01-01
-# .. toggle_target_removal_date: 2020-07-01 (this is required if toggle_use_cases includes temporary. If not, simply remove it.)
-# .. toggle_tickets: (Optional) https://openedx.atlassian.net/browse/DEPR-xxx, https://github.com/openedx/edx-platform/blob/master/docs/decisions/xxx.rst, https://github.com/openedx/edx-platform/pull/xxx (details initial feature)
-SOME_FEATURE_NAME = ...
