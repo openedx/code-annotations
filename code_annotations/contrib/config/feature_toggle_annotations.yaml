@@ -15,8 +15,10 @@ annotations:
     - ".. toggle_use_cases:":
         choices: [temporary, circuit_breaker, vip, opt_out, opt_in, open_edx]
     - ".. toggle_creation_date:":
-    - ".. toggle_target_removal_date:":
+    - ".. toggle_removal_ticket:":
         optional: true
+    - ".. toggle_target_removal_date:":
+        optional: true            
     - ".. toggle_warning:":
         optional: true
     - ".. toggle_tickets:":
