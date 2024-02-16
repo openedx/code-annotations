@@ -1,0 +1,18 @@
+# This code-annotations configuration file supports openedx-events
+
+source_path: ./
+report_path: reports
+safelist_path: .annotation_safe_list.yml
+coverage_target: 100.0
+annotations:
+  feature_toggle:
+    # See annotation format documentation: https://edx-toggles.readthedocs.io/en/latest/how_to/documenting_new_feature_toggles.html
+    - ".. event_type:":
+    - ".. event_name:":
+    - ".. event_description:":
+    - ".. event_data:":
+    - ".. event_key_field:":
+extensions:
+    python:
+        - py
+rst_template: doc.rst.j2
