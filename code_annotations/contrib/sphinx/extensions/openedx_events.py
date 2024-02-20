@@ -8,7 +8,7 @@ from sphinx.util.docutils import SphinxDirective
 
 from code_annotations.contrib.config import OPENEDX_EVENTS_ANNOTATIONS_CONFIG_PATH
 
-from .base import find_annotations, quote_value
+from .base import find_annotations
 
 
 def find_events(source_path):
@@ -72,43 +72,53 @@ class OpenedxEvents(SphinxDirective):
 
         current_domain = ""
         domain_header = None
+        current_subject = ""
+        subject_header = None
 
         for event_type in sorted(events):
             domain = event_type.split(".")[2]
+            subject = event_type.split(".")[3]
             if domain != current_domain:
                 if domain_header:
                     yield domain_header
 
                 current_domain = domain
                 domain_header = nodes.section("", ids=[f"openedxevent-domain-{domain}"])
-                domain_header += nodes.title(text=f"Architectural domain: {domain}")
+                domain_header += nodes.title(text=f"Architectural subdomain: {domain}")
+            if subject != current_subject:
+                current_subject = subject
+                subject_header = nodes.section("", ids=[f"openedxevent-subject"
+                                                        f"-{subject}"])
+                subject_header += nodes.title(text=f"Subject: {subject}")
+                domain_header += subject_header
 
             event = events[event_type]
             event_name = event[".. event_name:"]
-            event_name_literal = nodes.literal(text=quote_value(event_name))
+            event_name_literal = nodes.literal(text=event_name)
             event_data = event[".. event_data:"]
-            event_key_field = event.get(".. event_key_field:", None)
-            event_key_literal = nodes.literal(text=quote_value(event_key_field))
+            event_data_literal = nodes.literal(text=event_data)
+            event_key_field = event.get(".. event_key_field:", "")
+            event_key_literal = nodes.literal(text=event_key_field)
             event_description = event[".. event_description:"]
 
             event_section = nodes.section("", ids=[f"openedxevent-{event_type}"])
             event_section += nodes.title(text=event_type, ids=[f"title-{event_type}"])
-            event_section += nodes.paragraph("", "Signal name:", event_name_literal)
+            event_section += nodes.paragraph(text=f"Description:"
+                                                  f"{event_description}")
+            event_section += nodes.paragraph(" ", "Signal name:", event_name_literal)
             if event_key_field:
                 event_section += nodes.paragraph(
-                    "",
-                    "Event key field:",
+                    " ",
+                    "Event key field: ",
                     event_key_literal
                 )
-            event_section += nodes.paragraph(text=f"Description:"
-                                                  f" {event_description}")
-            event_section += nodes.paragraph(text=f"Event data: {event_data}")
+            event_section += nodes.paragraph(" ", "Event data:", event_data_literal)
             event_section += nodes.paragraph(
                 text=f"Defined at: {event['filename']} (line"
                      f" {event['line_number']})"
             )
 
-            domain_header += event_section
+            subject_header += event_section
 
         if domain_header:
             yield domain_header
