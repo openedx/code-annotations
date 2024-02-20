@@ -103,16 +103,16 @@ class OpenedxEvents(SphinxDirective):
 
             event_section = nodes.section("", ids=[f"openedxevent-{event_type}"])
             event_section += nodes.title(text=event_type, ids=[f"title-{event_type}"])
-            event_section += nodes.paragraph(text=f"Description:"
+            event_section += nodes.paragraph(text=f"Description: "
                                                   f"{event_description}")
-            event_section += nodes.paragraph(" ", "Signal name:", event_name_literal)
+            event_section += nodes.paragraph("", "Signal name: ", event_name_literal)
             if event_key_field:
                 event_section += nodes.paragraph(
-                    " ",
+                    "",
                     "Event key field: ",
                     event_key_literal
                 )
-            event_section += nodes.paragraph(" ", "Event data:", event_data_literal)
+            event_section += nodes.paragraph("", "Event data: ", event_data_literal)
             event_section += nodes.paragraph(
                 text=f"Defined at: {event['filename']} (line"
                      f" {event['line_number']})"
