@@ -13,10 +13,10 @@ from .base import find_annotations
 
 def find_events(source_path):
     """
-    Find the feature toggles as defined in the configuration file.
+    Find the events as defined in the configuration file.
 
     Return:
-        toggles (dict): feature toggles indexed by name.
+        events (dict): found events indexed by event type.
     """
     return find_annotations(
         source_path, OPENEDX_EVENTS_ANNOTATIONS_CONFIG_PATH, ".. event_type:"
