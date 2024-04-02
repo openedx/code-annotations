@@ -17,7 +17,9 @@ click==8.1.7
     # via -r requirements/base.txt
 coverage[toml]==7.4.4
     # via pytest-cov
-    # via -r requirements/django.txt
+    # via
+    #   -c requirements/common_constraints.txt
+    #   -r requirements/django.txt
 exceptiongroup==1.2.0
     # via pytest
 iniconfig==2.0.0
