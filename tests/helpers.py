@@ -72,7 +72,7 @@ def delete_report_files(file_extension):
     try:
         for f in filelist:
             os.remove(os.path.join('test_reports', f))
-    except Exception:  # pylint: disable=broad-except
+    except Exception:
         pass
 
 
