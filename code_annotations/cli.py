@@ -111,7 +111,7 @@ def django_find_annotations(
                 annotation_count, elapsed.total_seconds()
             ))
 
-    except Exception as exc:  # pylint: disable=broad-except
+    except Exception as exc:
         click.echo(traceback.print_exc())
         fail(str(exc))
 
@@ -169,7 +169,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
 
         click.echo(f"Search found {annotation_count} annotations in {elapsed}.")
 
-    except Exception as exc:  # pylint: disable=broad-except
+    except Exception as exc:
         click.echo(traceback.print_exc())
         fail(str(exc))
 
@@ -212,6 +212,6 @@ def generate_docs(
 
         elapsed = datetime.datetime.now() - start_time
         click.echo(f"Report rendered in {elapsed.total_seconds()} seconds.")
-    except Exception as exc:  # pylint: disable=broad-except
+    except Exception as exc:
         click.echo(traceback.print_exc())
         fail(str(exc))

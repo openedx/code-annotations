@@ -111,7 +111,7 @@ class FeatureToggles(SphinxDirective):
             for opt in optional_attrs:
                 if toggle.get(f".. toggle_{opt}:") not in (None, "None", "n/a", "N/A"):
                     toggle_section += nodes.paragraph(
-                        text=f'{opt.title().replace("_"," ")}: {toggle[f".. toggle_{opt}:"]}',
+                        text=f'{opt.title().replace("_", " ")}: {toggle[f".. toggle_{opt}:"]}',
                         ids=[f"{opt}-{toggle_name}"],
                     )
             yield toggle_section
