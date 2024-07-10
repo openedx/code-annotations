@@ -8,12 +8,12 @@ asgiref==3.8.1
     # via django
 backports-zoneinfo==0.2.1 ; python_version < "3.9"
     # via
-    #   -c requirements/constraints.txt
+    #   -c constraints.txt
     #   django
-django==4.2.11
+django==4.2.14
     # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/django.in
+    #   -c common_constraints.txt
+    #   -r django.in
 sqlparse==0.4.4
     # via django
 typing-extensions==4.10.0
