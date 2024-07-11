@@ -14,6 +14,12 @@ Change Log
 Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+[1.8.1] - 2024-07-11
+~~~~~~~~~~~~~~~~~~~~
+
+* Fix elapsed-time calculations to always use UTC. Other clocks can be altered partway through by Django config settings being loaded while the timer is running, resulting in reporting elapsed time of "-17999.895582 seconds" or similar.
+* Fix report filename to use year-month-day order, not year-day-month. (Also more compact, now.)
+
 [1.8.0] - 2024-03-31
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

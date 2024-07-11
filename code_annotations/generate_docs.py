@@ -27,7 +27,7 @@ class ReportRenderer:
         self.config = config
         self.echo = self.config.echo
         self.report_files = report_files
-        self.create_time = datetime.datetime.now().isoformat()
+        self.create_time = datetime.datetime.utcnow().isoformat()
 
         self.full_report = self._aggregate_reports()
 
