@@ -616,9 +616,9 @@ class BaseSearch(metaclass=ABCMeta):
         """
         self.echo.echo_vv(yaml.dump(all_results, default_flow_style=False))
 
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         report_filename = os.path.join(self.config.report_path, '{}{}.yaml'.format(
-            report_prefix, now.strftime('%Y-%d-%m-%H-%M-%S')
+            report_prefix, now.strftime('%Y%m%d-%H%M%S')
         ))
 
         formatted_results = self._format_results_for_report(all_results)
