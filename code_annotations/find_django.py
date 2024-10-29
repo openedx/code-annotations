@@ -21,7 +21,7 @@ class DjangoSearch(BaseSearch):
     Handles Django model comment searching for annotations.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, app_name=None):
         """
         Initialize for DjangoSearch.
 
@@ -29,19 +29,19 @@ class DjangoSearch(BaseSearch):
             config: Configuration file path
         """
         super().__init__(config)
-        self.local_models, self.non_local_models, total, needing_annotation = self.get_models_requiring_annotations()
+        self.local_models, self.non_local_models, total, annotation_eligible = self.get_models_requiring_annotations(app_name)
         self.model_counts = {
             'total': total,
             'annotated': 0,
             'unannotated': 0,
-            'needing_annotation': len(needing_annotation),
-            'not_needing_annotation': total - len(needing_annotation),
+            'annotation_eligible': len(annotation_eligible),
+            'not_annotation_eligible': total - len(annotation_eligible),
             'safelisted': 0
         }
         self.uncovered_model_ids = set()
         self.echo.echo_vvv('Local models:\n   ' + '\n   '.join([str(m) for m in self.local_models]) + '\n')
         self.echo.echo_vvv('Non-local models:\n   ' + '\n   '.join([str(m) for m in self.non_local_models]) + '\n')
-        self.echo.echo_vv('The following models require annotations:\n   ' + '\n   '.join(needing_annotation) + '\n')
+        self.echo.echo_vv('The following models require annotations:\n   ' + '\n   '.join(annotation_eligible) + '\n')
 
     def _increment_count(self, count_type, incr_by=1):
         self.model_counts[count_type] += incr_by
@@ -82,7 +82,7 @@ class DjangoSearch(BaseSearch):
 
     def list_local_models(self):
         """
-        Dump a list of models in the local code tree that need annotations to stdout.
+        Dump a list of models in the local code tree that are annotation eligible to stdout.
         """
         if self.local_models:
             self.echo(
@@ -249,16 +249,16 @@ class DjangoSearch(BaseSearch):
 
         Returns:
             Bool indicating whether or not the number of annotated models covers a percentage
-                of total models needing annotations greater than or equal to the configured
+                of total annotation eligible models greater than or equal to the configured
                 coverage_target.
         """
         self.echo("\nModel coverage report")
         self.echo("-" * 40)
         self.echo("Found {total} total models.".format(**self.model_counts))
-        self.echo("{needing_annotation} needed annotation, {annotated} were annotated.".format(**self.model_counts))
+        self.echo("{annotation_eligible} were eligible for annotation, {annotated} were annotated.".format(**self.model_counts))
 
-        if self.model_counts['needing_annotation'] > 0:
-            pct = float(self.model_counts['annotated']) / float(self.model_counts['needing_annotation']) * 100.0
+        if self.model_counts['annotation_eligible'] > 0:
+            pct = float(self.model_counts['annotated']) / float(self.model_counts['annotation_eligible']) * 100.0
             pct = round(pct, 1)
         else:
             pct = 100.0
@@ -359,7 +359,7 @@ class DjangoSearch(BaseSearch):
         django.setup()
 
     @staticmethod
-    def get_models_requiring_annotations():
+    def get_models_requiring_annotations(app_name=None):
         """
         Determine all local and non-local models via django model introspection.
 
@@ -367,19 +367,17 @@ class DjangoSearch(BaseSearch):
         edX).  This is a compromise in accuracy in order to simplify the generation
         of this list, and also to ease the transition from zero to 100% annotations
         in edX satellite repositories.
-
-        Returns:
-            tuple:
-                2-tuple where the first item is a set of local models, and the
-                second item is a set of non-local models.
         """
         DjangoSearch.setup_django()
         local_models = set()
         non_local_models = set()
-        models_requiring_annotations = []
+        annotation_eligible_models = []
         total_models = 0
 
         for app in apps.get_app_configs():
+            if app_name and not app.name.endswith(app_name):
+                continue
+
             for root_model in app.get_models():
                 total_models += 1
                 if DjangoSearch.requires_annotations(root_model):
@@ -388,6 +386,6 @@ class DjangoSearch(BaseSearch):
                     else:
                         local_models.add(root_model)
 
-                    models_requiring_annotations.append(DjangoSearch.get_model_id(root_model))
+                    annotation_eligible_models.append(DjangoSearch.get_model_id(root_model))
 
-        return local_models, non_local_models, total_models, models_requiring_annotations
+        return local_models, non_local_models, total_models, annotation_eligible_models

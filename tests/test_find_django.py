@@ -472,3 +472,20 @@ def test_setup_django(mock_django_setup):
     """
     mock_django_setup.return_value = True
     DjangoSearch.setup_django()
+
+
+@patch.multiple(
+    'code_annotations.find_django.DjangoSearch',
+    get_models_requiring_annotations=DEFAULT
+)
+def test_find_django_no_action(**kwargs):
+    """
+    Test that we fail when there is no action specified.
+    """
+
+    result = call_script_isolated(
+        ['django_find_annotations', '--config_file', 'test_config.yml'],
+    )
+
+    assert result.exit_code == EXIT_CODE_FAILURE
+    assert 'No actions specified' in result.output

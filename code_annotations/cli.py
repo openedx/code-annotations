@@ -40,7 +40,7 @@ def entry_point():
     show_default=True,
     help='List all locally defined models (in the current repo) that require annotations.',
 )
-@click.option('--app_name', default='', help='(Optional) App name for which coverage is generated.')
+@click.option('--app_name', default=None, help='(Optional) App name for which coverage is generated.')
 @click.option('--report_path', default=None, help='Location to write the report')
 @click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
 @click.option('--lint/--no_lint', help='Enable or disable linting checks', default=False, show_default=True)
@@ -62,8 +62,16 @@ def django_find_annotations(
     """
     try:
         start_time = datetime.datetime.utcnow()
+
+        if not coverage and not seed_safelist and not list_local_models and not lint and not report and not coverage:
+            click.echo(
+                "No actions specified. Please specify one or more of --seed_safelist, --list_local_models, "
+                "--lint, --report, or --coverage"
+            )
+            sys.exit(1)
+
         config = AnnotationConfig(config_file, report_path, verbosity)
-        searcher = DjangoSearch(config)
+        searcher = DjangoSearch(config, app_name)
 
         # Early out if we're trying to do coverage, but a coverage target is not configured
         if coverage and not config.coverage_target:
