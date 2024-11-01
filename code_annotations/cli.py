@@ -1,6 +1,7 @@
 """
 Command line interface for code annotation tools.
 """
+
 import datetime
 import sys
 import traceback
@@ -21,41 +22,60 @@ def entry_point():
     """
 
 
-@entry_point.command('django_find_annotations')
+@entry_point.command("django_find_annotations")
 @click.option(
-    '--config_file',
-    default='.annotations',
-    help='Path to the configuration file',
-    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
+    "--config_file",
+    default=".annotations",
+    help="Path to the configuration file",
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
 )
 @click.option(
-    '--seed_safelist/--no_safelist',
+    "--seed_safelist/--no_safelist",
     default=False,
     show_default=True,
-    help='Generate an initial safelist file based on the current Django environment.',
+    help="Generate an initial safelist file based on the current Django environment.",
 )
 @click.option(
-    '--list_local_models/--no_list_models',
+    "--list_local_models/--no_list_models",
     default=False,
     show_default=True,
-    help='List all locally defined models (in the current repo) that require annotations.',
+    help="List all locally defined models (in the current repo) that require annotations.",
 )
-@click.option('--app_name', default=None, help='(Optional) App name for which coverage is generated.')
-@click.option('--report_path', default=None, help='Location to write the report')
-@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
-@click.option('--lint/--no_lint', help='Enable or disable linting checks', default=False, show_default=True)
-@click.option('--report/--no_report', help='Enable or disable writing the report', default=False, show_default=True)
-@click.option('--coverage/--no_coverage', help='Enable or disable coverage checks', default=False, show_default=True)
+@click.option(
+    "--app_name",
+    default=None,
+    help="(Optional) App name for which coverage is generated.",
+)
+@click.option("--report_path", default=None, help="Location to write the report")
+@click.option("-v", "--verbosity", count=True, help="Verbosity level (-v through -vvv)")
+@click.option(
+    "--lint/--no_lint",
+    help="Enable or disable linting checks",
+    default=False,
+    show_default=True,
+)
+@click.option(
+    "--report/--no_report",
+    help="Enable or disable writing the report",
+    default=False,
+    show_default=True,
+)
+@click.option(
+    "--coverage/--no_coverage",
+    help="Enable or disable coverage checks",
+    default=False,
+    show_default=True,
+)
 def django_find_annotations(
-        config_file,
-        seed_safelist,
-        list_local_models,
-        app_name,
-        report_path,
-        verbosity,
-        lint,
-        report,
-        coverage
+    config_file,
+    seed_safelist,
+    list_local_models,
+    app_name,
+    report_path,
+    verbosity,
+    lint,
+    report,
+    coverage,
 ):
     """
     Subcommand for dealing with annotations in Django models.
@@ -63,7 +83,13 @@ def django_find_annotations(
     try:
         start_time = datetime.datetime.utcnow()
 
-        if not coverage and not seed_safelist and not list_local_models and not lint and not report and not coverage:
+        if (
+            not coverage
+            and not seed_safelist
+            and not list_local_models
+            and not lint
+            and not report
+        ):
             click.echo(
                 "No actions specified. Please specify one or more of --seed_safelist, --list_local_models, "
                 "--lint, --report, or --coverage"
@@ -75,7 +101,9 @@ def django_find_annotations(
 
         # Early out if we're trying to do coverage, but a coverage target is not configured
         if coverage and not config.coverage_target:
-            raise ConfigurationException("Please add 'coverage_target' to your configuration before running --coverage")
+            raise ConfigurationException(
+                "Please add 'coverage_target' to your configuration before running --coverage"
+            )
 
         if seed_safelist:
             searcher.seed_safelist()
@@ -115,32 +143,45 @@ def django_find_annotations(
                 annotation_count += len(annotated_models[filename])
 
             elapsed = datetime.datetime.utcnow() - start_time
-            click.echo("Search found {} annotations in {} seconds.".format(
-                annotation_count, elapsed.total_seconds()
-            ))
-
+            click.echo(
+                "Search found {} annotations in {} seconds.".format(
+                    annotation_count, elapsed.total_seconds()
+                )
+            )
     except Exception as exc:
         click.echo(traceback.print_exc())
         fail(str(exc))
 
 
-@entry_point.command('static_find_annotations')
+@entry_point.command("static_find_annotations")
 @click.option(
-    '--config_file',
-    default='.annotations',
-    help='Path to the configuration file',
-    type=click.Path(exists=True, dir_okay=False, resolve_path=True)
+    "--config_file",
+    default=".annotations",
+    help="Path to the configuration file",
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
 )
 @click.option(
-    '--source_path',
-    help='Location of the source code to search',
-    type=click.Path(exists=True, dir_okay=True, resolve_path=True)
+    "--source_path",
+    help="Location of the source code to search",
+    type=click.Path(exists=True, dir_okay=True, resolve_path=True),
 )
-@click.option('--report_path', default=None, help='Location to write the report')
-@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
-@click.option('--lint/--no_lint', help='Enable or disable linting checks', default=True, show_default=True)
-@click.option('--report/--no_report', help='Enable or disable writing the report file', default=True, show_default=True)
-def static_find_annotations(config_file, source_path, report_path, verbosity, lint, report):
+@click.option("--report_path", default=None, help="Location to write the report")
+@click.option("-v", "--verbosity", count=True, help="Verbosity level (-v through -vvv)")
+@click.option(
+    "--lint/--no_lint",
+    help="Enable or disable linting checks",
+    default=True,
+    show_default=True,
+)
+@click.option(
+    "--report/--no_report",
+    help="Enable or disable writing the report file",
+    default=True,
+    show_default=True,
+)
+def static_find_annotations(
+    config_file, source_path, report_path, verbosity, lint, report
+):
     """
     Subcommand to find annotations via static file analysis.
     """
@@ -184,18 +225,14 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
 
 @entry_point.command("generate_docs")
 @click.option(
-    '--config_file',
-    default='.annotations',
-    help='Path to the configuration file',
-    type=click.Path(exists=True, dir_okay=False)
+    "--config_file",
+    default=".annotations",
+    help="Path to the configuration file",
+    type=click.Path(exists=True, dir_okay=False),
 )
-@click.option('-v', '--verbosity', count=True, help='Verbosity level (-v through -vvv)')
-@click.argument("report_files", type=click.File('r'), nargs=-1)
-def generate_docs(
-        config_file,
-        verbosity,
-        report_files
-):
+@click.option("-v", "--verbosity", count=True, help="Verbosity level (-v through -vvv)")
+@click.argument("report_files", type=click.File("r"), nargs=-1)
+def generate_docs(config_file, verbosity, report_files):
     """
     Generate documentation from a code annotations report.
     """
@@ -205,15 +242,19 @@ def generate_docs(
         config = AnnotationConfig(config_file, verbosity)
 
         for key in (
-                'report_template_dir',
-                'rendered_report_dir',
-                'rendered_report_file_extension',
-                'rendered_report_source_link_prefix'
+            "report_template_dir",
+            "rendered_report_dir",
+            "rendered_report_file_extension",
+            "rendered_report_source_link_prefix",
         ):
             if not getattr(config, key):
                 raise ConfigurationException(f"No {key} key in {config_file}")
 
-        config.echo("Rendering the following reports: \n{}".format("\n".join([r.name for r in report_files])))
+        config.echo(
+            "Rendering the following reports: \n{}".format(
+                "\n".join([r.name for r in report_files])
+            )
+        )
 
         renderer = ReportRenderer(config, report_files)
         renderer.render()
