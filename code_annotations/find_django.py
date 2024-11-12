@@ -146,8 +146,7 @@ class DjangoSearch(BaseSearch):
             try:
                 annotation_token = inner_match.group("token")
                 annotation_data = inner_match.group("data")
-            except IndexError as error:
-                # pragma: no cover
+            except IndexError as error:  # pragma: no cover
                 raise ValueError(
                     '{}: Could not find "data" or "token" groups. Found: {}'.format(
                         self.get_model_id(model_type), inner_match.groupdict()
