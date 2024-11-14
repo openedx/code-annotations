@@ -61,7 +61,7 @@ def django_find_annotations(
     Subcommand for dealing with annotations in Django models.
     """
     try:
-        start_time = datetime.datetime.now()
+        start_time = datetime.datetime.utcnow()
         config = AnnotationConfig(config_file, report_path, verbosity)
         searcher = DjangoSearch(config)
 
@@ -106,7 +106,7 @@ def django_find_annotations(
             for filename in annotated_models:
                 annotation_count += len(annotated_models[filename])
 
-            elapsed = datetime.datetime.now() - start_time
+            elapsed = datetime.datetime.utcnow() - start_time
             click.echo("Search found {} annotations in {} seconds.".format(
                 annotation_count, elapsed.total_seconds()
             ))
@@ -137,7 +137,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
     Subcommand to find annotations via static file analysis.
     """
     try:
-        start_time = datetime.datetime.now()
+        start_time = datetime.datetime.utcnow()
         config = AnnotationConfig(config_file, report_path, verbosity, source_path)
         searcher = StaticSearch(config)
         all_results = searcher.search()
@@ -161,7 +161,7 @@ def static_find_annotations(config_file, source_path, report_path, verbosity, li
             report_filename = searcher.report(all_results)
             click.echo(f"Report written to {report_filename}.")
 
-        elapsed = datetime.datetime.now() - start_time
+        elapsed = datetime.datetime.utcnow() - start_time
         annotation_count = 0
 
         for filename in all_results:
@@ -191,7 +191,7 @@ def generate_docs(
     """
     Generate documentation from a code annotations report.
     """
-    start_time = datetime.datetime.now()
+    start_time = datetime.datetime.utcnow()
 
     try:
         config = AnnotationConfig(config_file, verbosity)
@@ -210,7 +210,7 @@ def generate_docs(
         renderer = ReportRenderer(config, report_files)
         renderer.render()
 
-        elapsed = datetime.datetime.now() - start_time
+        elapsed = datetime.datetime.utcnow() - start_time
         click.echo(f"Report rendered in {elapsed.total_seconds()} seconds.")
     except Exception as exc:
         click.echo(traceback.print_exc())
