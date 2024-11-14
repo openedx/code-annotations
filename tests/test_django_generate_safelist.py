@@ -43,7 +43,7 @@ def test_seeding_safelist(local_models, non_local_models, **kwargs):
         local_models,
         non_local_models,
         0,  # Number of total models found, irrelevant here
-        []  # List of model ids that need anntations, irrelevant here
+        set()  # List of model ids that are eligible for annotation, irrelevant here
     )
 
     def test_safelist_callback():
@@ -73,7 +73,7 @@ def test_safelist_exists(**kwargs):
     Test the success case for seeding the safelist.
     """
     mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
-    mock_get_models_requiring_annotations.return_value = ([], [], 0, [])
+    mock_get_models_requiring_annotations.return_value = (set(), set(), 0, [])
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--seed_safelist']
