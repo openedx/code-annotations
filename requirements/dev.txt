@@ -31,7 +31,7 @@ click-log==0.4.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-code-annotations==1.8.2
+code-annotations==2.0.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -189,7 +189,7 @@ tox==3.28.0
     # via
     #   -c requirements/constraints.txt
     #   -r requirements/ci.txt
-virtualenv==20.27.1
+virtualenv==20.28.0
     # via
     #   -r requirements/ci.txt
     #   tox
