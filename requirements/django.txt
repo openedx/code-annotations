@@ -6,9 +6,9 @@
 #
 asgiref==3.8.1
     # via django
-django==4.2.16
+django==4.2.17
     # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/django.in
+    #   -c common_constraints.txt
+    #   -r django.in
 sqlparse==0.5.2
     # via django
