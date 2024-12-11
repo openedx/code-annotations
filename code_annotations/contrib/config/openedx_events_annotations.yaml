@@ -12,6 +12,7 @@ annotations:
     - ".. event_description:":
     - ".. event_data:":
     - ".. event_key_field:":
+    - ".. event_warning:":
 extensions:
     python:
         - py
