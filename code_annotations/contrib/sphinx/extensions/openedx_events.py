@@ -118,11 +118,6 @@ class OpenedxEvents(SphinxDirective):
                      f" {event['line_number']})"
             )
 
-            if event.get(".. event_warning:") not in (None, "None", "n/a", "N/A"):
-                event_section += nodes.warning(
-                    "", nodes.paragraph("", event[".. event_warning:"]), ids=[f"warning-{event_name}"]
-                )
-
             subject_header += event_section
 
         if domain_header:
