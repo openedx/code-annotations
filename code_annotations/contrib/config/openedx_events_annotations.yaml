@@ -6,12 +6,13 @@ safelist_path: .annotation_safe_list.yml
 coverage_target: 100.0
 annotations:
   feature_toggle:
-    # See annotation format documentation: https://edx-toggles.readthedocs.io/en/latest/how_to/documenting_new_feature_toggles.html
+    # See annotation format documentation: https://docs.openedx.org/projects/openedx-events/en/latest/reference/in-line-code-annotations-for-an-event.html
     - ".. event_type:":
     - ".. event_name:":
     - ".. event_description:":
     - ".. event_data:":
     - ".. event_key_field:":
+    - ".. event_warning:":
 extensions:
     python:
         - py
