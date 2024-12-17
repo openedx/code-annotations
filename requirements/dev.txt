@@ -17,8 +17,15 @@ build==1.2.2.post1
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
+cachetools==5.5.0
+    # via
+    #   -r requirements/ci.txt
+    #   tox
 chardet==5.2.0
-    # via diff-cover
+    # via
+    #   -r requirements/ci.txt
+    #   diff-cover
+    #   tox
 click==8.1.7
     # via
     #   -r requirements/pip-tools.txt
@@ -35,6 +42,10 @@ code-annotations==2.1.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
+colorama==0.4.6
+    # via
+    #   -r requirements/ci.txt
+    #   tox
 coverage[toml]==7.6.9
     # via
     #   -r requirements/quality.txt
@@ -89,6 +100,7 @@ packaging==24.2
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
     #   build
+    #   pyproject-api
     #   pytest
     #   tox
 pbr==6.1.0
@@ -102,6 +114,7 @@ platformdirs==4.3.6
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   pylint
+    #   tox
     #   virtualenv
 pluggy==1.5.0
     # via
@@ -109,10 +122,6 @@ pluggy==1.5.0
     #   -r requirements/quality.txt
     #   diff-cover
     #   pytest
-    #   tox
-py==1.11.0
-    # via
-    #   -r requirements/ci.txt
     #   tox
 pycodestyle==2.12.1
     # via -r requirements/quality.txt
@@ -140,6 +149,10 @@ pylint-plugin-utils==0.8.2
     #   -r requirements/quality.txt
     #   pylint-celery
     #   pylint-django
+pyproject-api==1.8.0
+    # via
+    #   -r requirements/ci.txt
+    #   tox
 pyproject-hooks==1.2.0
     # via
     #   -r requirements/pip-tools.txt
@@ -161,10 +174,8 @@ pyyaml==6.0.2
     #   code-annotations
 six==1.17.0
     # via
-    #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   edx-lint
-    #   tox
 snowballstemmer==2.2.0
     # via
     #   -r requirements/quality.txt
@@ -185,10 +196,8 @@ tomlkit==0.13.2
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==3.28.0
-    # via
-    #   -c requirements/constraints.txt
-    #   -r requirements/ci.txt
+tox==4.23.2
+    # via -r requirements/ci.txt
 virtualenv==20.28.0
     # via
     #   -r requirements/ci.txt
