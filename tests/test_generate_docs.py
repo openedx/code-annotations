@@ -49,6 +49,40 @@ def test_generate_report_simple():
         assert os.path.exists(created_doc)
 
 
+def test_generate_report_simple_html():
+    find_result = call_script(
+        (
+            'static_find_annotations',
+            '--config_file',
+            'tests/test_configurations/.annotations_test_python_only',
+            '--source_path=tests/extensions/python_test_files/simple_success.pyt',
+            '--no_lint',
+        ),
+        delete_test_reports=False)
+
+    assert find_result.exit_code == EXIT_CODE_SUCCESS
+    assert "Writing report..." in find_result.output
+    report_file = get_report_filename_from_output(find_result.output)
+
+    report_result = call_script(
+        (
+            'generate_docs',
+            report_file,
+            '--config_file',
+            'tests/test_configurations/.annotations_test_success_with_report_docs_html',
+            '-vv'
+        ),
+        delete_test_docs=False
+    )
+
+    assert find_result.exit_code == EXIT_CODE_SUCCESS
+    assert "Report rendered in" in report_result.output
+
+    # All file types are created
+    for created_doc in ('test_reports/index.html', 'test_reports/choice-id.html', 'test_reports/annotation-pii.html'):
+        assert os.path.exists(created_doc)
+
+
 def _do_find(source_path, new_report_path):
     """
     Do a static annotation search with report, rename the report to a distinct name.
@@ -167,4 +201,4 @@ def test_generate_report_missing_key():
     ))
 
     assert report_result.exit_code == EXIT_CODE_FAILURE
-    assert "No report_template_dir key in tests/test_configurations/" in report_result.output
+    assert "No rendered_report_source_link_prefix key in" in report_result.output
