@@ -27,7 +27,9 @@ class ReportRenderer:
         self.config = config
         self.echo = self.config.echo
         self.report_files = report_files
-        self.create_time = datetime.datetime.utcnow().isoformat()
+        self.create_time = datetime.datetime.now(tz=datetime.timezone.utc)
+
+        print(self.create_time)
 
         self.full_report = self._aggregate_reports()
 
@@ -62,6 +64,12 @@ class ReportRenderer:
         loaded_report = yaml.safe_load(report_file)
 
         for filename in loaded_report:
+            trimmed_filename = filename
+            for prefix in self.config.trim_filename_prefixes:
+                if filename.startswith(prefix):
+                    trimmed_filename = filename[len(prefix):]
+                    break
+
             if filename in report:
                 for loaded_annotation in loaded_report[filename]:
                     found = False
@@ -74,9 +82,10 @@ class ReportRenderer:
                             break
 
                     if not found:
-                        report[filename].append(loaded_annotation)
+                        report[trimmed_filename].append(loaded_annotation)
             else:
-                report[filename] = loaded_report[filename]
+                report[trimmed_filename] = loaded_report[filename]
+
 
     def _aggregate_reports(self):
         """
@@ -91,7 +100,7 @@ class ReportRenderer:
 
         return report
 
-    def _write_doc_file(self, doc_filename, doc_data):
+    def _write_doc_file(self, doc_title, doc_filename, doc_data):
         """
         Write out a single report file with the given data. This is rendered using the configured top level template.
 
@@ -110,14 +119,17 @@ class ReportRenderer:
 
         with open(full_doc_filename, 'w') as output:
             output.write(self.top_level_template.render(
+                doc_title=doc_title,
                 create_time=self.create_time,
                 report=doc_data,
                 all_choices=self.all_choices,
                 all_annotations=self.config.annotation_tokens,
                 group_mapping=self.group_mapping,
                 slugify=slugify,
-                source_link_prefix=self.config.rendered_report_source_link_prefix)
-            )
+                source_link_prefix=self.config.rendered_report_source_link_prefix,
+                third_party_package_location=self.config.third_party_package_location,
+            ),
+        )
 
     def _generate_per_choice_docs(self):
         """
@@ -130,7 +142,7 @@ class ReportRenderer:
                     if isinstance(annotation['annotation_data'], list) and choice in annotation['annotation_data']:
                         choice_report[filename].append(annotation)
 
-            self._write_doc_file(f'choice_{choice}', choice_report)
+            self._write_doc_file(f"All References to Choice '{choice}'", f'choice_{choice}', choice_report)
 
     def _generate_per_annotation_docs(self):
         """
@@ -143,13 +155,13 @@ class ReportRenderer:
                     if report_annotation['annotation_token'] == annotation:
                         annotation_report[filename].append(report_annotation)
 
-            self._write_doc_file(f'annotation_{annotation}', annotation_report)
+            self._write_doc_file(f"All References to Annotation '{annotation}'", f'annotation_{annotation}', annotation_report)
 
     def render(self):
         """
         Perform the rendering of all documentation using the configured Jinja2 templates.
         """
         # Generate the top level list of all annotations
-        self._write_doc_file('index', self.full_report)
+        self._write_doc_file("Complete Annotation List", 'index', self.full_report)
         self._generate_per_choice_docs()
         self._generate_per_annotation_docs()
