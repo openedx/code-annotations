@@ -17,6 +17,7 @@ from code_annotations.helpers import VerboseEcho
 PACKAGE_DIR = os.path.dirname(os.path.realpath(__file__))
 DEFAULT_TEMPLATE_DIR = os.path.join(PACKAGE_DIR, "report_templates")
 
+
 class AnnotationConfig:
     """
     Configuration shared among all Code Annotations commands.
@@ -67,9 +68,9 @@ class AnnotationConfig:
             os.path.join(DEFAULT_TEMPLATE_DIR, self.rendered_report_format)
         )
         self.rendered_report_dir = raw_config.get('rendered_report_dir', 'annotation_reports')
-        self.rendered_report_source_link_prefix = raw_config.get('rendered_report_source_link_prefix')
+        self.rendered_report_source_link_prefix = raw_config.get('rendered_report_source_link_prefix', None)
         self.trim_filename_prefixes = raw_config.get('trim_filename_prefixes', [])
-        self.third_party_package_location = raw_config.get('third_party_package_location', None)
+        self.third_party_package_location = raw_config.get('third_party_package_location', "site-packages")
         self.rendered_report_file_extension = f".{self.rendered_report_format}"
 
         self._configure_annotations(raw_config)

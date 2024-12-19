@@ -86,7 +86,6 @@ class ReportRenderer:
             else:
                 report[trimmed_filename] = loaded_report[filename]
 
-
     def _aggregate_reports(self):
         """
         Combine all of the given report files into a single report object.
@@ -105,6 +104,7 @@ class ReportRenderer:
         Write out a single report file with the given data. This is rendered using the configured top level template.
 
         Args:
+            doc_title: Title to use for the document.
             doc_filename: Filename to write to.
             doc_data: Dict of reporting data to use, in the {'file name': [list, of, annotations,]} style.
         """
@@ -128,8 +128,7 @@ class ReportRenderer:
                 slugify=slugify,
                 source_link_prefix=self.config.rendered_report_source_link_prefix,
                 third_party_package_location=self.config.third_party_package_location,
-            ),
-        )
+            ))
 
     def _generate_per_choice_docs(self):
         """
@@ -155,7 +154,9 @@ class ReportRenderer:
                     if report_annotation['annotation_token'] == annotation:
                         annotation_report[filename].append(report_annotation)
 
-            self._write_doc_file(f"All References to Annotation '{annotation}'", f'annotation_{annotation}', annotation_report)
+            self._write_doc_file(
+                f"All References to Annotation '{annotation}'", f'annotation_{annotation}', annotation_report
+            )
 
     def render(self):
         """
