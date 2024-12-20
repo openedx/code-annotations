@@ -6,7 +6,8 @@ rendered_report_dir: test_reports/
 rendered_report_format: html
 rendered_report_source_link_prefix: https://github.com/openedx/edx-platform/tree/master/
 trim_filename_prefixes:
-    - /foo/bar
+    - tacos
+    - simple
 third_party_package_location: site-packages
 
 coverage_target: 50.0

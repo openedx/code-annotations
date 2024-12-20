@@ -28,9 +28,6 @@ class ReportRenderer:
         self.echo = self.config.echo
         self.report_files = report_files
         self.create_time = datetime.datetime.now(tz=datetime.timezone.utc)
-
-        print(self.create_time)
-
         self.full_report = self._aggregate_reports()
 
         self.jinja_environment = jinja2.Environment(
