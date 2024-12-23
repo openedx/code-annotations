@@ -8,7 +8,7 @@ asgiref==3.8.1
     # via
     #   -r requirements/django.txt
     #   django
-click==8.1.7
+click==8.1.8
     # via -r requirements/base.txt
 coverage[toml]==7.6.9
     # via pytest-cov
@@ -17,7 +17,7 @@ coverage[toml]==7.6.9
     #   -r requirements/django.txt
 iniconfig==2.0.0
     # via pytest
-jinja2==3.1.4
+jinja2==3.1.5
     # via -r requirements/base.txt
 markupsafe==3.0.2
     # via
