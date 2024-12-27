@@ -140,6 +140,7 @@ class OpenedxEvents(SphinxDirective):
                         event_trigger_repository, event_name, event_trigger
                     ),
                 ),
+                ids=[f"trigger-{event_name}"],
             )
 
             if event.get(".. event_warning:") not in (None, "None", "n/a", "N/A"):
