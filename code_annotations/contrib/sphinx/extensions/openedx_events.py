@@ -100,6 +100,8 @@ class OpenedxEvents(SphinxDirective):
             event_key_field = event.get(".. event_key_field:", "")
             event_key_literal = nodes.literal(text=event_key_field)
             event_description = event[".. event_description:"]
+            event_trigger_repository = event.get(".. event_trigger_repository:", "")
+            event_trigger = event.get(".. event_trigger:", "")
 
             event_section = nodes.section("", ids=[f"openedxevent-{event_type}"])
             event_section += nodes.title(text=event_type, ids=[f"title-{event_type}"])
@@ -114,8 +116,30 @@ class OpenedxEvents(SphinxDirective):
                 )
             event_section += nodes.paragraph("", "Event data: ", event_data_literal)
             event_section += nodes.paragraph(
-                text=f"Defined at: {event['filename']} (line"
-                     f" {event['line_number']})"
+                "",
+                "Defined at: ",
+                nodes.reference(
+                    text="{} (line {})".format(
+                        event["filename"], event["line_number"]
+                    ),
+                    refuri="{}/blob/{}/{}#L{}".format(
+                        self.env.config.openedxevents_repo_url,
+                        self.env.config.openedxevents_repo_version,
+                        event["filename"],
+                        event["line_number"],
+                    ),
+                ),
+                ids=[f"definition-{event_name}"],
+            )
+            event_section += nodes.paragraph(
+                "",
+                "Triggered by: ",
+                nodes.reference(
+                    text=event_trigger,
+                    refuri="https://github.com/search?q=repo:{}+{}+path:{}".format(
+                        event_trigger_repository, event_name, event_trigger
+                    ),
+                ),
             )
 
             if event.get(".. event_warning:") not in (None, "None", "n/a", "N/A"):

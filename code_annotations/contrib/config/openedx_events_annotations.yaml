@@ -12,6 +12,8 @@ annotations:
     - ".. event_description:":
     - ".. event_data:":
     - ".. event_key_field:":
+    - ".. event_trigger_repository:":
+    - ".. event_trigger:":
     - ".. event_warning:":
 extensions:
     python:
