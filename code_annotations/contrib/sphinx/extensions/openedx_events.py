@@ -100,8 +100,8 @@ class OpenedxEvents(SphinxDirective):
             event_key_field = event.get(".. event_key_field:", "")
             event_key_literal = nodes.literal(text=event_key_field)
             event_description = event[".. event_description:"]
-            event_trigger_repository = event.get(".. event_trigger_repository:", "")
-            event_trigger = event.get(".. event_trigger:", "")
+            event_trigger_repository = event.get(".. event_trigger_repository:", "").split(" ")
+            event_trigger_path = event.get(".. event_trigger_path:", "").split(" ")
 
             event_section = nodes.section("", ids=[f"openedxevent-{event_type}"])
             event_section += nodes.title(text=event_type, ids=[f"title-{event_type}"])
@@ -131,17 +131,23 @@ class OpenedxEvents(SphinxDirective):
                 ),
                 ids=[f"definition-{event_name}"],
             )
-            event_section += nodes.paragraph(
-                "",
-                "Triggered by: ",
-                nodes.reference(
-                    text=event_trigger,
-                    refuri="https://github.com/search?q=repo:{}+{}+path:{}".format(
-                        event_trigger_repository, event_name, event_trigger
+
+            event_section += nodes.paragraph(text="Triggers", ids=[f"triggers-{event_name}"])
+            triggers_bullet_list = nodes.bullet_list()
+            for repository, path in zip(event_trigger_repository, event_trigger_path):
+                triggers_bullet_list += nodes.list_item(
+                    "",
+                    nodes.strong(
+                        "",
+                        "Path: ",
+                        nodes.reference(
+                            text=path,
+                            refuri=f"https://github.com/search?q=repo:{repository}+{event_name}+path:{path}"
+                        ),
                     ),
-                ),
-                ids=[f"trigger-{event_name}"],
-            )
+                )
+
+            event_section += triggers_bullet_list
 
             if event.get(".. event_warning:") not in (None, "None", "n/a", "N/A"):
                 event_section += nodes.warning(
