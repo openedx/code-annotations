@@ -1,9 +1,9 @@
 """
 Expose contrib configuration file paths as Python variables, for use in 3rd-party utilities.
 """
-import os
-
 import importlib.resources
+
+import os
 
 FEATURE_TOGGLE_ANNOTATIONS_CONFIG_PATH = importlib.resources.files(
     "code_annotations") / os.path.join("contrib", "config", "feature_toggle_annotations.yaml")
