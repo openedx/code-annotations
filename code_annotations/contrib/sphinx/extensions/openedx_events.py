@@ -137,7 +137,7 @@ class OpenedxEvents(SphinxDirective):
             for repository, path in zip(event_trigger_repository, event_trigger_path):
                 triggers_bullet_list += nodes.list_item(
                     "",
-                    nodes.strong(
+                    nodes.paragraph(
                         "",
                         "Path: ",
                         nodes.reference(
