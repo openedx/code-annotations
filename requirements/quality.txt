@@ -8,11 +8,11 @@ asgiref==3.8.1
     # via
     #   -r requirements/test.txt
     #   django
-astroid==3.3.6
+astroid==3.3.8
     # via
     #   pylint
     #   pylint-celery
-click==8.1.7
+click==8.1.8
     # via
     #   -r requirements/test.txt
     #   click-log
@@ -22,7 +22,7 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==2.1.0
     # via edx-lint
-coverage[toml]==7.6.9
+coverage[toml]==7.6.10
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -42,7 +42,7 @@ isort==5.13.2
     # via
     #   -r requirements/quality.in
     #   pylint
-jinja2==3.1.4
+jinja2==3.1.5
     # via
     #   -r requirements/test.txt
     #   code-annotations
@@ -72,7 +72,7 @@ pycodestyle==2.12.1
     # via -r requirements/quality.in
 pydocstyle==6.3.0
     # via -r requirements/quality.in
-pylint==3.3.2
+pylint==3.3.3
     # via
     #   edx-lint
     #   pylint-celery
