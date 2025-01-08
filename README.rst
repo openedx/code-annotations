@@ -1,9 +1,6 @@
 code-annotations
 =============================
 
-|pypi-badge| |CI| |codecov-badge| |doc-badge| |pyversions-badge|
-|license-badge|
-
 Extensible tools for parsing annotations in codebases
 
 Overview
@@ -55,28 +52,3 @@ Have a question about this repository, or about Open edX in general?  Please
 refer to this `list of resources`_ if you need any assistance.
 
 .. _list of resources: https://open.edx.org/getting-help
-
-
-.. |pypi-badge| image:: https://img.shields.io/pypi/v/code-annotations.svg
-    :target: https://pypi.python.org/pypi/code-annotations/
-    :alt: PyPI
-
-.. |CI| image:: https://github.com/openedx/code-annotations/workflows/Python%20CI/badge.svg?branch=master
-    :target: https://github.com/openedx/code-annotations/actions?query=workflow%3A%22Python+CI%22
-    :alt: CI
-
-.. |codecov-badge| image:: http://codecov.io/github/edx/code-annotations/coverage.svg?branch=master
-    :target: http://codecov.io/github/edx/code-annotations?branch=master
-    :alt: Codecov
-
-.. |doc-badge| image:: https://readthedocs.org/projects/code-annotations/badge/?version=latest
-    :target: http://code-annotations.readthedocs.io/en/latest/
-    :alt: Documentation
-
-.. |pyversions-badge| image:: https://img.shields.io/pypi/pyversions/code-annotations.svg
-    :target: https://pypi.python.org/pypi/code-annotations/
-    :alt: Supported Python versions
-
-.. |license-badge| image:: https://img.shields.io/github/license/edx/code-annotations.svg
-    :target: https://github.com/openedx/code-annotations/blob/master/LICENSE.txt
-    :alt: License
