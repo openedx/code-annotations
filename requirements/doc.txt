@@ -109,7 +109,7 @@ pycparser==2.22
     # via cffi
 pydata-sphinx-theme==0.16.1
     # via sphinx-book-theme
-pygments==2.19.0
+pygments==2.19.1
     # via
     #   accessible-pygments
     #   doc8
@@ -183,8 +183,9 @@ twine==6.0.1
     # via -r requirements/doc.in
 typing-extensions==4.12.2
     # via pydata-sphinx-theme
-urllib3==2.3.0
+urllib3==2.2.3
     # via
+    #   -c requirements/common_constraints.txt
     #   requests
     #   twine
 zipp==3.21.0
