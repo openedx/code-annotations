@@ -101,7 +101,6 @@ class OpenedxEvents(SphinxDirective):
             event_key_literal = nodes.literal(text=event_key_field)
             event_description = event[".. event_description:"]
             event_trigger_repository = event.get(".. event_trigger_repository:")
-            event_trigger_path = event.get(".. event_trigger_path:")
 
             event_section = nodes.section("", ids=[f"openedxevent-{event_type}"])
             event_section += nodes.title(text=event_type, ids=[f"title-{event_type}"])
@@ -132,20 +131,19 @@ class OpenedxEvents(SphinxDirective):
                 ids=[f"definition-{event_name}"],
             )
 
-            if event_trigger_path and event_trigger_repository:
-                event_trigger_path = event_trigger_path.split(" ")
+            if event_trigger_repository:
                 event_trigger_repository = event_trigger_repository.split(" ")
                 event_section += nodes.paragraph(text="Triggers", ids=[f"triggers-{event_name}"])
                 triggers_bullet_list = nodes.bullet_list()
-                for repository, path in zip(event_trigger_repository, event_trigger_path):
+                for repository in event_trigger_repository:
                     triggers_bullet_list += nodes.list_item(
                         "",
                         nodes.paragraph(
                             "",
-                            "Path: ",
+                            "Event triggered by ",
                             nodes.reference(
-                                text=path,
-                                refuri=f"https://github.com/search?q=repo:{repository}+{event_name}+path:{path}"
+                                text=repository,
+                                refuri=f"https://github.com/search?q=repo:{repository}+{event_name}.send_event&type=code",
                             ),
                         ),
                     )
