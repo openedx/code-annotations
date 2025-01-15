@@ -141,6 +141,7 @@ class OpenedxEvents(SphinxDirective):
                         "",
                         nodes.paragraph(
                             "",
+                            "",
                             nodes.reference(
                                 text=repository,
                                 refuri=search_url,
