@@ -133,17 +133,17 @@ class OpenedxEvents(SphinxDirective):
 
             if event_trigger_repository:
                 event_trigger_repository = event_trigger_repository.split(" ")
-                event_section += nodes.paragraph(text="Triggers", ids=[f"triggers-{event_name}"])
+                event_section += nodes.paragraph(text="Triggered by:", ids=[f"triggers-{event_name}"])
                 triggers_bullet_list = nodes.bullet_list()
                 for repository in event_trigger_repository:
+                    search_url = f"https://github.com/search?q=repo:{repository}+{event_name}.send_event&type=code"
                     triggers_bullet_list += nodes.list_item(
                         "",
                         nodes.paragraph(
                             "",
-                            "Event triggered by ",
                             nodes.reference(
                                 text=repository,
-                                refuri=f"https://github.com/search?q=repo:{repository}+{event_name}.send_event&type=code",
+                                refuri=search_url,
                             ),
                         ),
                     )
