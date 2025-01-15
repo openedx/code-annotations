@@ -14,10 +14,15 @@ Change Log
 Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+[2.2.0] - 2025-01-15
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Add support for optional Open edX Event trigger in-line annotation.
+
 [2.1.0] - 2024-12-12
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Add support for optional event warning for in-line annotation.
+* Add support for optional Open edX Event warning for in-line annotation.
 
 [2.0.0] - 2024-10-18
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
