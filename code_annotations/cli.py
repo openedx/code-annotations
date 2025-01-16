@@ -7,7 +7,6 @@ import sys
 import traceback
 
 import click
-from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 
 from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
