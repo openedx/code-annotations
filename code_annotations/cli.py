@@ -241,10 +241,15 @@ def generate_docs(config_file, verbosity, report_files):
     try:
         config = AnnotationConfig(config_file, verbosity)
 
+        if not report_files:
+            raise ConfigurationException(
+                "No report files provided. Please provide one or more report files to generate docs from."
+            )
+
         for key in (
             "report_template_dir",
             "rendered_report_dir",
-            "rendered_report_file_extension",
+            "rendered_report_format",
             "rendered_report_source_link_prefix",
         ):
             if not getattr(config, key):

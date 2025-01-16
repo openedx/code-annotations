@@ -26,6 +26,15 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
             - py3
         javascript:
             - js
+    # Options only used for human readable reports
+    report_template_dir: /my_custom_templates/report_templates/
+    rendered_report_dir: rendered_reports
+    rendered_report_format: html
+    rendered_report_source_link_prefix: https://github.com/my_org/my_project/blob/master/
+    trim_filename_prefixes:
+        - /my_org/my_project/
+        - /my_project/venv/lib/python3.11/
+    third_party_package_location: site-packages
 
 ``source_path``
     The file or directory to be searched for annotations. If a directory, it will be searched recursively. This can be
@@ -68,3 +77,21 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
     extensions are turned on here. The key is the extension name, as given in the ``setup.py`` or ``setup.cfg`` of the
     package that installed the extension. The values are a list of file extensions that, when found, will be passed to
     the extension for annotation searching. See :doc:`extensions` for details.
+
+``report_template_dir`` (optional)
+    When running the ``generate_docs`` comman you can specify a custom template directory here to override the default templates if you would like a different look.
+
+``rendered_report_dir`` (optional)
+    When running the ``generate_docs`` command, this option specifies the directory where the rendered report will be written. The default is ``annotation_reports`` in the current working directory.
+
+``rendered_report_format`` (optional)
+    When running the ``generate_docs`` command, this option specifies the format of the rendered report. Options are ``html`` and ``rst``. The default is ``rst``.
+
+``rendered_report_source_link_prefix`` (optional)
+    When running the ``generate_docs`` command, this option specifies the URL prefix to use when linking to source files in the rendered report. When specified, "local" source files (those not found in site-packages) will be appended to this setting to create hyperlinks to the lines in source files online. For Github links this is the correct format: ``https://github.com/openedx/edx-platform/blob/master/``. The default is an None.
+
+``trim_filename_prefixes`` (optional)
+    When running the ``generate_docs`` command, this option specifies a list of prefixes to remove from the beginning of filenames in the rendered report. This is useful for making the report more readable by removing long, repetitive prefixes of the type often found in a Django search. The default is an empty list.
+
+``third_party_package_location`` (optional)
+    When running the ``generate_docs`` command, this option specifies the location of third party packages that may have been found in a Django search. This is used to determine if a file is a third party file or not. The default is ``site-packages``.
