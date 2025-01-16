@@ -7,6 +7,7 @@ import sys
 import traceback
 
 import click
+from django.db.models.fields.related import RECURSIVE_RELATIONSHIP_CONSTANT
 
 from code_annotations.base import AnnotationConfig, ConfigurationException
 from code_annotations.find_django import DjangoSearch
@@ -240,6 +241,11 @@ def generate_docs(config_file, verbosity, report_files):
 
     try:
         config = AnnotationConfig(config_file, verbosity)
+
+        if not report_files:
+            raise ConfigurationException(
+                "No report files provided. Please provide one or more report files to generate docs from."
+            )
 
         for key in (
             "report_template_dir",
