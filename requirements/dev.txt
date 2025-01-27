@@ -17,7 +17,7 @@ build==1.2.2.post1
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==5.5.0
+cachetools==5.5.1
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -64,9 +64,9 @@ django==4.2.18
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/quality.txt
-edx-lint==5.4.1
+edx-lint==5.6.0
     # via -r requirements/quality.txt
-filelock==3.16.1
+filelock==3.17.0
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -149,7 +149,7 @@ pylint-plugin-utils==0.8.2
     #   -r requirements/quality.txt
     #   pylint-celery
     #   pylint-django
-pyproject-api==1.8.0
+pyproject-api==1.9.0
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -196,7 +196,7 @@ tomlkit==0.13.2
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==4.23.2
+tox==4.24.1
     # via -r requirements/ci.txt
 virtualenv==20.29.1
     # via
