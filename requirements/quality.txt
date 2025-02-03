@@ -38,7 +38,7 @@ iniconfig==2.0.0
     # via
     #   -r requirements/test.txt
     #   pytest
-isort==5.13.2
+isort==6.0.0
     # via
     #   -r requirements/quality.in
     #   pylint
@@ -72,7 +72,7 @@ pycodestyle==2.12.1
     # via -r requirements/quality.in
 pydocstyle==6.3.0
     # via -r requirements/quality.in
-pylint==3.3.3
+pylint==3.3.4
     # via
     #   edx-lint
     #   pylint-celery
