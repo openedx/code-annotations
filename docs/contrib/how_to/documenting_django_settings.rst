@@ -56,7 +56,7 @@ Additional details
 
 There are a variety of tips in `certain sections of the how-to for documenting feature toggles`_, that are applicable to documenting non-boolean Django settings as well, but are not duplicated in this document. We recommend you get familiar with the applicable subsections of "Additional details" and "Documenting legacy feature toggles" from the feature toggle how-to.
 
-.. _certain sections of the how-to for documenting feature toggles: https://edx.readthedocs.io/projects/edx-toggles/en/latest/how_to/documenting_new_feature_toggles.html#additional-details
+.. _certain sections of the how-to for documenting feature toggles: https://docs.openedx.org/projects/edx-toggles/en/latest/how_to/documenting_new_feature_toggles.html#additional-details
 
 Additional resources
 ====================

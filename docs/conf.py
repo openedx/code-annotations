@@ -500,7 +500,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3.12', None),
     'django': ('https://docs.djangoproject.com/en/4.2/', 'https://docs.djangoproject.com/en/4.2/_objects/'),
     'model_utils': ('https://django-model-utils.readthedocs.io/en/latest/', None),
-    'edx_toggles': ('https://edx.readthedocs.io/projects/edx-toggles/en/latest/', None),
+    'edx_toggles': ('https://docs.openedx.org/projects/edx-toggles/en/latest/', None),
 }
 
 
