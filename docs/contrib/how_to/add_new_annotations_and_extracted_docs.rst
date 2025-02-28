@@ -14,7 +14,7 @@ Annotations are a great way to keep documentation close to the code, but also be
 As an example, we have added `feature toggle annotations to the edx-platform codebase`_. A `Readthedocs document with the edx-platform feature toggles`_ has been generated from them.
 
 .. _feature toggle annotations to the edx-platform codebase: https://github.com/openedx/edx-platform/search?q=toggle_name
-.. _Readthedocs document with the edx-platform feature toggles: https://edx.readthedocs.io/projects/edx-platform-technical/en/latest/featuretoggles.html
+.. _Readthedocs document with the edx-platform feature toggles: https://docs.openedx.org/projects/edx-platform/en/latest/references/featuretoggles.html
 
 Add your own annotations and docs
 =================================
