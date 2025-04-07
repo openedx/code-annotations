@@ -162,7 +162,7 @@ pytest==8.3.5
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-pytest-cov==6.0.0
+pytest-cov==6.1.1
     # via -r requirements/quality.txt
 python-slugify==8.0.4
     # via
@@ -198,7 +198,7 @@ tomlkit==0.13.2
     #   pylint
 tox==4.25.0
     # via -r requirements/ci.txt
-virtualenv==20.29.3
+virtualenv==20.30.0
     # via
     #   -r requirements/ci.txt
     #   tox
