@@ -16,11 +16,10 @@ def get_version(*file_paths):
     """
     filename = os.path.join(os.path.dirname(__file__), *file_paths)
     version_file = open(filename).read()
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                              version_file, re.M)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
         return version_match.group(1)
-    raise RuntimeError('Unable to find version string.')
+    raise RuntimeError("Unable to find version string.")
 
 
 def load_requirements(*requirements_paths):
@@ -33,7 +32,8 @@ def load_requirements(*requirements_paths):
     requirements = set()
     for path in requirements_paths:
         requirements.update(
-            line.split('#')[0].strip() for line in open(path).readlines()
+            line.split("#")[0].strip()
+            for line in open(path).readlines()
             if is_requirement(line.strip())
         )
     return list(requirements)
@@ -47,64 +47,65 @@ def is_requirement(line):
         bool: True if the line is not blank, a comment, a URL, or an included file
     """
     return not (
-        line == '' or
-        line.startswith('-r') or
-        line.startswith('#') or
-        line.startswith('-e') or
-        line.startswith('git+') or
-        line.startswith('-c')
+        line == ""
+        or line.startswith("-r")
+        or line.startswith("#")
+        or line.startswith("-e")
+        or line.startswith("git+")
+        or line.startswith("-c")
     )
 
 
-VERSION = get_version('code_annotations', '__init__.py')
+VERSION = get_version("code_annotations", "__init__.py")
 
-if sys.argv[-1] == 'tag':
+if sys.argv[-1] == "tag":
     print("Tagging the version on github:")
     os.system("git tag -a %s -m 'version %s'" % (VERSION, VERSION))
     os.system("git push --tags")
     sys.exit()
 
-README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
-CHANGELOG = open(os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst')).read()
+README = open(os.path.join(os.path.dirname(__file__), "README.rst")).read()
+CHANGELOG = open(os.path.join(os.path.dirname(__file__), "CHANGELOG.rst")).read()
 
 setup(
-    name='code-annotations',
+    name="code-annotations",
     version=VERSION,
     description="""Extensible tools for parsing annotations in codebases""",
-    long_description=README + '\n\n' + CHANGELOG,
-    long_description_content_type='text/x-rst',
-    author='edX',
-    author_email='oscm@edx.org',
-    url='https://github.com/openedx/code-annotations',
+    long_description=README + "\n\n" + CHANGELOG,
+    long_description_content_type="text/x-rst",
+    author="edX",
+    author_email="oscm@edx.org",
+    url="https://github.com/openedx/code-annotations",
     packages=[
-        'code_annotations',
+        "code_annotations",
     ],
     entry_points={
-        'console_scripts': [
-            'code_annotations = code_annotations.cli:entry_point',
+        "console_scripts": [
+            "code_annotations = code_annotations.cli:entry_point",
         ],
-        'annotation_finder.searchers': [
-            'javascript = code_annotations.extensions.javascript:JavascriptAnnotationExtension',
-            'python = code_annotations.extensions.python:PythonAnnotationExtension',
+        "annotation_finder.searchers": [
+            "javascript = code_annotations.extensions.javascript:JavascriptAnnotationExtension",
+            "python = code_annotations.extensions.python:PythonAnnotationExtension",
         ],
     },
     include_package_data=True,
-    install_requires=load_requirements('requirements/base.in'),
+    install_requires=load_requirements("requirements/base.in"),
     extras_require={"django": ["Django>=4.2"]},
     license="Apache Software License 2.0",
     zip_safe=False,
-    keywords='edx pii code annotations',
+    keywords="edx pii code annotations",
     python_requires=">=3.11",
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Framework :: Django',
-        'Framework :: Django :: 4.2',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Natural Language :: English',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
+        "Development Status :: 3 - Alpha",
+        "Framework :: Django",
+        "Framework :: Django :: 4.2",
+        "Framework :: Django :: 5.2",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
 )
