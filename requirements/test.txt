@@ -25,7 +25,7 @@ markupsafe==3.0.2
     #   jinja2
 mock==5.2.0
     # via -r requirements/test.in
-packaging==24.2
+packaging==25.0
     # via pytest
 pbr==6.1.1
     # via
