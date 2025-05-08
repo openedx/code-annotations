@@ -9,9 +9,7 @@ accessible-pygments==0.0.5
 alabaster==1.0.0
     # via sphinx
 asgiref==3.8.1
-    # via
-    #   -r requirements/test.txt
-    #   django
+    # via -r test.txt
 babel==2.17.0
     # via
     #   pydata-sphinx-theme
@@ -27,19 +25,15 @@ cffi==1.17.1
 charset-normalizer==3.4.2
     # via requests
 click==8.1.8
-    # via -r requirements/test.txt
+    # via -r test.txt
 coverage[toml]==7.8.0
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   pytest-cov
 cryptography==44.0.3
     # via secretstorage
-django==4.2.20
-    # via
-    #   -c requirements/common_constraints.txt
-    #   -r requirements/test.txt
 doc8==1.1.2
-    # via -r requirements/doc.in
+    # via -r doc.in
 docutils==0.21.2
     # via
     #   doc8
@@ -57,7 +51,7 @@ importlib-metadata==8.7.0
     # via keyring
 iniconfig==2.1.0
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   pytest
 jaraco-classes==3.4.0
     # via keyring
@@ -71,7 +65,7 @@ jeepney==0.9.0
     #   secretstorage
 jinja2==3.1.6
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   sphinx
 keyring==25.6.0
     # via twine
@@ -79,12 +73,12 @@ markdown-it-py==3.0.0
     # via rich
 markupsafe==3.0.2
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   jinja2
 mdurl==0.1.2
     # via markdown-it-py
 mock==5.2.0
-    # via -r requirements/test.txt
+    # via -r test.txt
 more-itertools==10.7.0
     # via
     #   jaraco-classes
@@ -93,18 +87,18 @@ nh3==0.2.21
     # via readme-renderer
 packaging==25.0
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   pydata-sphinx-theme
     #   pytest
     #   sphinx
     #   twine
 pbr==6.1.1
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   stevedore
 pluggy==1.5.0
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   pytest
 pycparser==2.22
     # via cffi
@@ -120,14 +114,14 @@ pygments==2.19.1
     #   sphinx
 pytest==8.3.5
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   pytest-cov
 pytest-cov==6.1.1
-    # via -r requirements/test.txt
+    # via -r test.txt
 python-slugify==8.0.4
-    # via -r requirements/test.txt
+    # via -r test.txt
 pyyaml==6.0.2
-    # via -r requirements/test.txt
+    # via -r test.txt
 readme-renderer==44.0
     # via twine
 requests==2.32.3
@@ -154,11 +148,11 @@ soupsieve==2.7
     # via beautifulsoup4
 sphinx==8.2.3
     # via
-    #   -r requirements/doc.in
+    #   -r doc.in
     #   pydata-sphinx-theme
     #   sphinx-book-theme
 sphinx-book-theme==1.1.4
-    # via -r requirements/doc.in
+    # via -r doc.in
 sphinxcontrib-applehelp==2.0.0
     # via sphinx
 sphinxcontrib-devhelp==2.0.0
@@ -172,26 +166,24 @@ sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 sqlparse==0.5.3
-    # via
-    #   -r requirements/test.txt
-    #   django
+    # via -r test.txt
 stevedore==5.4.1
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   doc8
 text-unidecode==1.3
     # via
-    #   -r requirements/test.txt
+    #   -r test.txt
     #   python-slugify
 twine==6.1.0
-    # via -r requirements/doc.in
+    # via -r doc.in
 typing-extensions==4.13.2
     # via
     #   beautifulsoup4
     #   pydata-sphinx-theme
 urllib3==2.2.3
     # via
-    #   -c requirements/common_constraints.txt
+    #   -c common_constraints.txt
     #   requests
     #   twine
 zipp==3.21.0
