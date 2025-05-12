@@ -8,7 +8,7 @@ asgiref==3.8.1
     # via
     #   -r requirements/quality.txt
     #   django
-astroid==3.3.9
+astroid==3.3.10
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -26,7 +26,7 @@ chardet==5.2.0
     #   -r requirements/ci.txt
     #   diff-cover
     #   tox
-click==8.1.8
+click==8.2.0
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -60,7 +60,7 @@ distlib==0.3.9
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==4.2.20
+django==4.2.21
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/quality.txt
@@ -109,7 +109,7 @@ pbr==6.1.1
     #   stevedore
 pip-tools==7.4.1
     # via -r requirements/pip-tools.txt
-platformdirs==4.3.7
+platformdirs==4.3.8
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -176,7 +176,7 @@ six==1.17.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-snowballstemmer==2.2.0
+snowballstemmer==3.0.1
     # via
     #   -r requirements/quality.txt
     #   pydocstyle
@@ -198,7 +198,7 @@ tomlkit==0.13.2
     #   pylint
 tox==4.25.0
     # via -r requirements/ci.txt
-virtualenv==20.30.0
+virtualenv==20.31.2
     # via
     #   -r requirements/ci.txt
     #   tox
