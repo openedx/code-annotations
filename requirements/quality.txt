@@ -64,7 +64,7 @@ pbr==6.1.1
     #   stevedore
 platformdirs==4.3.8
     # via pylint
-pluggy==1.5.0
+pluggy==1.6.0
     # via
     #   -r requirements/test.txt
     #   pytest
