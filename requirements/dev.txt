@@ -4,6 +4,10 @@
 #
 #    make upgrade
 #
+alabaster==1.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 asgiref==3.8.1
     # via
     #   -r requirements/quality.txt
@@ -13,6 +17,10 @@ astroid==3.3.10
     #   -r requirements/quality.txt
     #   pylint
     #   pylint-celery
+babel==2.17.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 build==1.2.2.post1
     # via
     #   -r requirements/pip-tools.txt
@@ -21,11 +29,19 @@ cachetools==6.0.0
     # via
     #   -r requirements/ci.txt
     #   tox
+certifi==2025.4.26
+    # via
+    #   -r requirements/quality.txt
+    #   requests
 chardet==5.2.0
     # via
     #   -r requirements/ci.txt
     #   diff-cover
     #   tox
+charset-normalizer==3.4.2
+    # via
+    #   -r requirements/quality.txt
+    #   requests
 click==8.2.1
     # via
     #   -r requirements/pip-tools.txt
@@ -64,6 +80,10 @@ django==4.2.21
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/quality.txt
+docutils==0.21.2
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 edx-lint==5.6.0
     # via -r requirements/quality.txt
 filelock==3.18.0
@@ -71,6 +91,14 @@ filelock==3.18.0
     #   -r requirements/ci.txt
     #   tox
     #   virtualenv
+idna==3.10
+    # via
+    #   -r requirements/quality.txt
+    #   requests
+imagesize==1.4.1
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 iniconfig==2.1.0
     # via
     #   -r requirements/quality.txt
@@ -84,6 +112,7 @@ jinja2==3.1.6
     #   -r requirements/quality.txt
     #   code-annotations
     #   diff-cover
+    #   sphinx
 markupsafe==3.0.2
     # via
     #   -r requirements/quality.txt
@@ -94,6 +123,12 @@ mccabe==0.7.0
     #   pylint
 mock==5.2.0
     # via -r requirements/quality.txt
+mypy==1.15.0
+    # via -r requirements/quality.txt
+mypy-extensions==1.1.0
+    # via
+    #   -r requirements/quality.txt
+    #   mypy
 packaging==25.0
     # via
     #   -r requirements/ci.txt
@@ -102,6 +137,7 @@ packaging==25.0
     #   build
     #   pyproject-api
     #   pytest
+    #   sphinx
     #   tox
 pbr==6.1.1
     # via
@@ -128,7 +164,10 @@ pycodestyle==2.13.0
 pydocstyle==6.3.0
     # via -r requirements/quality.txt
 pygments==2.19.1
-    # via diff-cover
+    # via
+    #   -r requirements/quality.txt
+    #   diff-cover
+    #   sphinx
 pylint==3.3.7
     # via
     #   -r requirements/quality.txt
@@ -172,6 +211,14 @@ pyyaml==6.0.2
     # via
     #   -r requirements/quality.txt
     #   code-annotations
+requests==2.32.3
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+roman-numerals-py==3.1.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 six==1.17.0
     # via
     #   -r requirements/quality.txt
@@ -180,6 +227,33 @@ snowballstemmer==3.0.1
     # via
     #   -r requirements/quality.txt
     #   pydocstyle
+    #   sphinx
+sphinx==8.2.3
+    # via -r requirements/quality.txt
+sphinxcontrib-applehelp==2.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+sphinxcontrib-devhelp==2.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+sphinxcontrib-htmlhelp==2.1.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+sphinxcontrib-jsmath==1.0.1
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+sphinxcontrib-qthelp==2.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
+sphinxcontrib-serializinghtml==2.0.0
+    # via
+    #   -r requirements/quality.txt
+    #   sphinx
 sqlparse==0.5.3
     # via
     #   -r requirements/quality.txt
@@ -198,6 +272,21 @@ tomlkit==0.13.2
     #   pylint
 tox==4.26.0
     # via -r requirements/ci.txt
+types-docutils==0.21.0.20250516
+    # via -r requirements/quality.txt
+types-pyyaml==6.0.12.20250516
+    # via -r requirements/quality.txt
+types-setuptools==80.7.0.20250516
+    # via -r requirements/quality.txt
+typing-extensions==4.13.2
+    # via
+    #   -r requirements/quality.txt
+    #   mypy
+urllib3==2.2.3
+    # via
+    #   -c requirements/common_constraints.txt
+    #   -r requirements/quality.txt
+    #   requests
 virtualenv==20.31.2
     # via
     #   -r requirements/ci.txt

@@ -5,5 +5,10 @@
 
 edx-lint                  # edX pylint rules and plugins
 isort                     # to standardize order of imports
+mypy                    # Typing utilities
 pycodestyle               # PEP 8 compliance validation
 pydocstyle                # PEP 257 compliance validation
+types-docutils
+types-PyYAML
+types-setuptools
+Sphinx                    # Required for type-checking of Sphinx utilities
