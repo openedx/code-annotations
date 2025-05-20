@@ -4,13 +4,14 @@ Helpers for code_annotations scripts.
 import os
 import re
 import sys
+import typing as t
 from io import StringIO
 from pprint import pprint
 
 import click
 
 
-def fail(msg):
+def fail(msg: str) -> t.NoReturn:
     """
     Log the message and exit.
 
@@ -26,9 +27,9 @@ class VerboseEcho:
     Helper to handle verbosity-dependent logging.
     """
 
-    verbosity = 1
+    verbosity: int = 1
 
-    def __call__(self, output, **kwargs):
+    def __call__(self, output: str, **kwargs: t.Any) -> None:
         """
         Echo the given output regardless of verbosity level.
 
@@ -40,18 +41,17 @@ class VerboseEcho:
         """
         self.echo(output, **kwargs)
 
-    def set_verbosity(self, verbosity):
+    def set_verbosity(self, verbosity: int) -> None:
         """
         Override the default verbosity level.
 
         Args:
             verbosity: The verbosity level to set to
-            kwargs: Any additional keyword args to pass to click.echo
         """
         self.verbosity = verbosity
         self.echo_v(f"Verbosity level set to {verbosity}")
 
-    def echo(self, output, verbosity_level=0, **kwargs):
+    def echo(self, output: str, verbosity_level: int = 0, **kwargs: t.Any) -> None:
         """
         Echo the given output, if over the verbosity threshold.
 
@@ -63,7 +63,7 @@ class VerboseEcho:
         if verbosity_level <= self.verbosity:
             click.secho(output, **kwargs)
 
-    def echo_v(self, output, **kwargs):
+    def echo_v(self, output: str, **kwargs: t.Any) -> None:
         """
         Echo the given output if verbosity level is >= 1.
 
@@ -73,7 +73,7 @@ class VerboseEcho:
         """
         self.echo(output, 1, **kwargs)
 
-    def echo_vv(self, output, **kwargs):
+    def echo_vv(self, output: str, **kwargs: t.Any) -> None:
         """
         Echo the given output if verbosity level is >= 2.
 
@@ -83,7 +83,7 @@ class VerboseEcho:
         """
         self.echo(output, 2, **kwargs)
 
-    def echo_vvv(self, output, **kwargs):
+    def echo_vvv(self, output: str, **kwargs: t.Any) -> None:
         """
         Echo the given output if verbosity level is >= 3.
 
@@ -93,7 +93,7 @@ class VerboseEcho:
         """
         self.echo(output, 3, **kwargs)
 
-    def pprint(self, data, indent=4, verbosity_level=0):
+    def pprint(self, data: t.Any, indent: int = 4, verbosity_level: int = 0) -> None:
         """
         Pretty-print some data with the given verbosity level.
         """
@@ -103,7 +103,7 @@ class VerboseEcho:
         self.echo(formatted.read(), verbosity_level=verbosity_level)
 
 
-def clean_abs_path(filename_to_clean, parent_path):
+def clean_abs_path(filename_to_clean: str, parent_path: str) -> str:
     """
     Safely strips the parent path from the given filename, leaving only the relative path.
 
@@ -121,7 +121,7 @@ def clean_abs_path(filename_to_clean, parent_path):
     return os.path.relpath(filename_to_clean, parent_path)
 
 
-def get_annotation_regex(annotation_regexes):
+def get_annotation_regex(annotation_regexes: list[str]) -> t.Pattern[str]:
     """
     Return the full regex to search inside comments for configured annotations.
 
@@ -166,7 +166,7 @@ def get_annotation_regex(annotation_regexes):
     return re.compile(annotation_regex, flags=re.VERBOSE)
 
 
-def clean_annotation(token, data):
+def clean_annotation(token: str, data: str) -> tuple[str, str]:
     """
     Clean annotation token and data by stripping all trailing/prefix empty spaces.
 

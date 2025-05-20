@@ -77,7 +77,7 @@ test: clean ## run tests in the current virtualenv
 	pytest
 
 test-types: ## run mypy tests on the whole codebase
-	mypy --ignore-missing-imports code_annotations/ tests/ test_utils/ setup.py
+	mypy --ignore-missing-imports --strict code_annotations/ tests/ test_utils/ setup.py
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml

@@ -10,7 +10,7 @@ import sys
 from setuptools import setup
 
 
-def get_version(*file_paths):
+def get_version(*file_paths: str) -> str:
     """
     Extract the version string from the file at the given relative path fragments.
     """
@@ -22,14 +22,14 @@ def get_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-def load_requirements(*requirements_paths):
+def load_requirements(*requirements_paths: str) -> list[str]:
     """
     Load all requirements from the specified requirements files.
 
     Returns:
         list: Requirements file relative path strings
     """
-    requirements = set()
+    requirements: set[str] = set()
     for path in requirements_paths:
         requirements.update(
             line.split("#")[0].strip()
@@ -39,7 +39,7 @@ def load_requirements(*requirements_paths):
     return list(requirements)
 
 
-def is_requirement(line):
+def is_requirement(line: str) -> bool:
     """
     Return True if the requirement line is a package requirement.
 
