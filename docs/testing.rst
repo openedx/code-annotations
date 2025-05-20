@@ -29,6 +29,16 @@ To run just the code quality checks:
 
     $ make quality
 
+Alternatively, run quality tests one by one:
+
+.. code-block:: bash
+
+    $ make test-lint
+    $ make test-types
+    $ make test-codestyle
+    $ make test-docstyle
+    $ make test-isort
+
 To run the unit tests under every supported Python version and the code
 quality checks:
 
@@ -42,3 +52,5 @@ test cases:
 .. code-block:: bash
 
     $ make coverage
+
+
