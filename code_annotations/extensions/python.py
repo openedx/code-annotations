@@ -11,9 +11,9 @@ class PythonAnnotationExtension(SimpleRegexAnnotationExtension):
     Annotation extension for Python source files.
     """
 
-    extension_name = 'python'
+    extension_name: str = 'python'
 
-    lang_comment_definition = {
+    lang_comment_definition: dict[str, str] = {
         'multi_start': re.escape('"""'),
         'multi_end': re.escape('"""'),
         'single': re.escape('#')

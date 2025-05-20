@@ -5,6 +5,7 @@ import datetime
 import errno
 import os
 import re
+import typing as t
 from abc import ABCMeta, abstractmethod
 
 import yaml
@@ -23,7 +24,13 @@ class AnnotationConfig:
     Configuration shared among all Code Annotations commands.
     """
 
-    def __init__(self, config_file_path, report_path_override=None, verbosity=1, source_path_override=None):
+    def __init__(
+        self,
+        config_file_path: str,
+        report_path_override: str | None = None,
+        verbosity: int = 1,
+        source_path_override: str | None = None
+    ) -> None:
         """
          Initialize AnnotationConfig.
 
@@ -33,50 +40,51 @@ class AnnotationConfig:
             verbosity: Verbosity level from the command line
             source_path_override: Path to search if we're static code searching, if overridden on the command line
         """
-        self.groups = {}
-        self.choices = {}
-        self.optional_groups = []
-        self.annotation_tokens = []
-        self.annotation_regexes = []
-        self.mgr = None
+        self.groups: dict[str, list[str]] = {}
+        self.choices: dict[str, list[str]] = {}
+        self.optional_groups: list[str] = []
+        self.annotation_tokens: list[str] = []
+        self.annotation_regexes: list[str] = []
+        self.mgr: named.NamedExtensionManager | None = None
+        self.coverage_target: float | None = None
 
         # Global logger, other objects can hold handles to this
         self.echo = VerboseEcho()
 
         with open(config_file_path) as config_file:
-            raw_config = yaml.safe_load(config_file)
+            raw_config: dict[str, t.Any] = yaml.safe_load(config_file)
 
         self._check_raw_config_keys(raw_config)
 
-        self.safelist_path = raw_config['safelist_path']
-        self.extensions = raw_config['extensions']
+        self.safelist_path: str = raw_config['safelist_path']
+        self.extensions: dict[str, t.Any] = raw_config['extensions']
 
         self.verbosity = verbosity
         self.echo.set_verbosity(verbosity)
 
-        self.report_path = report_path_override if report_path_override else raw_config['report_path']
+        self.report_path: str = report_path_override if report_path_override else raw_config['report_path']
         self.echo(f"Configured for report path: {self.report_path}")
 
-        self.source_path = source_path_override if source_path_override else raw_config['source_path']
+        self.source_path: str = source_path_override if source_path_override else raw_config['source_path']
         self.echo(f"Configured for source path: {self.source_path}")
 
         self._configure_coverage(raw_config.get('coverage_target', None))
 
-        self.rendered_report_format = raw_config.get('rendered_report_format', 'rst')
-        self.report_template_dir = raw_config.get(
+        self.rendered_report_format: str = raw_config.get('rendered_report_format', 'rst')
+        self.report_template_dir: str = raw_config.get(
             'report_template_dir',
             os.path.join(DEFAULT_TEMPLATE_DIR, self.rendered_report_format)
         )
-        self.rendered_report_dir = raw_config.get('rendered_report_dir', 'annotation_reports')
-        self.rendered_report_source_link_prefix = raw_config.get('rendered_report_source_link_prefix', None)
-        self.trim_filename_prefixes = raw_config.get('trim_filename_prefixes', [])
-        self.third_party_package_location = raw_config.get('third_party_package_location', "site-packages")
-        self.rendered_report_file_extension = f".{self.rendered_report_format}"
+        self.rendered_report_dir: str = raw_config.get('rendered_report_dir', 'annotation_reports')
+        self.rendered_report_source_link_prefix: str | None = raw_config.get('rendered_report_source_link_prefix', None)
+        self.trim_filename_prefixes: list[str] = raw_config.get('trim_filename_prefixes', [])
+        self.third_party_package_location: str = raw_config.get('third_party_package_location', "site-packages")
+        self.rendered_report_file_extension: str = f".{self.rendered_report_format}"
 
         self._configure_annotations(raw_config)
         self._configure_extensions()
 
-    def _check_raw_config_keys(self, raw_config):
+    def _check_raw_config_keys(self, raw_config: dict[str, t.Any]) -> None:
         """
         Validate that all required keys exist in the configuration file.
 
@@ -86,7 +94,7 @@ class AnnotationConfig:
         Raises:
             ConfigurationException on any missing keys
         """
-        errors = []
+        errors: list[str] = []
         for k in ('report_path', 'source_path', 'safelist_path', 'annotations', 'extensions'):
             if k not in raw_config:
                 errors.append(k)
@@ -98,7 +106,7 @@ class AnnotationConfig:
                 )
             )
 
-    def _is_annotation_group(self, token_or_group):
+    def _is_annotation_group(self, token_or_group: t.Any) -> bool:
         """
         Determine if an annotation is a group or not.
 
@@ -110,7 +118,7 @@ class AnnotationConfig:
         """
         return isinstance(token_or_group, list)
 
-    def _is_choice_group(self, token_or_group):
+    def _is_choice_group(self, token_or_group: t.Any) -> bool:
         """
         Determine if an annotation is a choice group.
 
@@ -122,7 +130,7 @@ class AnnotationConfig:
         """
         return isinstance(token_or_group, dict) and "choices" in token_or_group
 
-    def _is_optional_group(self, token_or_group):
+    def _is_optional_group(self, token_or_group: t.Any) -> bool:
         """
         Determine if an annotation is an optional group.
 
@@ -134,7 +142,7 @@ class AnnotationConfig:
         """
         return isinstance(token_or_group, dict) and bool(token_or_group.get("optional"))
 
-    def _is_annotation_token(self, token_or_group):
+    def _is_annotation_token(self, token_or_group: t.Any) -> bool:
         """
         Determine if an annotation has the right format.
 
@@ -151,20 +159,20 @@ class AnnotationConfig:
             return set(token_or_group.keys()).issubset({"choices", "optional"})
         return False
 
-    def _add_annotation_token(self, token):
+    def _add_annotation_token(self, token: str) -> None:
         if token in self.annotation_tokens:
             raise ConfigurationException(f'{token} is configured more than once, tokens must be unique.')
         self.annotation_tokens.append(token)
 
-    def _configure_coverage(self, coverage_target):
+    def _configure_coverage(self, coverage_target: str | int | float | None) -> None:
         """
         Set coverage_target to the specified value.
 
         Args:
-            coverage_target:
+            coverage_target: The coverage target value to configure
 
-        Returns:
-
+        Raises:
+            ConfigurationException: When the coverage target is invalid
         """
         if coverage_target:
             try:
@@ -181,7 +189,7 @@ class AnnotationConfig:
         else:
             self.coverage_target = None
 
-    def _configure_group(self, group_name, group):
+    def _configure_group(self, group_name: str, group: list[dict[str, t.Any]]) -> None:
         """
         Perform group configuration and add annotations from the group to global configuration.
 
@@ -190,7 +198,7 @@ class AnnotationConfig:
             group: The list of annotations that comprise the group
 
         Raises:
-            TypeError if the group is misconfigured
+            ConfigurationException: If the group is misconfigured
         """
         self.groups[group_name] = []
 
@@ -215,7 +223,7 @@ class AnnotationConfig:
                 self._add_annotation_token(annotation_token)
                 self.annotation_regexes.append(re.escape(annotation_token))
 
-    def _configure_choices(self, annotation_token, annotation):
+    def _configure_choices(self, annotation_token: str, annotation: dict[str, t.Any]) -> None:
         """
         Configure the choices list for an annotation.
 
@@ -225,16 +233,16 @@ class AnnotationConfig:
         """
         self.choices[annotation_token] = annotation['choices']
 
-    def _configure_annotations(self, raw_config):
+    def _configure_annotations(self, raw_config: dict[str, t.Any]) -> None:
         """
         Transform the configured annotations into more usable pieces and validate.
 
         Args:
             raw_config: The dictionary form of our configuration file
         Raises:
-            TypeError if annotations are misconfigured
+            TypeError: If annotations are misconfigured
         """
-        annotation_tokens = raw_config['annotations']
+        annotation_tokens: dict[str, t.Any] = raw_config['annotations']
 
         for annotation_token_or_group_name in annotation_tokens:
             annotation = annotation_tokens[annotation_token_or_group_name]
@@ -259,7 +267,7 @@ class AnnotationConfig:
         self.echo.echo_v(f"Choices configured: {self.choices}")
         self.echo.echo_v(f"Annotation tokens configured: {self.annotation_tokens}")
 
-    def _plugin_load_failed_handler(self, *args, **kwargs):
+    def _plugin_load_failed_handler(self, *args: t.Any, **kwargs: t.Any) -> None:
         """
         Handle failures to load an extension.
 
@@ -267,22 +275,22 @@ class AnnotationConfig:
         errors just fail silently.
 
         Args:
-            *args:
-            **kwargs:
+            *args: Variable positional arguments
+            **kwargs: Variable keyword arguments
 
         Raises:
-            ConfigurationException
+            ConfigurationException: When a plugin fails to load
         """
         self.echo(str(args), fg='red')
         self.echo(str(kwargs), fg='red')
         raise ConfigurationException('Failed to load a plugin, aborting.')
 
-    def _configure_extensions(self):
+    def _configure_extensions(self) -> None:
         """
         Configure the Stevedore NamedExtensionManager.
 
         Raises:
-            ConfigurationException
+            ConfigurationException: When extensions cannot be loaded
         """
         # These are the names of all of our configured extensions
         configured_extension_names = self.extensions.keys()
@@ -316,7 +324,7 @@ class BaseSearch(metaclass=ABCMeta):
     Base class for searchers.
     """
 
-    def __init__(self, config):
+    def __init__(self, config: AnnotationConfig) -> None:
         """
         Initialize for StaticSearch.
 
@@ -326,12 +334,16 @@ class BaseSearch(metaclass=ABCMeta):
         self.config = config
         self.echo = self.config.echo
         # errors contains formatted error messages
-        self.errors = []
+        self.errors: list[str] = []
         # annotation_errors contains (annotation, AnnotationError, args) tuples
         # This attribute may be parsed by 3rd-parties, such as edx-lint.
-        self.annotation_errors = []
+        self.annotation_errors: list[tuple[dict[str, t.Any], annotation_errors.AnnotationError, tuple[t.Any, ...]]] = []
 
-    def format_file_results(self, all_results, results):
+    def format_file_results(
+        self,
+        all_results: dict[str, list[dict[str, t.Any]]],
+        results: list[list[dict[str, t.Any]]]
+    ) -> None:
         """
         Add all extensions' search results for a file to the overall results.
 
@@ -364,7 +376,7 @@ class BaseSearch(metaclass=ABCMeta):
             # Stevedore extension is working on the same file type
             all_results[file_path].extend(annotations)
 
-    def _check_results_choices(self, annotation):
+    def _check_results_choices(self, annotation: dict[str, t.Any]) -> None:
         """
         Check that a search result has appropriate choices.
 
@@ -383,7 +395,7 @@ class BaseSearch(metaclass=ABCMeta):
             return None
 
         token = annotation['annotation_token']
-        found_valid_choices = []
+        found_valid_choices: list[str] = []
 
         # If the line begins with an annotation token that should have choices, but has no text after the token,
         # the first split will be empty.
@@ -407,21 +419,21 @@ class BaseSearch(metaclass=ABCMeta):
             )
         return None
 
-    def _get_group_children(self):
+    def _get_group_children(self) -> list[str]:
         """
         Create a list of all annotation tokens that are part of a group.
 
         Returns:
             List of annotation tokens that are configured to be in groups
         """
-        group_children = []
+        group_children: list[str] = []
 
         for group in self.config.groups:
             group_children.extend(self.config.groups[group])
 
         return group_children
 
-    def _get_group_for_token(self, token):
+    def _get_group_for_token(self, token: str) -> str | None:
         """
         Find out which group, if any, an annotation token belongs to.
 
@@ -436,7 +448,7 @@ class BaseSearch(metaclass=ABCMeta):
                 return group
         return None
 
-    def check_results(self, all_results):
+    def check_results(self, all_results: dict[str, list[dict[str, t.Any]]]) -> bool:
         """
         Spin through all search results, confirm that they all match configuration.
 
@@ -456,7 +468,7 @@ class BaseSearch(metaclass=ABCMeta):
                 self.check_group(annotations)
         return not self.errors
 
-    def iter_groups(self, annotations):
+    def iter_groups(self, annotations: list[dict[str, t.Any]]) -> t.Iterator[list[dict[str, t.Any]]]:
         """
         Iterate on groups of annotations.
 
@@ -467,9 +479,9 @@ class BaseSearch(metaclass=ABCMeta):
         Yield:
             annotations (annotation list)
         """
-        current_group = []
-        current_line_number = None
-        current_object_id = None
+        current_group: list[dict[str, t.Any]] = []
+        current_line_number: int | None = None
+        current_object_id: str | None = None
         for annotation in annotations:
             line_number = annotation["line_number"]
             object_id = annotation.get("extra", {}).get("object_id")
@@ -486,7 +498,7 @@ class BaseSearch(metaclass=ABCMeta):
         if current_group:
             yield current_group
 
-    def check_group(self, annotations):
+    def check_group(self, annotations: list[dict[str, t.Any]]) -> None:
         """
         Perform several linting checks on a group of annotations.
 
@@ -497,9 +509,9 @@ class BaseSearch(metaclass=ABCMeta):
         - There is no duplicate
         - All non-optional tokens are present
         """
-        found_tokens = set()
-        group_tokens = []
-        group_name = None
+        found_tokens: set[str] = set()
+        group_tokens: list[str] = []
+        group_name: str | None = None
         for annotation in annotations:
             token = annotation["annotation_token"]
             if not group_name:
@@ -543,15 +555,19 @@ class BaseSearch(metaclass=ABCMeta):
                         (token,)
                     )
 
-    def _add_annotation_error(self, annotation, error_type, args=None):
+    def _add_annotation_error(
+        self,
+        annotation: dict[str, t.Any],
+        error_type: annotation_errors.AnnotationError,
+        args: tuple[t.Any, ...] | None = None
+    ) -> None:
         """
         Add an error message to self.errors, formatted nicely.
 
         Args:
             annotation: A single annotation dict found in search()
-            error_type (annotation_errors.AnnotationError): error type from which the error message will be
-                generated.
-            args (tuple): arguments for error message formatting.
+            error_type: Error type from which the error message will be generated
+            args: Arguments for error message formatting
         """
         args = args or tuple()
         error_message = error_type.message % args
@@ -560,7 +576,7 @@ class BaseSearch(metaclass=ABCMeta):
         self.annotation_errors.append((annotation, error_type, args))
         self._add_error(message)
 
-    def _add_error(self, message):
+    def _add_error(self, message: str) -> None:
         """
         Add an error message to self.errors.
 
@@ -570,7 +586,7 @@ class BaseSearch(metaclass=ABCMeta):
         self.errors.append(message)
 
     @abstractmethod
-    def search(self):
+    def search(self) -> dict[str, list[dict[str, t.Any]]]:
         """
         Walk the source tree, send known file types to extensions.
 
@@ -578,7 +594,10 @@ class BaseSearch(metaclass=ABCMeta):
             Dict of {filename: annotations} for all files with found annotations.
         """
 
-    def _format_results_for_report(self, all_results):
+    def _format_results_for_report(
+        self,
+        all_results: dict[str, list[dict[str, t.Any]]]
+    ) -> dict[str, list[dict[str, t.Any]]]:
         """
         Format the given results dict for reporting purposes.
 
@@ -588,7 +607,7 @@ class BaseSearch(metaclass=ABCMeta):
         Returns:
             Dict of results arranged for reporting
         """
-        formatted_results = {}
+        formatted_results: dict[str, list[dict[str, t.Any]]] = {}
         current_group_id = 0
         for filename in all_results:
             self.echo.echo_vv(f"report_format: formatting {filename}")
@@ -613,7 +632,11 @@ class BaseSearch(metaclass=ABCMeta):
 
         return formatted_results
 
-    def report(self, all_results, report_prefix=''):
+    def report(
+        self,
+        all_results: dict[str, list[dict[str, t.Any]]],
+        report_prefix: str = ''
+    ) -> str:
         """
         Generate the YAML report of all search results.
 

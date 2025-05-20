@@ -4,14 +4,16 @@ Annotation searcher for Django model comment searching Django introspection.
 
 import inspect
 import os
+import re
 import sys
+import typing as t
 
 import django
 import yaml
 from django.apps import apps
 from django.db import models
 
-from code_annotations.base import BaseSearch
+from code_annotations.base import AnnotationConfig, BaseSearch
 from code_annotations.helpers import clean_annotation, fail, get_annotation_regex
 
 DEFAULT_SAFELIST_FILE_PATH = ".annotation_safe_list.yml"
@@ -22,15 +24,17 @@ class DjangoSearch(BaseSearch):
     Handles Django model comment searching for annotations.
     """
 
-    def __init__(self, config, app_name=None):
+    def __init__(self, config: AnnotationConfig, app_name: str | None = None) -> None:
         """
         Initialize for DjangoSearch.
         """
         super().__init__(config)
+        self.local_models: set[type[models.Model]]
+        self.non_local_models: set[type[models.Model]]
         self.local_models, self.non_local_models, total, annotation_eligible = (
             self.get_models_requiring_annotations(app_name)
         )
-        self.model_counts = {
+        self.model_counts: dict[str, int] = {
             "total": total,
             "annotated": 0,
             "unannotated": 0,
@@ -38,7 +42,7 @@ class DjangoSearch(BaseSearch):
             "not_annotation_eligible": total - len(annotation_eligible),
             "safelisted": 0,
         }
-        self.uncovered_model_ids = set()
+        self.uncovered_model_ids: set[str] = set()
         self.echo.echo_vvv(
             "Local models:\n   "
             + "\n   ".join([str(m) for m in self.local_models])
@@ -55,10 +59,10 @@ class DjangoSearch(BaseSearch):
             + "\n"
         )
 
-    def _increment_count(self, count_type, incr_by=1):
+    def _increment_count(self, count_type: str, incr_by: int = 1) -> None:
         self.model_counts[count_type] += incr_by
 
-    def seed_safelist(self):
+    def seed_safelist(self) -> None:
         """
         Seed a new safelist file with all non-local models that need to be vetted.
         """
@@ -71,7 +75,7 @@ class DjangoSearch(BaseSearch):
             )
         )
 
-        safelist_data = {
+        safelist_data: dict[str, dict[str, str]] = {
             self.get_model_id(model): {} for model in self.non_local_models
         }
 
@@ -103,7 +107,7 @@ class DjangoSearch(BaseSearch):
         )
         self.echo("  2) Annotate any LOCAL models (see --list_local_models).", fg="red")
 
-    def list_local_models(self):
+    def list_local_models(self) -> None:
         """
         Dump a list of models in the local code tree that are annotation eligible to stdout.
         """
@@ -120,7 +124,13 @@ class DjangoSearch(BaseSearch):
         else:
             self.echo("No local models requiring annotations.")
 
-    def _append_model_annotations(self, model_type, model_id, query, model_annotations):
+    def _append_model_annotations(
+        self,
+        model_type: type[models.Model],
+        model_id: str,
+        query: re.Pattern[str],
+        model_annotations: list[dict[str, t.Any]]
+    ) -> None:
         """
         Find the given model's annotations in the file and add them to model_annotations.
 
@@ -132,6 +142,8 @@ class DjangoSearch(BaseSearch):
         """
         # Read in the source file to get the line number
         filename = inspect.getsourcefile(model_type)
+        assert filename
+
         with open(filename) as file_handle:
             txt = file_handle.read()
 
@@ -142,7 +154,8 @@ class DjangoSearch(BaseSearch):
         # It is slow and should be replaced if we can find a better way that is accurate.
         line = txt.count("\n", 0, txt.find(inspect.getsource(model_type))) + 1
 
-        for inner_match in query.finditer(model_type.__doc__):
+        model_type_doc = model_type.__doc__ or ""
+        for inner_match in query.finditer(model_type_doc):
             try:
                 annotation_token = inner_match.group("token")
                 annotation_data = inner_match.group("data")
@@ -164,14 +177,17 @@ class DjangoSearch(BaseSearch):
                     "annotation_data": annotation_data,
                     "extra": {
                         "object_id": model_id,
-                        "full_comment": model_type.__doc__.strip(),
+                        "full_comment": model_type_doc.strip(),
                     },
                 }
             )
 
     def _append_safelisted_model_annotations(
-        self, safelisted_models, model_id, model_annotations
-    ):
+        self,
+        safelisted_models: dict[str, dict[str, str]],
+        model_id: str,
+        model_annotations: list[dict[str, t.Any]]
+    ) -> None:
         """
         Append the safelisted annotations for the given model id to model_annotations.
 
@@ -196,17 +212,20 @@ class DjangoSearch(BaseSearch):
                 }
             )
 
-    def _read_safelist(self):
+    def _read_safelist(self) -> dict[str, dict[str, str]]:
         """
         Read the safelist and return the found models and their annotations.
 
         Returns:
             The Python representation of the safelist
+
+        Raises:
+            Exception: If the safelist file is not found
         """
         if os.path.exists(self.config.safelist_path):
             self.echo(f"Found safelist at {self.config.safelist_path}. Reading.\n")
             with open(self.config.safelist_path) as safelist_file:
-                safelisted_models = yaml.safe_load(safelist_file)
+                safelisted_models: dict[str, dict[str, str]] = yaml.safe_load(safelist_file) or {}
             self._increment_count("safelisted", len(safelisted_models))
 
             if safelisted_models:
@@ -222,7 +241,7 @@ class DjangoSearch(BaseSearch):
                 "Safelist not found! Generate one with the --seed_safelist command."
             )
 
-    def search(self):
+    def search(self) -> dict[str, list[dict[str, t.Any]]]:
         """
         Introspect the configured Django model docstrings for annotations.
 
@@ -234,7 +253,7 @@ class DjangoSearch(BaseSearch):
         annotation_regexes = self.config.annotation_regexes
         query = get_annotation_regex(annotation_regexes)
 
-        annotated_models = {}
+        annotated_models: dict[str, list[dict[str, t.Any]]] = {}
 
         self.echo.echo_vv("Searching models and their parent classes...")
 
@@ -243,7 +262,7 @@ class DjangoSearch(BaseSearch):
             model_id = self.get_model_id(model)
             self.echo.echo_vv("   " + model_id)
             hierarchy = inspect.getmro(model)
-            model_annotations = []
+            model_annotations: list[dict[str, t.Any]] = []
 
             # If any annotations exist in the docstring add them to annotated_models
             for obj in hierarchy:
@@ -299,7 +318,7 @@ class DjangoSearch(BaseSearch):
 
         return annotated_models
 
-    def check_coverage(self):
+    def check_coverage(self) -> bool:
         """
         Perform checking of coverage percentage based on stats collected in setup and search.
 
@@ -339,7 +358,7 @@ class DjangoSearch(BaseSearch):
                 + "\n   ".join(displayed_uncovereds)
             )
 
-        if pct < float(self.config.coverage_target):
+        if self.config.coverage_target is not None and pct < float(self.config.coverage_target):
             self.echo(
                 "\nCoverage threshold not met! Needed {}, actually {}!".format(
                     self.config.coverage_target, pct
@@ -350,7 +369,7 @@ class DjangoSearch(BaseSearch):
         return True
 
     @staticmethod
-    def requires_annotations(model):
+    def requires_annotations(model: type[t.Any]) -> bool:
         """
         Return true if the given model actually requires annotations, according to PLAT-2344.
         """
@@ -368,7 +387,7 @@ class DjangoSearch(BaseSearch):
         )
 
     @staticmethod
-    def is_non_local(model):
+    def is_non_local(model: type[models.Model]) -> bool:
         """
         Determine if the given model is non-local to the current IDA.
 
@@ -379,38 +398,39 @@ class DjangoSearch(BaseSearch):
         project.
 
         Args:
-            model (django.db.models.Model): A model to check.
+            model: A model to check.
 
         Returns:
-            bool: True if the given model is non-local.
+            True if the given model is non-local.
         """
         # If the model _was_ local to the current IDA repository, it should be
         # defined somewhere under sys.prefix + '/src/' or in a path that points to
         # the current checked-out code.  On Posix systems according to our testing,
         # non-local packages get installed to paths containing either
         # "site-packages" or "dist-packages".
-        non_local_path_prefixes = []
+        non_local_path_prefixes: list[str] = []
         for path in sys.path:
             if "dist-packages" in path or "site-packages" in path:
                 non_local_path_prefixes.append(path)
         model_source_path = inspect.getsourcefile(model)
+        assert model_source_path is not None
         return model_source_path.startswith(tuple(non_local_path_prefixes))
 
     @staticmethod
-    def get_model_id(model):
+    def get_model_id(model: type[models.Model]) -> str:
         """
         Construct the django standard model identifier in "app_label.ModelClassName" notation.
 
         Args:
-            model (django.db.models.Model): A model for which to create an identifier.
+            model: A model for which to create an identifier.
 
         Returns:
-            str: identifier string for the given model.
+            Identifier string for the given model.
         """
         return f"{model._meta.app_label}.{model._meta.object_name}"
 
     @staticmethod
-    def setup_django():
+    def setup_django() -> None:
         """
         Prepare to make django library function calls.
 
@@ -426,7 +446,14 @@ class DjangoSearch(BaseSearch):
         django.setup()
 
     @staticmethod
-    def get_models_requiring_annotations(app_name=None):
+    def get_models_requiring_annotations(
+        app_name: str | None = None
+    ) -> tuple[
+        set[type[models.Model]],
+        set[type[models.Model]],
+        int,
+        list[str]
+    ]:
         """
         Determine all local and non-local models via django model introspection.
 
@@ -434,11 +461,17 @@ class DjangoSearch(BaseSearch):
         edX).  This is a compromise in accuracy in order to simplify the generation
         of this list, and also to ease the transition from zero to 100% annotations
         in edX satellite repositories.
+
+        Args:
+            app_name: Optional app name to filter models by
+
+        Returns:
+            Tuple of local models, non-local models, total model count, and annotation eligible model IDs
         """
         DjangoSearch.setup_django()
-        local_models = set()
-        non_local_models = set()
-        annotation_eligible_models = []
+        local_models: set[type[models.Model]] = set()
+        non_local_models: set[type[models.Model]] = set()
+        annotation_eligible_models: list[str] = []
         total_models = 0
 
         for app in apps.get_app_configs():

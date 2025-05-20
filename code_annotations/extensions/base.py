@@ -2,9 +2,12 @@
 Abstract and base classes to support plugins.
 """
 import re
+import typing as t
 from abc import ABCMeta, abstractmethod
+from io import TextIOWrapper
 
-from code_annotations.helpers import clean_abs_path, clean_annotation, get_annotation_regex
+from code_annotations.base import AnnotationConfig
+from code_annotations.helpers import VerboseEcho, clean_abs_path, clean_annotation, get_annotation_regex
 
 
 class AnnotationExtension(metaclass=ABCMeta):
@@ -14,7 +17,7 @@ class AnnotationExtension(metaclass=ABCMeta):
 
     extension_name: str | None = None
 
-    def __init__(self, config, echo):
+    def __init__(self, config: AnnotationConfig, echo: VerboseEcho) -> None:
         """
         Initialize this base object, save a handle to configuration.
 
@@ -26,9 +29,15 @@ class AnnotationExtension(metaclass=ABCMeta):
         self.ECHO = echo
 
     @abstractmethod
-    def search(self, file_handle):  # pragma: no cover
+    def search(self, file_handle: TextIOWrapper) -> list[dict[str, t.Any]]:  # pragma: no cover
         """
         Search for annotations in the given file.
+
+        Args:
+            file_handle: The file to search for annotations
+
+        Returns:
+            List of dictionaries containing annotation information
         """
         raise NotImplementedError('search called on base class!')
 
@@ -64,7 +73,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         )
     """
 
-    def __init__(self, config, echo):
+    def __init__(self, config: AnnotationConfig, echo: VerboseEcho) -> None:
         """
         Set up the extension and create the regexes used to do searches.
 
@@ -76,6 +85,8 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
 
         if self.lang_comment_definition is None:  # pragma: no cover
             raise ValueError('Subclasses of SimpleRegexAnnotationExtension must define lang_comment_definition!')
+
+        assert self.lang_comment_definition is not None  # For mypy
 
         self.comment_regex = re.compile(
             self.comment_regex_fmt.format(**self.lang_comment_definition),
@@ -93,7 +104,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
 
         self.ECHO.echo_v(f"{self.extension_name} extension regex query: {self.query.pattern}")
 
-    def search(self, file_handle):
+    def search(self, file_handle: TextIOWrapper) -> list[dict[str, t.Any]]:
         """
         Search for annotations in the given file.
 
@@ -105,7 +116,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         """
         txt = file_handle.read()
 
-        found_annotations = []
+        found_annotations: list[dict[str, t.Any]] = []
 
         # Fast out if no annotations exist in the file
         if any(anno in txt for anno in self.config.annotation_tokens):
@@ -141,12 +152,15 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
 
         return found_annotations
 
-    def _find_comment_content(self, match):
+    def _find_comment_content(self, match: re.Match[str]) -> str:
         """
         Return the comment content as text.
 
         Args:
-            match (sre.SRE_MATCH): one of the matches of the self.comment_regex regular expression.
+            match: One of the matches of the self.comment_regex regular expression.
+
+        Returns:
+            The content of the comment without the comment tokens
         """
         comment_content = match.groupdict()["comment"]
         if comment_content:
@@ -156,11 +170,14 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
         comment_content = match.groupdict()["prefixed_comment"]
         return self._strip_single_line_comment_tokens(comment_content)
 
-    def _strip_single_line_comment_tokens(self, content):
+    def _strip_single_line_comment_tokens(self, content: str) -> str:
         """
         Strip the leading single-line comment tokens from a comment text.
 
         Args:
-            content (str): token-prefixed multi-line comment string.
+            content: Token-prefixed multi-line comment string.
+
+        Returns:
+            The content without the comment tokens
         """
         return self.prefixed_comment_regex.sub("", content)

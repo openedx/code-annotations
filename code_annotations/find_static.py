@@ -3,6 +3,10 @@ Annotation searcher for static comment searching via Stevedore plugins.
 """
 
 import os
+import typing as t
+from io import TextIOWrapper
+
+from stevedore.extension import Extension
 
 from code_annotations.base import BaseSearch
 
@@ -12,7 +16,13 @@ class StaticSearch(BaseSearch):
     Handles static code searching for annotations.
     """
 
-    def search_extension(self, ext, file_handle, file_extensions_map, filename_extension):
+    def search_extension(
+        self,
+        ext: Extension,
+        file_handle: TextIOWrapper,
+        file_extensions_map: dict[str, list[str]],
+        filename_extension: str
+    ) -> tuple[str, list[dict[str, t.Any]] | None]:
         """
         Execute a search on the given file using the given extension.
 
@@ -38,7 +48,13 @@ class StaticSearch(BaseSearch):
 
         return ext.name, None
 
-    def _search_one_file(self, full_name, known_extensions, file_extensions_map, all_results):
+    def _search_one_file(
+        self,
+        full_name: str,
+        known_extensions: set[str],
+        file_extensions_map: dict[str, list[str]],
+        all_results: dict[str, list[dict[str, t.Any]]]
+    ) -> None:
         """
         Perform an annotation search on a single file, using all extensions it is configured for.
 
@@ -61,7 +77,13 @@ class StaticSearch(BaseSearch):
         # TODO: This should probably be a generator so we don't have to store all results in memory
         with open(full_name) as file_handle:
             # Call search_extension on all loaded extensions
-            results = self.config.mgr.map(self.search_extension, file_handle, file_extensions_map, filename_extension)
+            assert self.config.mgr is not None
+            results = self.config.mgr.map(
+                self.search_extension,
+                file_handle,
+                file_extensions_map,
+                filename_extension
+            )
 
             # Strip out plugin name, as it's already in the annotation
             results = [r for _, r in results]
@@ -69,7 +91,7 @@ class StaticSearch(BaseSearch):
             # Format and add the results to our running full set
             self.format_file_results(all_results, results)
 
-    def search(self):
+    def search(self) -> dict[str, list[dict[str, t.Any]]]:
         """
         Walk the source tree, send known file types to extensions.
 
@@ -77,13 +99,13 @@ class StaticSearch(BaseSearch):
             Dict of all found annotations keyed by filename
         """
         # Index the results by extension name
-        file_extensions_map = {}
-        known_extensions = set()
+        file_extensions_map: dict[str, list[str]] = {}
+        known_extensions: set[str] = set()
         for extension_name in self.config.extensions:
             file_extensions_map[extension_name] = self.config.extensions[extension_name]
             known_extensions.update(self.config.extensions[extension_name])
 
-        all_results = {}
+        all_results: dict[str, list[dict[str, t.Any]]] = {}
 
         if os.path.isfile(self.config.source_path):
             self._search_one_file(self.config.source_path, known_extensions, file_extensions_map, all_results)

@@ -11,7 +11,7 @@ from pprint import pprint
 import click
 
 
-def fail(msg: str) -> t.NoReturn:
+def fail(msg: str) -> None:
     """
     Log the message and exit.
 
@@ -121,7 +121,7 @@ def clean_abs_path(filename_to_clean: str, parent_path: str) -> str:
     return os.path.relpath(filename_to_clean, parent_path)
 
 
-def get_annotation_regex(annotation_regexes: list[str]) -> t.Pattern[str]:
+def get_annotation_regex(annotation_regexes: list[str]) -> re.Pattern[str]:
     """
     Return the full regex to search inside comments for configured annotations.
 

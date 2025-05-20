@@ -5,10 +5,15 @@ Contains functionality for turning YAML reports into human-readable documentatio
 import collections
 import datetime
 import os
+import typing as t
+from collections.abc import Iterable
+from io import TextIOWrapper
 
 import jinja2
 import yaml
 from slugify import slugify
+
+from code_annotations.base import AnnotationConfig
 
 
 class ReportRenderer:
@@ -16,7 +21,7 @@ class ReportRenderer:
     Generates human readable documentation from YAML reports.
     """
 
-    def __init__(self, config, report_files):
+    def __init__(self, config: AnnotationConfig, report_files: Iterable[TextIOWrapper]) -> None:
         """
         Initialize a ReportRenderer.
 
@@ -28,7 +33,7 @@ class ReportRenderer:
         self.echo = self.config.echo
         self.report_files = report_files
         self.create_time = datetime.datetime.now(tz=datetime.timezone.utc)
-        self.full_report = self._aggregate_reports()
+        self.full_report: dict[str, list[dict[str, t.Any]]] = self._aggregate_reports()
 
         self.jinja_environment = jinja2.Environment(
             autoescape=False,
@@ -37,8 +42,8 @@ class ReportRenderer:
             trim_blocks=True
         )
         self.top_level_template = self.jinja_environment.get_template('annotation_list.tpl')
-        self.all_choices = []
-        self.group_mapping = {}
+        self.all_choices: list[str] = []
+        self.group_mapping: dict[str, str] = {}
 
         for token in self.config.choices:
             self.all_choices.extend(self.config.choices[token])
@@ -47,19 +52,20 @@ class ReportRenderer:
             for token in self.config.groups[group_name]:
                 self.group_mapping[token] = group_name
 
-    def _add_report_file_to_full_report(self, report_file, report):
+    def _add_report_file_to_full_report(
+        self,
+        report_file: TextIOWrapper,
+        report: dict[str, list[dict[str, t.Any]]]
+    ) -> None:
         """
         Add a specified report file to a report.
 
         Args:
-            report_file:
-            report:
-
-        Returns:
-
+            report_file: File handle to the YAML report file
+            report: Report dictionary to add the file contents to
         """
         loaded_report = yaml.safe_load(report_file)
-
+        assert loaded_report is not None
         for filename in loaded_report:
             trimmed_filename = filename
             for prefix in self.config.trim_filename_prefixes:
@@ -83,11 +89,14 @@ class ReportRenderer:
             else:
                 report[trimmed_filename] = loaded_report[filename]
 
-    def _aggregate_reports(self):
+    def _aggregate_reports(self) -> dict[str, list[dict[str, t.Any]]]:
         """
         Combine all of the given report files into a single report object.
+
+        Returns:
+            A combined report dictionary
         """
-        report = collections.defaultdict(list)
+        report: dict[str, list[dict[str, t.Any]]] = collections.defaultdict(list)
 
         # Combine report files into a single dict. If there are duplicate annotations, make sure we have the superset
         # of data.
@@ -96,7 +105,12 @@ class ReportRenderer:
 
         return report
 
-    def _write_doc_file(self, doc_title, doc_filename, doc_data):
+    def _write_doc_file(
+        self,
+        doc_title: str,
+        doc_filename: str,
+        doc_data: dict[str, list[dict[str, t.Any]]]
+    ) -> None:
         """
         Write out a single report file with the given data. This is rendered using the configured top level template.
 
@@ -127,12 +141,12 @@ class ReportRenderer:
                 third_party_package_location=self.config.third_party_package_location,
             ))
 
-    def _generate_per_choice_docs(self):
+    def _generate_per_choice_docs(self) -> None:
         """
         Generate a page of documentation for each configured annotation choice.
         """
         for choice in self.all_choices:
-            choice_report = collections.defaultdict(list)
+            choice_report: dict[str, list[dict[str, t.Any]]] = collections.defaultdict(list)
             for filename in self.full_report:
                 for annotation in self.full_report[filename]:
                     if isinstance(annotation['annotation_data'], list) and choice in annotation['annotation_data']:
@@ -140,12 +154,12 @@ class ReportRenderer:
 
             self._write_doc_file(f"All References to Choice '{choice}'", f'choice_{choice}', choice_report)
 
-    def _generate_per_annotation_docs(self):
+    def _generate_per_annotation_docs(self) -> None:
         """
         Generate a page of documentation for each configured annotation.
         """
         for annotation in self.config.annotation_tokens:
-            annotation_report = collections.defaultdict(list)
+            annotation_report: dict[str, list[dict[str, t.Any]]] = collections.defaultdict(list)
             for filename in self.full_report:
                 for report_annotation in self.full_report[filename]:
                     if report_annotation['annotation_token'] == annotation:
@@ -155,7 +169,7 @@ class ReportRenderer:
                 f"All References to Annotation '{annotation}'", f'annotation_{annotation}', annotation_report
             )
 
-    def render(self):
+    def render(self) -> None:
         """
         Perform the rendering of all documentation using the configured Jinja2 templates.
         """

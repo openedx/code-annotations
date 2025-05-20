@@ -2,7 +2,6 @@
 List possible annotation error types.
 """
 from collections import namedtuple
-import typing as t
 
 AnnotationError = namedtuple(
     "AnnotationError", ["message", "symbol", "description"]
@@ -12,7 +11,6 @@ AnnotationError = namedtuple(
 # to expose errors to pylint.
 TYPES: list[AnnotationError] = []
 
-T = t.TypeVar('T', bound=AnnotationError)
 
 def add_error_type(message: str, symbol: str, description: str) -> AnnotationError:
     """
