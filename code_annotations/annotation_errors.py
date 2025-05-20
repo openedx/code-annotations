@@ -1,8 +1,8 @@
 """
 List possible annotation error types.
 """
-from collections import namedtuple
 import typing as t
+from collections import namedtuple
 
 AnnotationError = namedtuple(
     "AnnotationError", ["message", "symbol", "description"]
@@ -13,6 +13,7 @@ AnnotationError = namedtuple(
 TYPES: list[AnnotationError] = []
 
 T = t.TypeVar('T', bound=AnnotationError)
+
 
 def add_error_type(message: str, symbol: str, description: str) -> AnnotationError:
     """

@@ -11,7 +11,7 @@ from pprint import pprint
 import click
 
 
-def fail(msg: str) -> t.NoReturn:
+def fail(msg: str) -> None:
     """
     Log the message and exit.
 

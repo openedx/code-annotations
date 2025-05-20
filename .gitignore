@@ -75,5 +75,3 @@ default.db
 # Generated reports and test reports
 reports/*
 test_reports/*
-
-**/.claude/settings.local.json
