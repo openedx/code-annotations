@@ -53,7 +53,6 @@ class OpenedxEvents(SphinxDirective):
 
     required_arguments = 0
     optional_arguments = 0
-    option_spec = {}
 
     def run(self):
         """

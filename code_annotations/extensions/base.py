@@ -12,7 +12,7 @@ class AnnotationExtension(metaclass=ABCMeta):
     Abstract base class that annotation extensions will inherit from.
     """
 
-    extension_name = None
+    extension_name: str | None = None
 
     def __init__(self, config, echo):
         """
@@ -40,7 +40,7 @@ class SimpleRegexAnnotationExtension(AnnotationExtension, metaclass=ABCMeta):
 
     # These are the language-specific comment definitions that are defined in the child classes. See the
     # Javascript and Python extensions for examples.
-    lang_comment_definition = None
+    lang_comment_definition: dict[str, str] | None = None
 
     # This format string/regex finds all comments in the file. The format tokens will be replaced with the
     # language-specific comment definitions defined in the sub-classes.
