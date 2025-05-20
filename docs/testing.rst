@@ -15,7 +15,7 @@ To run just the unit tests:
 
 .. code-block:: bash
 
-    $ make test
+    $ make test-unit
 
 To run just the unit tests and check diff coverage
 
@@ -27,7 +27,7 @@ To run just the code quality checks:
 
 .. code-block:: bash
 
-    $ make quality
+    $ make test-quality
 
 Alternatively, run quality tests one by one:
 

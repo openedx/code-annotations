@@ -3,6 +3,8 @@
 
 .DEFAULT_GOAL := help
 
+PYTHON_FILES = ./code_annotations/ setup.py tests/ test_utils/
+
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
 try:
@@ -73,11 +75,27 @@ requirements: ## install development environment requirements
 	pip-sync requirements/dev.txt requirements/test.txt requirements/private.*
 	pip install -e .
 
-test: clean ## run tests in the current virtualenv
+test: clean test-unit  test-quality ## run tests in the current virtualenv
+
+test-unit:  ## run unit tests
 	pytest
 
+test-quality: test-lint test-types test-codestyle test-docstyle test-isort selfcheck  ## run all quality tests
+
+test-codestyle:  ## run pycodestyle tests
+	pycodestyle ${PYTHON_FILES}
+
+test-docstyle: ## run pydocstyle tests
+	pydocstyle ${PYTHON_FILES}
+
+test-isort: ## run isort tests
+	isort --check-only --diff ${PYTHON_FILES}
+
+test-lint: ## run pylint tests
+	pylint ${PYTHON_FILES}
+
 test-types: ## run mypy tests on the whole codebase
-	mypy --ignore-missing-imports --strict code_annotations/ tests/ test_utils/ setup.py
+	mypy --ignore-missing-imports --strict ${PYTHON_FILES}
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml
