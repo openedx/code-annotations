@@ -3,20 +3,20 @@ List possible annotation error types.
 """
 from collections import namedtuple
 
-AnnotationErrorType = namedtuple(
+AnnotationError = namedtuple(
     "AnnotationError", ["message", "symbol", "description"]
 )
 
-# The TYPES list should contain all AnnotationErrorType instances. This list can then be parsed by others, for instance
+# The TYPES list should contain all AnnotationError instances. This list can then be parsed by others, for instance
 # to expose errors to pylint.
 TYPES = []
 
 
 def add_error_type(message, symbol, description):
     """
-    Create an AnnotationErrorType instance and add it to TYPES.
+    Create an AnnotationError instance and add it to TYPES.
     """
-    error_type = AnnotationErrorType(
+    error_type = AnnotationError(
         message,
         symbol,
         description,

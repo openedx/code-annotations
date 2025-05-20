@@ -39,10 +39,10 @@ class FakeConfig:
     Simple config for testing without reading a config file.
     """
 
-    annotations = {}
-    annotation_regexes = []
-    annotation_tokens = []
-    groups = []
+    annotations: dict[str, str] = {}
+    annotation_regexes: list[str] = []
+    annotation_tokens: list[str] = []
+    groups: list[str] = []
     echo = VerboseEcho()
 
 

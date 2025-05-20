@@ -327,7 +327,7 @@ class BaseSearch(metaclass=ABCMeta):
         self.echo = self.config.echo
         # errors contains formatted error messages
         self.errors = []
-        # annotation_errors contains (annotation, AnnotationErrorType, args) tuples
+        # annotation_errors contains (annotation, AnnotationError, args) tuples
         # This attribute may be parsed by 3rd-parties, such as edx-lint.
         self.annotation_errors = []
 
@@ -549,7 +549,7 @@ class BaseSearch(metaclass=ABCMeta):
 
         Args:
             annotation: A single annotation dict found in search()
-            error_type (annotation_errors.AnnotationErrorType): error type from which the error message will be
+            error_type (annotation_errors.AnnotationError): error type from which the error message will be
                 generated.
             args (tuple): arguments for error message formatting.
         """
