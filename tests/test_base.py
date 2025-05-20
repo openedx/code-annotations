@@ -1,21 +1,23 @@
 """
 Tests for code_annotations/base.py
 """
+import typing as t
 from collections import OrderedDict
 
 import pytest
 
-from code_annotations.base import AnnotationConfig, ConfigurationException
+from code_annotations.base import AnnotationConfig
+from code_annotations.exceptions import ConfigurationException
 from tests.helpers import FakeConfig, FakeSearch
 
 
-def test_get_group_for_token_missing_token():
+def test_get_group_for_token_missing_token() -> None:
     config = FakeConfig()
     search = FakeSearch(config)
     assert search._get_group_for_token('foo') is None  # pylint: disable=protected-access
 
 
-def test_get_group_for_token_multiple_groups():
+def test_get_group_for_token_multiple_groups() -> None:
     config = FakeConfig()
     config.groups = {
         'group1': ['token1'],
@@ -30,7 +32,7 @@ def test_get_group_for_token_multiple_groups():
     ('.annotations_test_missing_report_path', "report_path"),
     ('.annotations_test_missing_safelist_path', "safelist_path"),
 ])
-def test_missing_config(test_config, expected_message):
+def test_missing_config(test_config: str, expected_message: str) -> None:
     with pytest.raises(ConfigurationException) as exception:
         AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
@@ -44,7 +46,7 @@ def test_missing_config(test_config, expected_message):
     ('.annotations_test_coverage_over_100', "Invalid coverage target. 150.0 is not between 0 and 100."),
     ('.annotations_test_coverage_nan', 'Coverage target must be a number between 0 and 100 not "not a number".'),
 ])
-def test_bad_coverage_targets(test_config, expected_message):
+def test_bad_coverage_targets(test_config: str, expected_message: str) -> None:
     with pytest.raises(ConfigurationException) as exception:
         AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
@@ -52,7 +54,7 @@ def test_bad_coverage_targets(test_config, expected_message):
     assert expected_message in exc_msg
 
 
-def test_coverage_target_int():
+def test_coverage_target_int() -> None:
     # We just care that this doesn't throw an exception
     AnnotationConfig('tests/test_configurations/{}'.format('.annotations_test_coverage_int'), None, 3)
 
@@ -64,7 +66,7 @@ def test_coverage_target_int():
     ('.annotations_test_group_one_token', 'Group "pii_group" must have more than one annotation.'),
     ('.annotations_test_group_bad_type', "{'.. pii:': ['bad', 'type']} is an unknown annotation type."),
 ])
-def test_annotation_configuration_errors(test_config, expected_message):
+def test_annotation_configuration_errors(test_config: str, expected_message: str) -> None:
     with pytest.raises(ConfigurationException) as exception:
         AnnotationConfig(f'tests/test_configurations/{test_config}', None, 3)
 
@@ -72,7 +74,7 @@ def test_annotation_configuration_errors(test_config, expected_message):
     assert expected_message in exc_msg
 
 
-def test_format_results_for_report():
+def test_format_results_for_report() -> None:
     """
     Test that report formatting puts annotations into groups correctly
     """
@@ -86,7 +88,7 @@ def test_format_results_for_report():
     search = FakeSearch(config)
 
     # Create a fake result set for _format_results_for_report to work on
-    fake_results = OrderedDict()
+    fake_results: OrderedDict[str, list[dict[str, t.Any]]] = OrderedDict()
 
     # First file has 6 annotations. expected_group_id is a special key for this test, allowing us to loop through
     # these below and know what group each result should be in.

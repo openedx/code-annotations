@@ -7,7 +7,7 @@ from code_annotations.base import AnnotationConfig
 from code_annotations.find_static import StaticSearch
 
 
-def test_annotation_errors():
+def test_annotation_errors() -> None:
     config = AnnotationConfig(
         "tests/test_configurations/.annotations_test",
         verbosity=-1,
@@ -34,7 +34,7 @@ def test_annotation_errors():
     ) == args
 
 
-def test_annotation_errors_ordering():
+def test_annotation_errors_ordering() -> None:
     # You should modify the value below every time a new annotation error type is added.
     assert 6 == len(annotation_errors.TYPES)
     # The value below must not be modified, ever. The number of annotation error types should NEVER exceed 10. Read the

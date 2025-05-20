@@ -1,7 +1,8 @@
 """
 Tests for the DjangoSearch coverage functionality.
 """
-from unittest.mock import DEFAULT, patch
+import typing as t
+from unittest.mock import DEFAULT, MagicMock, patch
 
 import pytest
 
@@ -21,7 +22,10 @@ from tests.fake_models import (
 )
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script_isolated
 
-ALL_FAKE_MODELS = (
+# Type for our fake model classes
+FakeModelClass = type[t.Any]
+
+ALL_FAKE_MODELS: tuple[FakeModelClass, ...] = (
     FakeBaseModelAbstract,
     FakeBaseModelBoring,
     FakeBaseModelBoringWithAnnotations,
@@ -40,10 +44,15 @@ ALL_FAKE_MODELS = (
 @patch('code_annotations.find_django.DjangoSearch.setup_django')
 @patch('code_annotations.find_django.DjangoSearch.is_non_local')
 @patch('code_annotations.find_django.django.apps.apps.get_app_configs')
-def test_coverage_all_models(mock_get_app_configs, mock_is_non_local, mock_setup_django, mock_issubclass):
+def test_coverage_all_models(
+    mock_get_app_configs: MagicMock,
+    mock_is_non_local: MagicMock,
+    mock_setup_django: MagicMock,
+    mock_issubclass: MagicMock
+) -> None:
     # Lots of fakery going on here. This class mocks Django AppConfigs to deliver our fake models.
     class FakeAppConfig:
-        def get_models(self):
+        def get_models(self) -> tuple[FakeModelClass, ...]:
             return ALL_FAKE_MODELS
 
     # This lets us deterministically decide that one model is local, and the other isn't, for testing both branches.
@@ -107,8 +116,13 @@ def test_coverage_all_models(mock_get_app_configs, mock_is_non_local, mock_setup
         "Coverage is 100.0%"
     ),
 ])
-def test_coverage_thresholds(local_models, should_succeed, expected_message, **kwargs):
-    mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
+def test_coverage_thresholds(
+    local_models: list[FakeModelClass],
+    should_succeed: bool,
+    expected_message: str,
+    **kwargs: t.Any
+) -> None:
+    mock_get_models_requiring_annotations: MagicMock = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         set(local_models),
         set(),
