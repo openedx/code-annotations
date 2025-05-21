@@ -6,7 +6,7 @@ from unittest.mock import patch
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
 
 
-def test_missing_extension():
+def test_missing_extension() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -18,7 +18,7 @@ def test_missing_extension():
     assert 'Not all configured extensions could be loaded!' in result.output
 
 
-def test_bad_extension():
+def test_bad_extension() -> None:
     with patch('code_annotations.extensions.javascript.JavascriptAnnotationExtension.__init__') as js_init:
         js_init.side_effect = Exception('Fake failed to load javascript extension')
         result = call_script((
@@ -32,7 +32,7 @@ def test_bad_extension():
     assert 'Failed to load a plugin, aborting.' in result.output
 
 
-def test_unknown_file_extension():
+def test_unknown_file_extension() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -45,7 +45,7 @@ def test_unknown_file_extension():
     assert 'Search found 0 annotations' in result.output
 
 
-def test_file_walking():
+def test_file_walking() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -60,7 +60,7 @@ def test_file_walking():
     assert 'choice_failures_1' in result.output
 
 
-def test_source_path_from_file():
+def test_source_path_from_file() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -72,7 +72,7 @@ def test_source_path_from_file():
     assert "Configured for source path: tests/extensions/javascript_test_files/" in result.output
 
 
-def test_report_path_from_command():
+def test_report_path_from_command() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -84,7 +84,7 @@ def test_report_path_from_command():
     assert "report path: test_reports_2" in result.output
 
 
-def test_no_extension_results():
+def test_no_extension_results() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -96,7 +96,7 @@ def test_no_extension_results():
     assert "Search found 0 annotations" in result.output
 
 
-def test_no_report():
+def test_no_report() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',
@@ -111,7 +111,7 @@ def test_no_report():
     assert "Linting passed without errors." in result.output
 
 
-def test_no_lint():
+def test_no_lint() -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',

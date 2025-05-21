@@ -3,6 +3,7 @@
 Tests for find annotations in Django models.
 """
 import sys
+import typing as t
 from unittest.mock import DEFAULT, patch
 
 from code_annotations.find_django import DjangoSearch
@@ -26,7 +27,7 @@ from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script, cal
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_simple_success(**kwargs):
+def test_find_django_simple_success(**kwargs: t.Any) -> None:
     """
     Tests the basic case where all models have annotations, with an empty safelist.
     """
@@ -44,15 +45,15 @@ def test_find_django_simple_success(**kwargs):
         [DjangoSearch.get_model_id(m) for m in test_models]
     )
 
-    def report_callback(report_contents):
+    def report_callback(report_contents: str) -> None:
         """
         Get the text of the report and make sure all of the expected models are in it.
 
         Args:
-            report_contents:
+            report_contents: Raw text contents of the report file
 
         Returns:
-            Raw text contents of the generated report file
+            None
         """
         for model in test_models:
             assert 'object_id: {}'.format(DjangoSearch.get_model_id(model)) in report_contents
@@ -78,7 +79,7 @@ def test_find_django_simple_success(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_no_viable_models(**kwargs):
+def test_find_django_no_viable_models(**kwargs: t.Any) -> None:
     """
     Tests the basic case where all models have annotations, with an empty safelist.
     """
@@ -104,7 +105,7 @@ def test_find_django_no_viable_models(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_model_not_annotated(**kwargs):
+def test_find_django_model_not_annotated(**kwargs: t.Any) -> None:
     """
     Test that a non-annotated model fails.
     """
@@ -131,7 +132,7 @@ def test_find_django_model_not_annotated(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_model_in_safelist_not_annotated(**kwargs):
+def test_find_django_model_in_safelist_not_annotated(**kwargs: t.Any) -> None:
     """
     Test that a safelisted model with no annotations fails.
     """
@@ -165,7 +166,7 @@ def test_find_django_model_in_safelist_not_annotated(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_model_in_safelist_annotated(**kwargs):
+def test_find_django_model_in_safelist_annotated(**kwargs: t.Any) -> None:
     """
     Test that a safelisted model succeeds.
     """
@@ -199,7 +200,7 @@ def test_find_django_model_in_safelist_annotated(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_no_safelist(**kwargs):
+def test_find_django_no_safelist(**kwargs: t.Any) -> None:
     """
     Test that we fail when there is no safelist.
     """
@@ -208,7 +209,7 @@ def test_find_django_no_safelist(**kwargs):
 
     result = call_script_isolated(
         ['django_find_annotations', '--config_file', 'test_config.yml', '--lint', '--report'],
-        fake_safelist_data=None,
+        fake_safelist_data="",  # Empty string, not None
     )
 
     assert result.exit_code == EXIT_CODE_FAILURE
@@ -220,7 +221,7 @@ def test_find_django_no_safelist(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_in_safelist_and_annotated(**kwargs):
+def test_find_django_in_safelist_and_annotated(**kwargs: t.Any) -> None:
     """
     Test that a model which is annotated and also in the safelist fails.
     """
@@ -248,7 +249,7 @@ def test_find_django_in_safelist_and_annotated(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_no_docstring(**kwargs):
+def test_find_django_no_docstring(**kwargs: t.Any) -> None:
     """
     Test that a model with no docstring doesn't break anything.
     """
@@ -274,7 +275,7 @@ def test_find_django_no_docstring(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_ordering_error(**kwargs):
+def test_find_django_ordering_error(**kwargs: t.Any) -> None:
     """
     Tests broken annotations to make sure the error paths work.
     """
@@ -299,7 +300,7 @@ def test_find_django_ordering_error(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_without_linting(**kwargs):
+def test_find_django_without_linting(**kwargs: t.Any) -> None:
     """
     Tests to make sure reports will be written in the case of errors, if linting is off.
     """
@@ -325,7 +326,7 @@ def test_find_django_without_linting(**kwargs):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_without_report(**kwargs):
+def test_find_django_without_report(**kwargs: t.Any) -> None:
     """
     Tests to make sure reports will be written in the case of errors, if linting is off.
     """
@@ -348,7 +349,7 @@ def test_find_django_without_report(**kwargs):
 
 
 @patch('code_annotations.find_django.issubclass')
-def test_requires_annotations_abstract(mock_issubclass):
+def test_requires_annotations_abstract(mock_issubclass: t.Any) -> None:
     """
     Abstract classes should not require annotations
     """
@@ -357,7 +358,7 @@ def test_requires_annotations_abstract(mock_issubclass):
 
 
 @patch('code_annotations.find_django.issubclass')
-def test_requires_annotations_proxy(mock_issubclass):
+def test_requires_annotations_proxy(mock_issubclass: t.Any) -> None:
     """
     Proxy classes should not require annotations
     """
@@ -366,7 +367,7 @@ def test_requires_annotations_proxy(mock_issubclass):
 
 
 @patch('code_annotations.find_django.issubclass')
-def test_requires_annotations_normal(mock_issubclass):
+def test_requires_annotations_normal(mock_issubclass: t.Any) -> None:
     """
     Non-abstract, non-proxy models should require annotations
     """
@@ -374,14 +375,14 @@ def test_requires_annotations_normal(mock_issubclass):
     assert DjangoSearch.requires_annotations(FakeBaseModelBoring) is True
 
 
-def test_requires_annotations_not_a_model():
+def test_requires_annotations_not_a_model() -> None:
     """
     Things which are not models should not require annotations
     """
     assert DjangoSearch.requires_annotations(dict) is False
 
 
-def test_is_non_local_simple():
+def test_is_non_local_simple() -> None:
     """
     Our model is local, should show up as such
     """
@@ -389,7 +390,7 @@ def test_is_non_local_simple():
 
 
 @patch('code_annotations.find_django.inspect.getsourcefile')
-def test_is_non_local_site(mock_getsourcefile):
+def test_is_non_local_site(mock_getsourcefile: t.Any) -> None:
     """
     Try to test the various non-local paths, if the environment allows.
     """
@@ -413,10 +414,15 @@ def test_is_non_local_site(mock_getsourcefile):
 @patch('code_annotations.find_django.DjangoSearch.setup_django')
 @patch('code_annotations.find_django.DjangoSearch.is_non_local')
 @patch('code_annotations.find_django.django.apps.apps.get_app_configs')
-def test_get_models_requiring_annotations(mock_get_app_configs, mock_is_non_local, mock_setup_django, mock_issubclass):
+def test_get_models_requiring_annotations(
+    mock_get_app_configs: t.Any,
+    mock_is_non_local: t.Any,
+    mock_setup_django: t.Any,
+    mock_issubclass: t.Any
+) -> None:
     # Lots of fakery going on here. This class mocks Django AppConfigs to deliver our fake models.
     class FakeAppConfig:
-        def get_models(self):
+        def get_models(self) -> list[t.Any]:
             return [FakeBaseModelBoring, FakeBaseModelBoringWithAnnotations]
 
     # This lets us deterministically decide that one model is local, and the other isn't, for testing both branches.
@@ -445,7 +451,7 @@ def test_get_models_requiring_annotations(mock_get_app_configs, mock_is_non_loca
 
 @patch('code_annotations.find_django.DjangoSearch.setup_django')
 @patch('code_annotations.find_django.DjangoSearch.get_models_requiring_annotations')
-def test_find_django_no_coverage_configured(mock_get_models, mock_setup_django):
+def test_find_django_no_coverage_configured(mock_get_models: t.Any, mock_setup_django: t.Any) -> None:
     """
     Tests the basic case where all models have annotations, with an empty safelist.
     """
@@ -466,7 +472,7 @@ def test_find_django_no_coverage_configured(mock_get_models, mock_setup_django):
 
 
 @patch('code_annotations.find_django.django.setup')
-def test_setup_django(mock_django_setup):
+def test_setup_django(mock_django_setup: t.Any) -> None:
     """
     This is really just for coverage.
     """
@@ -478,7 +484,7 @@ def test_setup_django(mock_django_setup):
     'code_annotations.find_django.DjangoSearch',
     get_models_requiring_annotations=DEFAULT
 )
-def test_find_django_no_action(**kwargs):
+def test_find_django_no_action(**kwargs: t.Any) -> None:
     """
     Test that we fail when there is no action specified.
     """

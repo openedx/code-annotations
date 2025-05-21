@@ -3,11 +3,18 @@ Helper code shared between tests.
 """
 import os
 import re
+import typing as t
+from collections.abc import Callable, Sequence
 
 from click.testing import CliRunner
+from click.testing import Result as ClickTestResult
 
-from code_annotations.base import BaseSearch, VerboseEcho
+from code_annotations.base import BaseSearch
 from code_annotations.cli import entry_point
+from code_annotations.helpers import VerboseEcho
+
+# Re-export Result for convenience
+Result = ClickTestResult
 
 EXIT_CODE_SUCCESS = 0
 EXIT_CODE_FAILURE = 1
@@ -39,10 +46,10 @@ class FakeConfig:
     Simple config for testing without reading a config file.
     """
 
-    annotations = {}
-    annotation_regexes = []
-    annotation_tokens = []
-    groups = []
+    annotations: dict[str, t.Any] = {}
+    annotation_regexes: list[str] = []
+    annotation_tokens: list[str] = []
+    groups: t.Union[list[str], dict[str, list[str]]] = []
     echo = VerboseEcho()
 
 
@@ -51,13 +58,17 @@ class FakeSearch(BaseSearch):
     Simple test class for directly testing BaseSearch since it's abstract.
     """
 
-    def search(self):
+    def search(self) -> dict[str, list[dict[str, t.Any]]]:
         """
         Override for abstract base method.
+
+        Returns:
+            Empty dict to satisfy the abstract method requirement
         """
+        return {}
 
 
-def delete_report_files(file_extension):
+def delete_report_files(file_extension: str) -> None:
     """
     Delete all files with the given extension from the test_reports directory.
 
@@ -76,7 +87,7 @@ def delete_report_files(file_extension):
         pass
 
 
-def call_script(args_list, delete_test_reports=True, delete_test_docs=True):
+def call_script(args_list: Sequence[str], delete_test_reports: bool = True, delete_test_docs: bool = True) -> Result:
     """
     Call the code_annotations script with the given params and a generic config file.
 
@@ -108,11 +119,11 @@ def call_script(args_list, delete_test_reports=True, delete_test_docs=True):
 
 
 def call_script_isolated(
-        args_list,
-        test_filesystem_cb=None,
-        test_filesystem_report_cb=None,
-        fake_safelist_data="{}"
-):
+        args_list: list[str],
+        test_filesystem_cb: Callable[[], None] | None = None,
+        test_filesystem_report_cb: Callable[[str], None] | None = None,
+        fake_safelist_data: str = "{}"
+) -> Result:
     """
     Call the code_annotations script with the given params and a generic config file.
 
@@ -122,9 +133,6 @@ def call_script_isolated(
             cleared. Use this if you need access to non-report files in the temp filesystem.
         test_filesystem_report_cb: Callback function, called after the command is run, before the temp filesystem
             is cleared. Callback is called with the raw text contents of the report file.
-        fake_safelist_data: Raw text to write to the safelist file before the command is called.
-        safelist_path: File path to write the safelist to. Used when writing a fake safelist, but not automatically
-            passed to the command.
 
     Returns:
         click.testing.Result: Result from the `CliRunner.invoke()` call.
@@ -151,7 +159,9 @@ def call_script_isolated(
 
         if test_filesystem_report_cb:
             try:
-                report_file = re.search(r'Generating report to (.*)', result.output).groups()[0]
+                report_match = re.search(r'Generating report to (.*)', result.output)
+                assert report_match is not None
+                report_file = report_match.groups()[0]
                 with open(report_file) as f:
                     report_contents = f.read()
 
@@ -163,7 +173,7 @@ def call_script_isolated(
     return result
 
 
-def get_report_filename_from_output(output):
+def get_report_filename_from_output(output: str) -> str | None:
     """
     Find the report filename in a find_static or find_django output and return it.
 
@@ -172,9 +182,10 @@ def get_report_filename_from_output(output):
 
     Returns:
         Filename of the found report, or None of no name is found
-
     """
+    match = re.search(r'Generating report to (.*)', output)
+    assert match is not None
     try:
-        return re.search(r'Generating report to (.*)', output).groups()[0]
+        return match.groups()[0]
     except IndexError:
         return None

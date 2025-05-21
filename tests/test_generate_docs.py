@@ -15,29 +15,30 @@ from tests.helpers import (
 )
 
 
-def test_generate_report_simple():
+def test_generate_report_simple() -> None:
     find_result = call_script(
-        (
+        [
             'static_find_annotations',
             '--config_file',
             'tests/test_configurations/.annotations_test_python_only',
             '--source_path=tests/extensions/python_test_files/simple_success.pyt',
             '--no_lint',
-        ),
+        ],
         delete_test_reports=False)
 
     assert find_result.exit_code == EXIT_CODE_SUCCESS
     assert "Writing report..." in find_result.output
     report_file = get_report_filename_from_output(find_result.output)
+    assert report_file is not None, "Failed to get report filename from output"
 
     report_result = call_script(
-        (
+        [
             'generate_docs',
             report_file,
             '--config_file',
             'tests/test_configurations/.annotations_test_success_with_report_docs',
             '-vv'
-        ),
+        ],
         delete_test_docs=False
     )
 
@@ -49,29 +50,30 @@ def test_generate_report_simple():
         assert os.path.exists(created_doc)
 
 
-def test_generate_report_simple_html():
+def test_generate_report_simple_html() -> None:
     find_result = call_script(
-        (
+        [
             'static_find_annotations',
             '--config_file',
             'tests/test_configurations/.annotations_test_python_only',
             '--source_path=tests/extensions/python_test_files/simple_success.pyt',
             '--no_lint',
-        ),
+        ],
         delete_test_reports=False)
 
     assert find_result.exit_code == EXIT_CODE_SUCCESS
     assert "Writing report..." in find_result.output
     report_file = get_report_filename_from_output(find_result.output)
+    assert report_file is not None, "Failed to get report filename from output"
 
     report_result = call_script(
-        (
+        [
             'generate_docs',
             report_file,
             '--config_file',
             'tests/test_configurations/.annotations_test_success_with_report_docs_html',
             '-vv'
-        ),
+        ],
         delete_test_docs=False
     )
 
@@ -83,20 +85,21 @@ def test_generate_report_simple_html():
         assert os.path.exists(created_doc)
 
 
-def _do_find(source_path, new_report_path):
+def _do_find(source_path: str, new_report_path: str) -> None:
     """
     Do a static annotation search with report, rename the report to a distinct name.
 
     Args:
         source_path: Path to the test file to run the report on
+        new_report_path: Path to save the report to
     """
-    find_result_1 = call_script((
+    find_result_1 = call_script([
         'static_find_annotations',
         '--config_file',
         'tests/test_configurations/.annotations_test_python_only',
         f'--source_path={source_path}',
         '--no_lint',
-    ), False)
+    ], False)
 
     assert find_result_1.exit_code == EXIT_CODE_SUCCESS
     assert "Writing report..." in find_result_1.output
@@ -104,10 +107,11 @@ def _do_find(source_path, new_report_path):
     # These will usually all run within 1 second and end up with the same filename, so rename them to something
     # distinct before they get overwritten
     original_report_filename = get_report_filename_from_output(find_result_1.output)
+    assert original_report_filename is not None
     os.rename(original_report_filename, new_report_path)
 
 
-def test_generate_report_multiple_files():
+def test_generate_report_multiple_files() -> None:
     report_file_1 = 'test_reports/test1.yaml'
     _do_find('tests/extensions/python_test_files/simple_success.pyt', report_file_1)
 
@@ -138,7 +142,7 @@ def test_generate_report_multiple_files():
         yaml.safe_dump(tmp_report, out_tmp)
 
     report_result = call_script(
-        (
+        [
             'generate_docs',
             report_file_1,
             report_file_2,
@@ -146,7 +150,7 @@ def test_generate_report_multiple_files():
             report_file_4,
             '--config_file',
             'tests/test_configurations/.annotations_test_success_with_report_docs',
-        ),
+        ],
         delete_test_docs=False
     )
 
@@ -178,27 +182,29 @@ def test_generate_report_multiple_files():
     delete_report_files('.rst')
 
 
-def test_generate_report_missing_key():
-    find_result = call_script((
+def test_generate_report_missing_key() -> None:
+    find_result = call_script([
         'static_find_annotations',
         '--config_file',
         'tests/test_configurations/.annotations_test_python_only',
         '--source_path=tests/extensions/python_test_files/simple_success.pyt',
         '--no_lint',
         '-v',
-    ), False)
+    ], False)
 
     assert find_result.exit_code == EXIT_CODE_SUCCESS
     assert "Writing report..." in find_result.output
-    report_file = re.search(r'Generating report to (.*)', find_result.output).groups()[0]
+    match = re.search(r'Generating report to (.*)', find_result.output)
+    assert match is not None
+    report_file = match.groups()[0]
     assert os.path.exists(report_file)
 
-    report_result = call_script((
+    report_result = call_script([
         'generate_docs',
         report_file,
         '--config_file',
         'tests/test_configurations/.annotations_test_python_only',
-    ))
+    ])
 
     assert report_result.exit_code == EXIT_CODE_FAILURE
     assert "No rendered_report_source_link_prefix key in" in report_result.output

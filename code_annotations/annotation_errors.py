@@ -1,22 +1,25 @@
 """
 List possible annotation error types.
 """
+import typing as t
 from collections import namedtuple
 
-AnnotationErrorType = namedtuple(
+AnnotationError = namedtuple(
     "AnnotationError", ["message", "symbol", "description"]
 )
 
-# The TYPES list should contain all AnnotationErrorType instances. This list can then be parsed by others, for instance
+# The TYPES list should contain all AnnotationError instances. This list can then be parsed by others, for instance
 # to expose errors to pylint.
-TYPES = []
+TYPES: list[AnnotationError] = []
+
+T = t.TypeVar('T', bound=AnnotationError)
 
 
-def add_error_type(message, symbol, description):
+def add_error_type(message: str, symbol: str, description: str) -> AnnotationError:
     """
-    Create an AnnotationErrorType instance and add it to TYPES.
+    Create an AnnotationError instance and add it to TYPES.
     """
-    error_type = AnnotationErrorType(
+    error_type = AnnotationError(
         message,
         symbol,
         description,
@@ -32,32 +35,32 @@ def add_error_type(message, symbol, description):
 # It is important to preserve the insertion order of these error types in the TYPES list, as edx-lint uses the error
 # type indices to generate numerical pylint IDs. If the insertion order is changed, the pylint IDs will change too,
 # which might cause incompatibilities down the road. Thus, new items should be added at the end.
-InvalidChoice = add_error_type(
+InvalidChoice: AnnotationError = add_error_type(
     '"%s" is not a valid choice for "%s". Expected one of %s.',
     "annotation-invalid-choice",
     "Emitted when the value of a choice field is not one of the valid choices",
 )
-DuplicateChoiceValue = add_error_type(
+DuplicateChoiceValue: AnnotationError = add_error_type(
     '"%s" is already present in this annotation.',
     "annotation-duplicate-choice-value",
     "Emitted when duplicate values are found in a choice field",
 )
-MissingChoiceValue = add_error_type(
+MissingChoiceValue: AnnotationError = add_error_type(
     'no value found for "%s". Expected one of %s.',
     "annotation-missing-choice-value",
     "Emitted when a choice field does not have any value",
 )
-InvalidToken = add_error_type(
+InvalidToken: AnnotationError = add_error_type(
     "'%s' token does not belong to group '%s'. Expected one of: %s",
     "annotation-invalid-token",
     "Emitted when a token is found in a group for which it is not valid",
 )
-DuplicateToken = add_error_type(
+DuplicateToken: AnnotationError = add_error_type(
     "found duplicate token '%s'",
     "annotation-duplicate-token",
     "Emitted when a token is found twice in a group",
 )
-MissingToken = add_error_type(
+MissingToken: AnnotationError = add_error_type(
     "missing non-optional annotation: '%s'",
     "annotation-missing-token",
     "Emitted when a required token is missing from a group",

@@ -3,6 +3,8 @@
 
 .DEFAULT_GOAL := help
 
+PYTHON_FILES = ./code_annotations/ setup.py tests/ test_utils/
+
 define BROWSER_PYSCRIPT
 import os, webbrowser, sys
 try:
@@ -42,24 +44,27 @@ COMMON_CONSTRAINTS_TXT=requirements/common_constraints.txt
 $(COMMON_CONSTRAINTS_TXT):
 	wget -O "$(@)" https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt || touch "$(@)"
 
-upgrade: export CUSTOM_COMPILE_COMMAND=make upgrade
-upgrade: $(COMMON_CONSTRAINTS_TXT) # update the requirements/*.txt files with the latest packages satisfying requirements/*.in
+compile-requirements: export CUSTOM_COMPILE_COMMAND=make upgrade
+compile-requirements: $(COMMON_CONSTRAINTS_TXT) ## Re-compile *.in requirements to *.txt, without upgrading
 	pip install -qr requirements/pip-tools.txt
 	# Make sure to compile files after any other files they include!
-	pip-compile --upgrade --allow-unsafe -o requirements/pip.txt requirements/pip.in
-	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
+	pip-compile ${COMPILE_OPTS} --allow-unsafe requirements/pip.in
+	pip-compile ${COMPILE_OPTS} requirements/pip-tools.in
 	pip install -qr requirements/pip.txt
 	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade -o requirements/base.txt requirements/base.in
-	pip-compile --upgrade -o requirements/django.txt requirements/django.in
-	pip-compile --upgrade -o requirements/test.txt requirements/test.in
-	pip-compile --upgrade -o requirements/doc.txt requirements/doc.in
-	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
-	pip-compile --upgrade -o requirements/ci.txt requirements/ci.in
-	pip-compile --upgrade -o requirements/dev.txt requirements/dev.in
+	pip-compile ${COMPILE_OPTS} requirements/base.in
+	pip-compile ${COMPILE_OPTS} requirements/django.in
+	pip-compile ${COMPILE_OPTS} requirements/test.in
+	pip-compile ${COMPILE_OPTS} requirements/doc.in
+	pip-compile ${COMPILE_OPTS} requirements/quality.in
+	pip-compile ${COMPILE_OPTS} requirements/ci.in
+	pip-compile ${COMPILE_OPTS} requirements/dev.in
 	# Let tox control the Django version for tests
 	sed '/^[dD]jango==/d' requirements/test.txt > requirements/test.tmp
 	mv requirements/test.tmp requirements/test.txt
+
+upgrade: $(COMMON_CONSTRAINTS_TXT) ## update the requirements/*.txt files with the latest packages satisfying requirements/*.in
+	$(MAKE) compile-requirements COMPILE_OPTS="--upgrade"
 
 quality: ## check coding style with pycodestyle and pylint
 	tox -e quality
@@ -70,8 +75,27 @@ requirements: ## install development environment requirements
 	pip-sync requirements/dev.txt requirements/test.txt requirements/private.*
 	pip install -e .
 
-test: clean ## run tests in the current virtualenv
+test: clean test-unit  test-quality ## run tests in the current virtualenv
+
+test-unit:  ## run unit tests
 	pytest
+
+test-quality: test-lint test-types test-codestyle test-docstyle test-isort selfcheck  ## run all quality tests
+
+test-codestyle:  ## run pycodestyle tests
+	pycodestyle ${PYTHON_FILES}
+
+test-docstyle: ## run pydocstyle tests
+	pydocstyle ${PYTHON_FILES}
+
+test-isort: ## run isort tests
+	isort --check-only --diff ${PYTHON_FILES}
+
+test-lint: ## run pylint tests
+	pylint ${PYTHON_FILES}
+
+test-types: ## run mypy tests on the whole codebase
+	mypy --ignore-missing-imports --strict ${PYTHON_FILES}
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml
