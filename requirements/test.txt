@@ -8,9 +8,9 @@ asgiref==3.8.1
     # via
     #   -r requirements/django.txt
     #   django
-click==8.2.0
+click==8.2.1
     # via -r requirements/base.txt
-coverage[toml]==7.8.0
+coverage[toml]==7.8.2
     # via pytest-cov
     # via
     #   -c requirements/common_constraints.txt
