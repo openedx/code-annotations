@@ -17,7 +17,7 @@ build==1.2.2.post1
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==5.5.2
+cachetools==6.0.0
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -26,7 +26,7 @@ chardet==5.2.0
     #   -r requirements/ci.txt
     #   diff-cover
     #   tox
-click==8.2.0
+click==8.2.1
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -46,11 +46,11 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.8.0
+coverage[toml]==7.8.2
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-diff-cover==9.2.4
+diff-cover==9.3.1
     # via -r requirements/dev.in
 dill==0.4.0
     # via
