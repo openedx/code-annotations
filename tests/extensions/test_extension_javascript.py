@@ -1,6 +1,7 @@
 """
 Tests for the Javascript static extension
 """
+
 import pytest
 
 from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
@@ -20,7 +21,7 @@ from tests.helpers import EXIT_CODE_FAILURE, EXIT_CODE_SUCCESS, call_script
     ('choice_failures_4.js', EXIT_CODE_FAILURE, '"terrible" is already present in this annotation'),
     ('choice_failures_5.js', EXIT_CODE_FAILURE, 'no value found for ".. ignored:"'),
 ])
-def test_grouping_and_choice_failures(test_file, expected_exit_code, expected_message):
+def test_grouping_and_choice_failures(test_file: str, expected_exit_code: int, expected_message: str) -> None:
     result = call_script((
         'static_find_annotations',
         '--config_file',

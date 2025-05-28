@@ -2,6 +2,7 @@
 """
 Tests for listing local models.
 """
+import typing as t
 from unittest.mock import DEFAULT, MagicMock, patch
 
 import pytest
@@ -32,11 +33,15 @@ from tests.helpers import call_script_isolated
         ],
     ),
 ])
-def test_listing_local_models(local_model_ids, non_local_model_ids, **kwargs):
+def test_listing_local_models(
+    local_model_ids: list[MagicMock],
+    non_local_model_ids: list[MagicMock],
+    **kwargs: t.Any
+) -> None:
     """
     Test the success case for listing local models.
     """
-    mock_get_models_requiring_annotations = kwargs['get_models_requiring_annotations']
+    mock_get_models_requiring_annotations: MagicMock = kwargs['get_models_requiring_annotations']
     mock_get_models_requiring_annotations.return_value = (
         local_model_ids,
         non_local_model_ids,

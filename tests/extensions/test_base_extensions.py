@@ -10,16 +10,16 @@ from tests.helpers import FakeConfig
 
 
 class FakeExtension(SimpleRegexAnnotationExtension):
-    extension_name = 'fake_extension'
+    extension_name: str = 'fake_extension'
 
-    lang_comment_definition = {
+    lang_comment_definition: dict[str, str] = {
         'multi_start': re.escape('foo'),
         'multi_end': re.escape('bar'),
         'single': re.escape('baz')
     }
 
 
-def test_nothing_found():
+def test_nothing_found() -> None:
     """
     Make sure nothing fails when no annotation is found.
     """
@@ -30,7 +30,7 @@ def test_nothing_found():
         r.search(f)
 
 
-def test_strip_single_line_comment_tokens():
+def test_strip_single_line_comment_tokens() -> None:
     config = FakeConfig()
 
     extension = FakeExtension(config, VerboseEcho())
