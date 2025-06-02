@@ -194,7 +194,7 @@ urllib3==2.2.3
     #   -c requirements/common_constraints.txt
     #   requests
     #   twine
-zipp==3.21.0
+zipp==3.22.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
