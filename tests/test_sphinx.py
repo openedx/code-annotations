@@ -4,7 +4,7 @@ Test sphinx extensions.
 from code_annotations.contrib.sphinx.extensions.base import find_annotations, quote_value
 
 
-def test_collect_pii_for_sphinx():
+def test_collect_pii_for_sphinx() -> None:
     annotations = find_annotations(
         "tests/extensions/python_test_files/simple_success.pyt",
         "tests/test_configurations/.annotations_test",
@@ -27,7 +27,7 @@ def test_collect_pii_for_sphinx():
     assert 5 == len(annotations)
 
 
-def test_quote_value():
+def test_quote_value() -> None:
     assert "True" == quote_value("True")
     assert "None" == quote_value("None")
     assert "1" == quote_value("1")

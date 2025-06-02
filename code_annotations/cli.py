@@ -5,10 +5,12 @@ Command line interface for code annotation tools.
 import datetime
 import sys
 import traceback
+from io import TextIOWrapper
 
 import click
 
-from code_annotations.base import AnnotationConfig, ConfigurationException
+from code_annotations.base import AnnotationConfig
+from code_annotations.exceptions import ConfigurationException
 from code_annotations.find_django import DjangoSearch
 from code_annotations.find_static import StaticSearch
 from code_annotations.generate_docs import ReportRenderer
@@ -16,7 +18,7 @@ from code_annotations.helpers import fail
 
 
 @click.group()
-def entry_point():
+def entry_point() -> None:
     """
     Top level click command for the code annotation tools.
     """
@@ -67,16 +69,16 @@ def entry_point():
     show_default=True,
 )
 def django_find_annotations(
-    config_file,
-    seed_safelist,
-    list_local_models,
-    app_name,
-    report_path,
-    verbosity,
-    lint,
-    report,
-    coverage,
-):
+    config_file: str,
+    seed_safelist: bool,
+    list_local_models: bool,
+    app_name: str | None,
+    report_path: str | None,
+    verbosity: int,
+    lint: bool,
+    report: bool,
+    coverage: bool,
+) -> None:
     """
     Subcommand for dealing with annotations in Django models.
     """
@@ -135,7 +137,7 @@ def django_find_annotations(
                 click.echo("Coverage passed without errors.")
 
             if report:
-                searcher.report(annotated_models, app_name)
+                searcher.report(annotated_models, app_name or "")
 
             annotation_count = 0
 
@@ -149,7 +151,7 @@ def django_find_annotations(
                 )
             )
     except Exception as exc:
-        click.echo(traceback.print_exc())
+        traceback.print_exc()
         fail(str(exc))
 
 
@@ -180,8 +182,13 @@ def django_find_annotations(
     show_default=True,
 )
 def static_find_annotations(
-    config_file, source_path, report_path, verbosity, lint, report
-):
+    config_file: str,
+    source_path: str,
+    report_path: str | None,
+    verbosity: int,
+    lint: bool,
+    report: bool
+) -> None:
     """
     Subcommand to find annotations via static file analysis.
     """
@@ -219,7 +226,7 @@ def static_find_annotations(
         click.echo(f"Search found {annotation_count} annotations in {elapsed}.")
 
     except Exception as exc:
-        click.echo(traceback.print_exc())
+        traceback.print_exc()
         fail(str(exc))
 
 
@@ -232,14 +239,18 @@ def static_find_annotations(
 )
 @click.option("-v", "--verbosity", count=True, help="Verbosity level (-v through -vvv)")
 @click.argument("report_files", type=click.File("r"), nargs=-1)
-def generate_docs(config_file, verbosity, report_files):
+def generate_docs(
+    config_file: str,
+    verbosity: int,
+    report_files: tuple[TextIOWrapper, ...]
+) -> None:
     """
     Generate documentation from a code annotations report.
     """
     start_time = datetime.datetime.utcnow()
 
     try:
-        config = AnnotationConfig(config_file, verbosity)
+        config = AnnotationConfig(config_file, verbosity=verbosity)
 
         if not report_files:
             raise ConfigurationException(
@@ -267,5 +278,5 @@ def generate_docs(config_file, verbosity, report_files):
         elapsed = datetime.datetime.utcnow() - start_time
         click.echo(f"Report rendered in {elapsed.total_seconds()} seconds.")
     except Exception as exc:
-        click.echo(traceback.print_exc())
+        traceback.print_exc()
         fail(str(exc))
