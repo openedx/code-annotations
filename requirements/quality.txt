@@ -28,7 +28,7 @@ coverage[toml]==7.8.2
     #   pytest-cov
 dill==0.4.0
     # via pylint
-django==4.2.21
+django==4.2.22
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -72,6 +72,10 @@ pycodestyle==2.13.0
     # via -r requirements/quality.in
 pydocstyle==6.3.0
     # via -r requirements/quality.in
+pygments==2.19.1
+    # via
+    #   -r requirements/test.txt
+    #   pytest
 pylint==3.3.7
     # via
     #   edx-lint
@@ -86,7 +90,7 @@ pylint-plugin-utils==0.8.2
     # via
     #   pylint-celery
     #   pylint-django
-pytest==8.3.5
+pytest==8.4.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -116,7 +120,7 @@ text-unidecode==1.3
     # via
     #   -r requirements/test.txt
     #   python-slugify
-tomlkit==0.13.2
+tomlkit==0.13.3
     # via pylint
 
 # The following packages are considered to be unsafe in a requirements file:
