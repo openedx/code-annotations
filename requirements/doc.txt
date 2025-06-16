@@ -20,7 +20,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.13.4
     # via pydata-sphinx-theme
-certifi==2025.4.26
+certifi==2025.6.15
     # via requests
 cffi==1.17.1
     # via cryptography
@@ -28,17 +28,17 @@ charset-normalizer==3.4.2
     # via requests
 click==8.2.1
     # via -r requirements/test.txt
-coverage[toml]==7.8.2
+coverage[toml]==7.9.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-cryptography==45.0.3
+cryptography==45.0.4
     # via secretstorage
-django==4.2.22
+django==4.2.23
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
-doc8==1.1.2
+doc8==2.0.0
     # via -r requirements/doc.in
 docutils==0.21.2
     # via
@@ -106,6 +106,7 @@ pluggy==1.6.0
     # via
     #   -r requirements/test.txt
     #   pytest
+    #   pytest-cov
 pycparser==2.22
     # via cffi
 pydata-sphinx-theme==0.15.4
@@ -124,7 +125,7 @@ pytest==8.4.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-pytest-cov==6.1.1
+pytest-cov==6.2.1
     # via -r requirements/test.txt
 python-slugify==8.0.4
     # via -r requirements/test.txt
@@ -132,7 +133,7 @@ pyyaml==6.0.2
     # via -r requirements/test.txt
 readme-renderer==44.0
     # via twine
-requests==2.32.3
+requests==2.32.4
     # via
     #   id
     #   requests-toolbelt
