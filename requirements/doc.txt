@@ -22,7 +22,7 @@ beautifulsoup4==4.13.5
     # via pydata-sphinx-theme
 certifi==2025.8.3
     # via requests
-cffi==1.17.1
+cffi==2.0.0
     # via cryptography
 charset-normalizer==3.4.3
     # via requests
@@ -103,7 +103,7 @@ pluggy==1.6.0
     #   -r requirements/test.txt
     #   pytest
     #   pytest-cov
-pycparser==2.22
+pycparser==2.23
     # via cffi
 pydata-sphinx-theme==0.15.4
     # via sphinx-book-theme
@@ -121,7 +121,7 @@ pytest==8.4.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-pytest-cov==6.3.0
+pytest-cov==7.0.0
     # via -r requirements/test.txt
 python-slugify==8.0.4
     # via -r requirements/test.txt
@@ -145,7 +145,7 @@ rich==14.1.0
     # via twine
 roman-numerals-py==3.1.0
     # via sphinx
-secretstorage==3.3.3
+secretstorage==3.4.0
     # via keyring
 snowballstemmer==3.0.1
     # via sphinx
