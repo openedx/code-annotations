@@ -8,7 +8,7 @@ accessible-pygments==0.0.5
     # via pydata-sphinx-theme
 alabaster==1.0.0
     # via sphinx
-asgiref==3.9.1
+asgiref==3.9.2
     # via
     #   -r requirements/test.txt
     #   django
@@ -18,21 +18,21 @@ babel==2.17.0
     #   sphinx
 backports-tarfile==1.2.0
     # via jaraco-context
-beautifulsoup4==4.13.5
+beautifulsoup4==4.14.0
     # via pydata-sphinx-theme
 certifi==2025.8.3
     # via requests
-cffi==1.17.1
+cffi==2.0.0
     # via cryptography
 charset-normalizer==3.4.3
     # via requests
-click==8.2.1
+click==8.3.0
     # via -r requirements/test.txt
-coverage[toml]==7.10.6
+coverage[toml]==7.10.7
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-cryptography==45.0.7
+cryptography==46.0.1
     # via secretstorage
 django==4.2.24
     # via
@@ -77,7 +77,7 @@ keyring==25.6.0
     # via twine
 markdown-it-py==4.0.0
     # via rich
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   -r requirements/test.txt
     #   jinja2
@@ -103,7 +103,7 @@ pluggy==1.6.0
     #   -r requirements/test.txt
     #   pytest
     #   pytest-cov
-pycparser==2.22
+pycparser==2.23
     # via cffi
 pydata-sphinx-theme==0.15.4
     # via sphinx-book-theme
@@ -121,11 +121,11 @@ pytest==8.4.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-pytest-cov==6.3.0
+pytest-cov==7.0.0
     # via -r requirements/test.txt
 python-slugify==8.0.4
     # via -r requirements/test.txt
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via -r requirements/test.txt
 readme-renderer==44.0
     # via twine
@@ -145,7 +145,7 @@ rich==14.1.0
     # via twine
 roman-numerals-py==3.1.0
     # via sphinx
-secretstorage==3.3.3
+secretstorage==3.4.0
     # via keyring
 snowballstemmer==3.0.1
     # via sphinx

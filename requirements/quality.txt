@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-asgiref==3.9.1
+asgiref==3.9.2
     # via
     #   -r requirements/test.txt
     #   django
@@ -12,7 +12,7 @@ astroid==3.3.11
     # via
     #   pylint
     #   pylint-celery
-click==8.2.1
+click==8.3.0
     # via
     #   -r requirements/test.txt
     #   click-log
@@ -22,7 +22,7 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==2.3.0
     # via edx-lint
-coverage[toml]==7.10.6
+coverage[toml]==7.10.7
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -46,7 +46,7 @@ jinja2==3.1.6
     # via
     #   -r requirements/test.txt
     #   code-annotations
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   -r requirements/test.txt
     #   jinja2
@@ -91,13 +91,13 @@ pytest==8.4.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-pytest-cov==6.3.0
+pytest-cov==7.0.0
     # via -r requirements/test.txt
 python-slugify==8.0.4
     # via
     #   -r requirements/test.txt
     #   code-annotations
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   -r requirements/test.txt
     #   code-annotations
