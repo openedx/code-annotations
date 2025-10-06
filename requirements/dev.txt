@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-asgiref==3.9.1
+asgiref==3.10.0
     # via
     #   -r requirements/quality.txt
     #   django
@@ -26,7 +26,7 @@ chardet==5.2.0
     #   -r requirements/ci.txt
     #   diff-cover
     #   tox
-click==8.2.1
+click==8.3.0
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -46,11 +46,11 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.10.6
+coverage[toml]==7.10.7
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-diff-cover==9.6.0
+diff-cover==9.7.1
     # via -r requirements/dev.in
 dill==0.4.0
     # via
@@ -60,7 +60,7 @@ distlib==0.4.0
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==4.2.24
+django==4.2.25
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/quality.txt
@@ -75,7 +75,7 @@ iniconfig==2.1.0
     # via
     #   -r requirements/quality.txt
     #   pytest
-isort==6.0.1
+isort==6.1.0
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -84,7 +84,7 @@ jinja2==3.1.6
     #   -r requirements/quality.txt
     #   code-annotations
     #   diff-cover
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   -r requirements/quality.txt
     #   jinja2
@@ -103,7 +103,7 @@ packaging==25.0
     #   pyproject-api
     #   pytest
     #   tox
-pip-tools==7.5.0
+pip-tools==7.5.1
     # via -r requirements/pip-tools.txt
 platformdirs==4.4.0
     # via
@@ -129,7 +129,7 @@ pygments==2.19.2
     #   -r requirements/quality.txt
     #   diff-cover
     #   pytest
-pylint==3.3.8
+pylint==3.3.9
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -162,13 +162,13 @@ pytest==8.4.2
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-pytest-cov==6.3.0
+pytest-cov==7.0.0
     # via -r requirements/quality.txt
 python-slugify==8.0.4
     # via
     #   -r requirements/quality.txt
     #   code-annotations
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   -r requirements/quality.txt
     #   code-annotations
@@ -196,7 +196,7 @@ tomlkit==0.13.3
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==4.30.2
+tox==4.30.3
     # via -r requirements/ci.txt
 virtualenv==20.34.0
     # via

@@ -4,15 +4,15 @@
 #
 #    make upgrade
 #
-click==8.2.1
+click==8.3.0
     # via -r requirements/base.in
 jinja2==3.1.6
     # via -r requirements/base.in
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via jinja2
 python-slugify==8.0.4
     # via -r requirements/base.in
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via -r requirements/base.in
 stevedore==5.5.0
     # via -r requirements/base.in
