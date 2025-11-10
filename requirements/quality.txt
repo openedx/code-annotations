@@ -22,13 +22,13 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==2.3.0
     # via edx-lint
-coverage[toml]==7.11.0
+coverage[toml]==7.11.3
     # via
     #   -r requirements/test.txt
     #   pytest-cov
 dill==0.4.0
     # via pylint
-django==4.2.25
+django==5.2.8
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -87,7 +87,7 @@ pylint-plugin-utils==0.9.0
     # via
     #   pylint-celery
     #   pylint-django
-pytest==8.4.2
+pytest==9.0.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
