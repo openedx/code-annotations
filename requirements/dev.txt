@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-asgiref==3.10.0
+asgiref==3.11.0
     # via
     #   -r requirements/quality.txt
     #   django
@@ -17,7 +17,7 @@ build==1.3.0
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==6.2.1
+cachetools==6.2.2
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -26,7 +26,7 @@ chardet==5.2.0
     #   -r requirements/ci.txt
     #   diff-cover
     #   tox
-click==8.3.0
+click==8.3.1
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -46,11 +46,11 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.11.3
+coverage[toml]==7.12.0
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
-diff-cover==9.7.1
+diff-cover==9.7.2
     # via -r requirements/dev.in
 dill==0.4.0
     # via
@@ -103,7 +103,7 @@ packaging==25.0
     #   pyproject-api
     #   pytest
     #   tox
-pip-tools==7.5.1
+pip-tools==7.5.2
     # via -r requirements/pip-tools.txt
 platformdirs==4.5.0
     # via
@@ -158,7 +158,7 @@ pyproject-hooks==1.2.0
     #   -r requirements/pip-tools.txt
     #   build
     #   pip-tools
-pytest==9.0.0
+pytest==9.0.1
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
@@ -184,7 +184,7 @@ sqlparse==0.5.3
     # via
     #   -r requirements/quality.txt
     #   django
-stevedore==5.5.0
+stevedore==5.6.0
     # via
     #   -r requirements/quality.txt
     #   code-annotations
