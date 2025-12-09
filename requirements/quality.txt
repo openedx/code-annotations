@@ -28,7 +28,7 @@ coverage[toml]==7.12.0
     #   pytest-cov
 dill==0.4.0
     # via pylint
-django==5.2.8
+django==5.2.9
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -58,7 +58,7 @@ packaging==25.0
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.5.0
+platformdirs==4.5.1
     # via pylint
 pluggy==1.6.0
     # via
@@ -87,7 +87,7 @@ pylint-plugin-utils==0.9.0
     # via
     #   pylint-celery
     #   pylint-django
-pytest==9.0.1
+pytest==9.0.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
