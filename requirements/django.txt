@@ -10,5 +10,5 @@ django==5.2.9
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/django.in
-sqlparse==0.5.4
+sqlparse==0.5.5
     # via django
