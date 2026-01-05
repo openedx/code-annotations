@@ -20,7 +20,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beautifulsoup4==4.14.3
     # via pydata-sphinx-theme
-certifi==2025.11.12
+certifi==2026.1.4
     # via requests
 cffi==2.0.0
     # via cryptography
