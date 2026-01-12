@@ -34,7 +34,7 @@ coverage[toml]==7.13.1
     #   pytest-cov
 cryptography==46.0.3
     # via secretstorage
-django==5.2.9
+django==5.2.10
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -188,7 +188,7 @@ typing-extensions==4.15.0
     # via
     #   beautifulsoup4
     #   pydata-sphinx-theme
-urllib3==2.6.2
+urllib3==2.6.3
     # via
     #   requests
     #   twine
