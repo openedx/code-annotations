@@ -47,7 +47,7 @@ docutils==0.21.2
     #   readme-renderer
     #   restructuredtext-lint
     #   sphinx
-id==1.5.0
+id==1.6.1
     # via twine
 idna==3.11
     # via requests
@@ -131,7 +131,6 @@ readme-renderer==44.0
     # via twine
 requests==2.32.5
     # via
-    #   id
     #   requests-toolbelt
     #   sphinx
     #   twine
@@ -190,6 +189,7 @@ typing-extensions==4.15.0
     #   pydata-sphinx-theme
 urllib3==2.6.3
     # via
+    #   id
     #   requests
     #   twine
 zipp==3.23.0

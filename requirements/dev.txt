@@ -8,7 +8,7 @@ asgiref==3.11.1
     # via
     #   -r requirements/quality.txt
     #   django
-astroid==4.0.3
+astroid==4.0.4
     # via
     #   -r requirements/quality.txt
     #   pylint
