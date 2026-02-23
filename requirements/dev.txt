@@ -21,7 +21,7 @@ cachetools==7.0.1
     # via
     #   -r requirements/ci.txt
     #   tox
-chardet==5.2.0
+chardet==6.0.0.post1
     # via
     #   -r requirements/ci.txt
     #   diff-cover
@@ -66,7 +66,7 @@ django==5.2.11
     #   -r requirements/quality.txt
 edx-lint==5.6.0
     # via -r requirements/quality.txt
-filelock==3.24.1
+filelock==3.24.3
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -75,7 +75,7 @@ iniconfig==2.3.0
     # via
     #   -r requirements/quality.txt
     #   pytest
-isort==7.0.0
+isort==8.0.0
     # via
     #   -r requirements/quality.txt
     #   pylint
@@ -106,7 +106,7 @@ packaging==26.0
     #   wheel
 pip-tools==7.5.3
     # via -r requirements/pip-tools.txt
-platformdirs==4.9.1
+platformdirs==4.9.2
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -130,7 +130,7 @@ pygments==2.19.2
     #   -r requirements/quality.txt
     #   diff-cover
     #   pytest
-pylint==4.0.4
+pylint==4.0.5
     # via
     #   -r requirements/quality.txt
     #   edx-lint
@@ -185,7 +185,7 @@ sqlparse==0.5.5
     # via
     #   -r requirements/quality.txt
     #   django
-stevedore==5.6.0
+stevedore==5.7.0
     # via
     #   -r requirements/quality.txt
     #   code-annotations
@@ -197,9 +197,9 @@ tomlkit==0.14.0
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==4.36.0
+tox==4.44.0
     # via -r requirements/ci.txt
-virtualenv==20.36.1
+virtualenv==20.38.0
     # via
     #   -r requirements/ci.txt
     #   tox
