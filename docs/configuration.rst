@@ -33,7 +33,7 @@ Configuring Code Annotations is a pretty simple affair. Here is an example showi
     rendered_report_source_link_prefix: https://github.com/my_org/my_project/blob/master/
     trim_filename_prefixes:
         - /my_org/my_project/
-        - /my_project/venv/lib/python3.11/
+        - /my_project/venv/lib/python3.12/
     third_party_package_location: site-packages
 
 ``source_path``
