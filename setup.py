@@ -94,7 +94,7 @@ setup(
     license="Apache Software License 2.0",
     zip_safe=False,
     keywords="edx pii code annotations",
-    python_requires=">=3.11",
+    python_requires=">=3.12",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Framework :: Django",
@@ -105,7 +105,6 @@ setup(
         "Natural Language :: English",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
     ],
 )
