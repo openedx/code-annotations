@@ -24,7 +24,7 @@ certifi==2026.2.25
     # via requests
 cffi==2.0.0
     # via cryptography
-charset-normalizer==3.4.4
+charset-normalizer==3.4.5
     # via requests
 click==8.3.1
     # via -r requirements/test.txt
@@ -34,7 +34,7 @@ coverage[toml]==7.13.4
     #   pytest-cov
 cryptography==46.0.5
     # via secretstorage
-django==5.2.11
+django==5.2.12
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -51,7 +51,7 @@ id==1.6.1
     # via twine
 idna==3.11
     # via requests
-imagesize==1.4.1
+imagesize==2.0.0
     # via sphinx
 importlib-metadata==8.7.1
     # via keyring
@@ -61,7 +61,7 @@ iniconfig==2.3.0
     #   pytest
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==6.1.0
+jaraco-context==6.1.1
     # via keyring
 jaraco-functools==4.4.0
     # via keyring
