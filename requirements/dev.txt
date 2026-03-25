@@ -21,7 +21,7 @@ cachetools==7.0.5
     # via
     #   -r requirements/ci.txt
     #   tox
-chardet==7.2.0
+chardet==7.3.0
     # via diff-cover
 click==8.3.1
     # via

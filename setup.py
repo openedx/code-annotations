@@ -90,7 +90,7 @@ setup(
     },
     include_package_data=True,
     install_requires=load_requirements("requirements/base.in"),
-    extras_require={"django": ["Django>=4.2"]},
+    extras_require={"django": ["Django>=5.2"]},
     license="Apache Software License 2.0",
     zip_safe=False,
     keywords="edx pii code annotations",
@@ -98,7 +98,6 @@ setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Framework :: Django",
-        "Framework :: Django :: 4.2",
         "Framework :: Django :: 5.2",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",

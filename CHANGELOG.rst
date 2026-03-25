@@ -14,6 +14,8 @@ Change Log
 Unreleased
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+* Dropped Django 4.2 support; minimum supported Django version is now 5.2
+
 [2.3.2] - 2026-03-02
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
