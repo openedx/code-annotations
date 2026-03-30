@@ -13,7 +13,7 @@ astroid==4.0.4
     #   -r requirements/quality.txt
     #   pylint
     #   pylint-celery
-build==1.4.0
+build==1.4.2
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
@@ -21,7 +21,7 @@ cachetools==7.0.5
     # via
     #   -r requirements/ci.txt
     #   tox
-chardet==7.2.0
+chardet==7.4.0.post2
     # via diff-cover
 click==8.3.1
     # via
@@ -124,7 +124,7 @@ pycodestyle==2.14.0
     # via -r requirements/quality.txt
 pydocstyle==6.3.0
     # via -r requirements/quality.txt
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   -r requirements/quality.txt
     #   diff-cover
@@ -164,9 +164,10 @@ pytest==9.0.2
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/quality.txt
-python-discovery==1.2.0
+python-discovery==1.2.1
     # via
     #   -r requirements/ci.txt
+    #   tox
     #   virtualenv
 python-slugify==8.0.4
     # via
@@ -204,7 +205,7 @@ tomlkit==0.14.0
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==4.50.3
+tox==4.51.0
     # via -r requirements/ci.txt
 virtualenv==21.2.0
     # via

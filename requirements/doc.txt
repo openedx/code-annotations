@@ -30,7 +30,7 @@ coverage[toml]==7.13.5
     # via
     #   -r requirements/test.txt
     #   pytest-cov
-cryptography==46.0.5
+cryptography==46.0.6
     # via secretstorage
 django==5.2.12
     # via
@@ -85,7 +85,7 @@ more-itertools==10.8.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-nh3==0.3.3
+nh3==0.3.4
     # via readme-renderer
 packaging==26.0
     # via
@@ -102,7 +102,7 @@ pycparser==3.0
     # via cffi
 pydata-sphinx-theme==0.16.1
     # via sphinx-book-theme
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   -r requirements/test.txt
     #   accessible-pygments
@@ -124,7 +124,7 @@ pyyaml==6.0.3
     # via -r requirements/test.txt
 readme-renderer==44.0
     # via twine
-requests==2.32.5
+requests==2.33.0
     # via
     #   requests-toolbelt
     #   sphinx
