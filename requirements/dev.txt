@@ -21,7 +21,7 @@ cachetools==7.0.5
     # via
     #   -r requirements/ci.txt
     #   tox
-chardet==7.4.1
+chardet==7.4.3
     # via diff-cover
 click==8.3.2
     # via
@@ -63,7 +63,7 @@ django==5.2.13
     #   -r requirements/quality.txt
 edx-lint==6.0.0
     # via -r requirements/quality.txt
-filelock==3.25.2
+filelock==3.29.0
     # via
     #   -r requirements/ci.txt
     #   python-discovery
@@ -92,7 +92,7 @@ mccabe==0.7.0
     #   pylint
 mock==5.2.0
     # via -r requirements/quality.txt
-packaging==26.0
+packaging==26.1
     # via
     #   -r requirements/ci.txt
     #   -r requirements/pip-tools.txt
@@ -205,9 +205,9 @@ tomlkit==0.14.0
     # via
     #   -r requirements/quality.txt
     #   pylint
-tox==4.52.1
+tox==4.53.0
     # via -r requirements/ci.txt
-virtualenv==21.2.1
+virtualenv==21.2.4
     # via
     #   -r requirements/ci.txt
     #   tox
