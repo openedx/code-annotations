@@ -13,17 +13,17 @@ astroid==4.0.4
     #   -r requirements/quality.txt
     #   pylint
     #   pylint-celery
-build==1.4.3
+build==1.4.4
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==7.0.5
+cachetools==7.0.6
     # via
     #   -r requirements/ci.txt
     #   tox
 chardet==7.4.3
     # via diff-cover
-click==8.3.2
+click==8.3.3
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -92,7 +92,7 @@ mccabe==0.7.0
     #   pylint
 mock==5.2.0
     # via -r requirements/quality.txt
-packaging==26.1
+packaging==26.2
     # via
     #   -r requirements/ci.txt
     #   -r requirements/pip-tools.txt
@@ -211,7 +211,7 @@ virtualenv==21.2.4
     # via
     #   -r requirements/ci.txt
     #   tox
-wheel==0.46.3
+wheel==0.47.0
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
