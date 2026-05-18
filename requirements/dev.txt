@@ -17,13 +17,13 @@ build==1.5.0
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==7.1.1
+cachetools==7.1.2
     # via
     #   -r requirements/ci.txt
     #   tox
 chardet==7.4.3
     # via diff-cover
-click==8.3.3
+click==8.4.0
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -164,7 +164,7 @@ pytest==9.0.3
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/quality.txt
-python-discovery==1.3.0
+python-discovery==1.3.1
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -206,9 +206,9 @@ tomlkit==0.15.0
     #   -r requirements/quality.txt
     #   edx-lint
     #   pylint
-tox==4.53.1
+tox==4.54.0
     # via -r requirements/ci.txt
-virtualenv==21.3.1
+virtualenv==21.3.3
     # via
     #   -r requirements/ci.txt
     #   tox
