@@ -12,7 +12,7 @@ astroid==4.0.4
     # via
     #   pylint
     #   pylint-celery
-click==8.3.3
+click==8.4.0
     # via
     #   -r requirements/test.txt
     #   click-log
