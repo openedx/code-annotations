@@ -26,7 +26,7 @@ charset-normalizer==3.4.7
     # via requests
 click==8.4.1
     # via -r requirements/test.txt
-coverage[toml]==7.14.0
+coverage[toml]==7.14.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -47,7 +47,7 @@ docutils==0.21.2
     #   sphinx
 id==1.6.1
     # via twine
-idna==3.16
+idna==3.17
     # via requests
 imagesize==2.0.0
     # via sphinx
