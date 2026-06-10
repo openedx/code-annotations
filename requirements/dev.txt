@@ -53,17 +53,17 @@ dill==0.4.1
     # via
     #   -r requirements/quality.txt
     #   pylint
-distlib==0.4.0
+distlib==0.4.2
     # via
     #   -r requirements/ci.txt
     #   virtualenv
-django==5.2.14
+django==5.2.15
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/quality.txt
 edx-lint==6.1.0
     # via -r requirements/quality.txt
-filelock==3.29.0
+filelock==3.29.3
     # via
     #   -r requirements/ci.txt
     #   python-discovery
@@ -181,7 +181,7 @@ six==1.17.0
     # via
     #   -r requirements/quality.txt
     #   edx-lint
-snowballstemmer==3.1.0
+snowballstemmer==3.1.1
     # via
     #   -r requirements/quality.txt
     #   pydocstyle
@@ -206,7 +206,7 @@ tomlkit==0.15.0
     #   -r requirements/quality.txt
     #   edx-lint
     #   pylint
-tox==4.55.0
+tox==4.55.1
     # via -r requirements/ci.txt
 virtualenv==21.4.2
     # via
