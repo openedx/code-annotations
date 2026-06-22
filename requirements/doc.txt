@@ -18,7 +18,7 @@ babel==2.18.0
     #   sphinx
 beautifulsoup4==4.15.0
     # via pydata-sphinx-theme
-certifi==2026.5.20
+certifi==2026.6.17
     # via requests
 cffi==2.0.0
     # via cryptography
@@ -26,7 +26,7 @@ charset-normalizer==3.4.7
     # via requests
 click==8.4.1
     # via -r requirements/test.txt
-coverage[toml]==7.14.1
+coverage[toml]==7.14.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -112,7 +112,7 @@ pygments==2.20.0
     #   readme-renderer
     #   rich
     #   sphinx
-pytest==9.1.0
+pytest==9.1.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
