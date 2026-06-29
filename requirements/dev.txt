@@ -23,7 +23,7 @@ cachetools==7.1.4
     #   tox
 chardet==7.4.3
     # via diff-cover
-click==8.4.1
+click==8.4.2
     # via
     #   -r requirements/pip-tools.txt
     #   -r requirements/quality.txt
@@ -43,7 +43,7 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.14.2
+coverage[toml]==7.14.3
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
@@ -206,7 +206,7 @@ tomlkit==0.15.0
     #   -r requirements/quality.txt
     #   edx-lint
     #   pylint
-tox==4.55.1
+tox==4.56.1
     # via -r requirements/ci.txt
 virtualenv==21.5.1
     # via
