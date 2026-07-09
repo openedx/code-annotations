@@ -43,7 +43,7 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.14.3
+coverage[toml]==7.15.0
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
@@ -63,7 +63,7 @@ django==5.2.15
     #   -r requirements/quality.txt
 edx-lint==6.1.0
     # via -r requirements/quality.txt
-filelock==3.29.4
+filelock==3.29.5
     # via
     #   -r requirements/ci.txt
     #   python-discovery
@@ -164,7 +164,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/quality.txt
-python-discovery==1.4.2
+python-discovery==1.4.3
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -189,7 +189,7 @@ sqlparse==0.5.5
     # via
     #   -r requirements/quality.txt
     #   django
-stevedore==5.8.0
+stevedore==5.9.0
     # via
     #   -r requirements/quality.txt
     #   code-annotations
