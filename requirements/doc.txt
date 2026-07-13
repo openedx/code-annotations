@@ -20,19 +20,19 @@ beautifulsoup4==4.15.0
     # via pydata-sphinx-theme
 certifi==2026.6.17
     # via requests
-cffi==2.0.0
+cffi==2.1.0
     # via cryptography
-charset-normalizer==3.4.7
+charset-normalizer==3.4.9
     # via requests
 click==8.4.2
     # via -r requirements/test.txt
-coverage[toml]==7.15.0
+coverage[toml]==7.15.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
 cryptography==49.0.0
     # via secretstorage
-django==5.2.15
+django==5.2.16
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
