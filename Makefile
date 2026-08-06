@@ -34,51 +34,32 @@ coverage: clean ## generate and view HTML coverage report
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	tox -e docs
+	uv run --group doc doc8 --ignore-path docs/_build README.rst docs
+	uv run --group doc sphinx-build -b html docs docs/_build/html
 	$(BROWSER) docs/_build/html/index.html
 
-COMMON_CONSTRAINTS_TXT=requirements/common_constraints.txt
-.PHONY: $(COMMON_CONSTRAINTS_TXT)
-$(COMMON_CONSTRAINTS_TXT):
-	wget -O "$(@)" https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt || touch "$(@)"
-
-upgrade: export CUSTOM_COMPILE_COMMAND=make upgrade
-upgrade: $(COMMON_CONSTRAINTS_TXT) # update the requirements/*.txt files with the latest packages satisfying requirements/*.in
-	pip install -qr requirements/pip-tools.txt
-	pip install -qr requirements/pip.txt
-	pip-compile --upgrade --allow-unsafe -o requirements/pip.txt requirements/pip.in
-	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
-	pip install -qr requirements/pip.txt
-	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade -o requirements/base.txt requirements/base.in
-	pip-compile --upgrade -o requirements/django.txt requirements/django.in
-	pip-compile --upgrade -o requirements/test.txt requirements/test.in
-	pip-compile --upgrade -o requirements/doc.txt requirements/doc.in
-	pip-compile --upgrade -o requirements/quality.txt requirements/quality.in
-	pip-compile --upgrade -o requirements/ci.txt requirements/ci.in
-	pip-compile --upgrade -o requirements/dev.txt requirements/dev.in
-	# Let tox control the Django version for tests
-	sed '/^[dD]jango==/d' requirements/test.txt > requirements/test.tmp
-	mv requirements/test.tmp requirements/test.txt
+upgrade: ## update uv.lock and regenerate uv constraint-dependencies
+	uv run --group quality edx_lint write_uv_constraints pyproject.toml
+	uv lock --upgrade
 
 quality: ## check coding style with pycodestyle and pylint
-	tox -e quality
+	uv run --group quality pylint src/code_annotations tests test_utils
+	uv run --group quality pycodestyle src/code_annotations tests
+	uv run --group quality pydocstyle src/code_annotations tests
+	uv run --group quality isort --check-only --diff tests test_utils src/code_annotations
 
 requirements: ## install development environment requirements
-	pip install -qr requirements/pip.txt
-	pip install -qr requirements/pip-tools.txt
-	pip-sync requirements/dev.txt requirements/test.txt requirements/private.*
-	pip install -e .
+	uv sync --group dev
 
 test: clean ## run tests in the current virtualenv
-	pytest
+	uv run --group test python -Wd -m pytest
 
 diff_cover: test ## find diff lines that need test coverage
 	diff-cover coverage.xml
 
-test-all: ## run tests on every supported Python
-	tox -e quality
-	tox
+test-all: ## run tests on every supported Django version
+	uv run --group django42 python -Wd -m pytest
+	uv run --group test python -Wd -m pytest
 
 validate: quality test ## run tests and quality checks
 
