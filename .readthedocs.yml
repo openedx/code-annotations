@@ -13,7 +13,11 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: "3.12"
+  jobs:
+    post_install:
+      - pip install uv && uv export --group doc --no-hashes | pip install -r /dev/stdin
 
 python:
   install:
-    - requirements: requirements/doc.txt
+    - method: pip
+      path: .
