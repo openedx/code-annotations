@@ -48,6 +48,7 @@ local_scheme = "no-local-version"
 fallback_version = "0.0.0.dev0"
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["code_annotations*"]
 
 [tool.setuptools.package-data]
@@ -78,10 +79,11 @@ test = [{include-group = "test-base"}, "Django>=5.2,<5.3"]
 django42 = [{include-group = "test-base"}, "Django>=4.2,<4.3"]
 quality = [
     {include-group = "test"},
-    "edx-lint",
+    "edx-lint<6",
     "isort",
     "pycodestyle",
     "pydocstyle",
+    "setuptools<81",
 ]
 doc = [
     {include-group = "test"},
@@ -122,7 +124,7 @@ branch = true
 source = ["code_annotations"]
 omit = [
     "test_settings",
-    "code_annotations/extensions/tests/python_test_files/*",
+    "src/code_annotations/extensions/tests/python_test_files/*",
 ]
 
 [tool.coverage.report]

@@ -301,6 +301,7 @@ dev = [
     { name = "pycodestyle" },
     { name = "pydocstyle" },
     { name = "pytest-cov" },
+    { name = "setuptools" },
     { name = "sphinx" },
     { name = "sphinx-book-theme" },
     { name = "tox" },
@@ -329,6 +330,7 @@ quality = [
     { name = "pycodestyle" },
     { name = "pydocstyle" },
     { name = "pytest-cov" },
+    { name = "setuptools" },
 ]
 test = [
     { name = "django", version = "5.2.17", source = { registry = "https://pypi.org/simple" } },
@@ -359,12 +361,13 @@ ci = [
 dev = [
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "doc8" },
-    { name = "edx-lint" },
+    { name = "edx-lint", specifier = "<6" },
     { name = "isort" },
     { name = "mock" },
     { name = "pycodestyle" },
     { name = "pydocstyle" },
     { name = "pytest-cov" },
+    { name = "setuptools", specifier = "<81" },
     { name = "sphinx" },
     { name = "sphinx-book-theme" },
     { name = "tox" },
@@ -387,12 +390,13 @@ doc = [
 ]
 quality = [
     { name = "django", specifier = ">=5.2,<5.3" },
-    { name = "edx-lint" },
+    { name = "edx-lint", specifier = "<6" },
     { name = "isort" },
     { name = "mock" },
     { name = "pycodestyle" },
     { name = "pydocstyle" },
     { name = "pytest-cov" },
+    { name = "setuptools", specifier = "<81" },
 ]
 test = [
     { name = "django", specifier = ">=5.2,<5.3" },
@@ -1248,6 +1252,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1c/03/e834bcd866f2f8a49a85eaff47340affa3bfa391ee9912a952a1faa68c7b/secretstorage-3.5.0.tar.gz", hash = "sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be", size = 19884, upload-time = "2025-11-23T19:02:53.191Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/46/f5af3402b579fd5e11573ce652019a67074317e18c1935cc0b4ba9b35552/secretstorage-3.5.0-py3-none-any.whl", hash = "sha256:0ce65888c0725fcb2c5bc0fdb8e5438eece02c523557ea40ce0703c266248137", size = 15554, upload-time = "2025-11-23T19:02:51.545Z" },
+]
+
+[[package]]
+name = "setuptools"
+version = "80.10.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/76/95/faf61eb8363f26aa7e1d762267a8d602a1b26d4f3a1e758e92cb3cb8b054/setuptools-80.10.2.tar.gz", hash = "sha256:8b0e9d10c784bf7d262c4e5ec5d4ec94127ce206e8738f29a437945fbc219b70", size = 1200343, upload-time = "2026-01-25T22:38:17.252Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/94/b8/f1f62a5e3c0ad2ff1d189590bfa4c46b4f3b6e49cef6f26c6ee4e575394d/setuptools-80.10.2-py3-none-any.whl", hash = "sha256:95b30ddfb717250edb492926c92b5221f7ef3fbcc2b07579bcd4a27da21d0173", size = 1064234, upload-time = "2026-01-25T22:38:15.216Z" },
 ]
 
 [[package]]
