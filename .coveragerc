@@ -1,7 +1,0 @@
-[run]
-branch = True
-data_file = .coverage
-source=code_annotations
-omit =
-    test_settings
-    code_annotations/extensions/tests/python_test_files/*
