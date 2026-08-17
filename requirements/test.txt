@@ -41,7 +41,7 @@ python-slugify==8.0.4
     # via -r requirements/base.txt
 pyyaml==6.0.3
     # via -r requirements/base.txt
-sqlparse==0.5.5
+sqlparse==0.6.0
     # via
     #   -r requirements/django.txt
     #   django

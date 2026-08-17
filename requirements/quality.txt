@@ -58,7 +58,7 @@ packaging==26.3
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.11.2
+platformdirs==4.11.3
     # via pylint
 pluggy==1.6.0
     # via
@@ -105,7 +105,7 @@ six==1.17.0
     # via edx-lint
 snowballstemmer==3.1.1
     # via pydocstyle
-sqlparse==0.5.5
+sqlparse==0.6.0
     # via
     #   -r requirements/test.txt
     #   django
