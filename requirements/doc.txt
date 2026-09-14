@@ -26,7 +26,7 @@ charset-normalizer==3.5.1
     # via requests
 click==8.5.0
     # via -r requirements/test.txt
-coverage[toml]==7.16.0
+coverage[toml]==7.16.1
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -119,7 +119,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/test.txt
-python-slugify==8.0.4
+python-slugify==9.0.0
     # via -r requirements/test.txt
 pyyaml==6.0.3
     # via -r requirements/test.txt

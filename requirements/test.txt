@@ -10,7 +10,7 @@ asgiref==3.12.1
     #   django
 click==8.5.0
     # via -r requirements/base.txt
-coverage[toml]==7.16.0
+coverage[toml]==7.16.1
     # via pytest-cov
     # via
     #   -c requirements/common_constraints.txt
@@ -37,7 +37,7 @@ pytest==9.1.1
     # via pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/test.in
-python-slugify==8.0.4
+python-slugify==9.0.0
     # via -r requirements/base.txt
 pyyaml==6.0.3
     # via -r requirements/base.txt
