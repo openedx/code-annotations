@@ -47,7 +47,7 @@ docutils==0.21.2
     #   sphinx
 id==1.6.1
     # via twine
-idna==3.19
+idna==3.20
     # via requests
 imagesize==2.0.1
     # via sphinx
@@ -119,7 +119,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/test.txt
-python-slugify==9.0.0
+python-slugify==9.1.0
     # via -r requirements/test.txt
 pyyaml==6.0.3
     # via -r requirements/test.txt
@@ -182,7 +182,7 @@ twine==7.0.0
     # via -r requirements/doc.in
 typing-extensions==4.16.0
     # via beautifulsoup4
-urllib3==2.7.0
+urllib3==2.8.0
     # via
     #   id
     #   requests
