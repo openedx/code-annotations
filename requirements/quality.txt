@@ -22,7 +22,7 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==3.0.0
     # via edx-lint
-coverage[toml]==7.16.1
+coverage[toml]==7.16.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -60,14 +60,14 @@ packaging==26.3
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.11.11
+platformdirs==4.12.0
     # via pylint
 pluggy==1.6.0
     # via
     #   -r requirements/test.txt
     #   pytest
     #   pytest-cov
-pycodestyle==2.14.0
+pycodestyle==2.15.0
     # via -r requirements/quality.in
 pydocstyle==6.3.0
     # via -r requirements/quality.in
@@ -75,7 +75,7 @@ pygments==2.21.0
     # via
     #   -r requirements/test.txt
     #   pytest
-pylint==4.0.8
+pylint==4.0.9
     # via
     #   edx-lint
     #   pylint-celery
@@ -95,7 +95,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/test.txt
-python-slugify==9.1.0
+python-slugify==9.1.2
     # via
     #   -r requirements/test.txt
     #   code-annotations
