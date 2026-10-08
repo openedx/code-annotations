@@ -8,7 +8,7 @@ asgiref==3.12.1
     # via
     #   -r requirements/test.txt
     #   django
-astroid==4.0.4
+astroid==4.3.3
     # via
     #   pylint
     #   pylint-celery
@@ -38,7 +38,7 @@ iniconfig==2.3.0
     # via
     #   -r requirements/test.txt
     #   pytest
-isort==9.0.1
+isort==9.0.2
     # via
     #   -r requirements/quality.in
     #   pylint
@@ -46,7 +46,7 @@ jinja2==3.1.6
     # via
     #   -r requirements/test.txt
     #   code-annotations
-markupsafe==3.0.3
+markupsafe==3.0.4
     # via
     #   -r requirements/test.txt
     #   jinja2
@@ -60,7 +60,7 @@ packaging==26.3
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.12.0
+platformdirs==4.12.3
     # via pylint
 pluggy==1.6.0
     # via
@@ -75,7 +75,7 @@ pygments==2.21.0
     # via
     #   -r requirements/test.txt
     #   pytest
-pylint==4.0.9
+pylint==4.1.2
     # via
     #   edx-lint
     #   pylint-celery
