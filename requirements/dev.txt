@@ -17,11 +17,11 @@ build==1.6.1
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==7.2.1
+cachetools==7.2.3
     # via
     #   -r requirements/ci.txt
     #   tox
-chardet==7.6.0
+chardet==7.7.0
     # via diff-cover
 click==8.5.0
     # via
@@ -53,7 +53,7 @@ dill==0.4.1
     # via
     #   -r requirements/quality.txt
     #   pylint
-distlib==0.4.3
+distlib==0.4.4
     # via
     #   -r requirements/ci.txt
     #   virtualenv
@@ -63,7 +63,7 @@ django==5.2.18
     #   -r requirements/quality.txt
 edx-lint==6.2.0
     # via -r requirements/quality.txt
-filelock==4.1.1
+filelock==4.2.2
     # via
     #   -r requirements/ci.txt
     #   python-discovery
@@ -109,14 +109,14 @@ packaging==26.3
     #   wheel
 pip-tools==7.6.2
     # via -r requirements/pip-tools.txt
-platformdirs==4.13.0
+platformdirs==4.13.4
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
     #   pylint
     #   tox
     #   virtualenv
-pluggy==1.6.0
+pluggy==1.7.0
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -153,7 +153,7 @@ pylint-plugin-utils==0.9.0
     #   -r requirements/quality.txt
     #   pylint-celery
     #   pylint-django
-pyproject-api==1.11.5
+pyproject-api==1.12.0
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -168,7 +168,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/quality.txt
-python-discovery==1.6.2
+python-discovery==1.6.3
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -205,18 +205,18 @@ tomli-w==1.2.0
     # via
     #   -r requirements/ci.txt
     #   tox
-tomlkit==0.15.1
+tomlkit==0.15.2
     # via
     #   -r requirements/quality.txt
     #   edx-lint
     #   pylint
-tox==4.65.3
+tox==4.67.1
     # via -r requirements/ci.txt
 typing-extensions==4.16.0
     # via
     #   -r requirements/ci.txt
     #   tox
-virtualenv==21.14.6
+virtualenv==21.14.11
     # via
     #   -r requirements/ci.txt
     #   tox
