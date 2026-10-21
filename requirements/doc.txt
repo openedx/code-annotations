@@ -18,7 +18,7 @@ babel==2.18.0
     #   sphinx
 beautifulsoup4==4.15.0
     # via pydata-sphinx-theme
-certifi==2026.10.18
+certifi==2026.10.19
     # via requests
 cffi==2.1.1
     # via cryptography
