@@ -4,7 +4,7 @@
 #
 #    make upgrade
 #
-asgiref==3.12.1
+asgiref==3.13.0
     # via
     #   -r requirements/quality.txt
     #   django
@@ -17,7 +17,7 @@ build==1.6.1
     # via
     #   -r requirements/pip-tools.txt
     #   pip-tools
-cachetools==7.2.3
+cachetools==7.2.5
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -43,7 +43,7 @@ colorama==0.4.6
     # via
     #   -r requirements/ci.txt
     #   tox
-coverage[toml]==7.16.2
+coverage[toml]==7.17.0
     # via
     #   -r requirements/quality.txt
     #   pytest-cov
@@ -63,7 +63,7 @@ django==5.2.18
     #   -r requirements/quality.txt
 edx-lint==6.2.0
     # via -r requirements/quality.txt
-filelock==4.2.2
+filelock==4.2.4
     # via
     #   -r requirements/ci.txt
     #   python-discovery
@@ -109,7 +109,7 @@ packaging==26.3
     #   wheel
 pip-tools==7.6.2
     # via -r requirements/pip-tools.txt
-platformdirs==4.13.4
+platformdirs==4.13.5
     # via
     #   -r requirements/ci.txt
     #   -r requirements/quality.txt
@@ -168,7 +168,7 @@ pytest==9.1.1
     #   pytest-cov
 pytest-cov==7.1.0
     # via -r requirements/quality.txt
-python-discovery==1.6.3
+python-discovery==1.6.4
     # via
     #   -r requirements/ci.txt
     #   tox
@@ -216,7 +216,7 @@ typing-extensions==4.16.0
     # via
     #   -r requirements/ci.txt
     #   tox
-virtualenv==21.14.11
+virtualenv==21.14.13
     # via
     #   -r requirements/ci.txt
     #   tox
