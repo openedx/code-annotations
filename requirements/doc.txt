@@ -113,7 +113,7 @@ pygments==2.21.0
     #   readme-renderer
     #   rich
     #   sphinx
-pytest==9.1.1
+pytest==9.2.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -166,7 +166,7 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-sqlparse==0.6.0
+sqlparse==0.6.1
     # via
     #   -r requirements/test.txt
     #   django

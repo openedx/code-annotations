@@ -60,7 +60,7 @@ packaging==26.3
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.13.5
+platformdirs==4.14.3
     # via pylint
 pluggy==1.7.0
     # via
@@ -89,7 +89,7 @@ pylint-plugin-utils==0.9.0
     # via
     #   pylint-celery
     #   pylint-django
-pytest==9.1.1
+pytest==9.2.0
     # via
     #   -r requirements/test.txt
     #   pytest-cov
@@ -107,7 +107,7 @@ six==1.17.0
     # via edx-lint
 snowballstemmer==3.1.1
     # via pydocstyle
-sqlparse==0.6.0
+sqlparse==0.6.1
     # via
     #   -r requirements/test.txt
     #   django
