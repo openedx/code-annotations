@@ -101,6 +101,7 @@ dev = [
 
 [tool.uv]
 package = true
+default-groups = []
 conflicts = [[{group = "test"}, {group = "django42"}]]
 
 #  DO NOT EDIT constraint-dependencies DIRECTLY.
