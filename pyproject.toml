@@ -22,11 +22,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "click>=7.0",
-    "Jinja2>=3.0",
-    "PyYAML>=5.1",
-    "python-slugify>=4.0",
-    "stevedore>=1.28",
+    "click",
+    "pyyaml",
+    "Jinja2",
+    "stevedore",
+    "python-slugify",
 ]
 
 [project.optional-dependencies]
@@ -45,7 +45,7 @@ Homepage = "https://github.com/openedx/code-annotations"
 [tool.setuptools_scm]
 version_scheme = "only-version"
 local_scheme = "no-local-version"
-fallback_version = "0.0.0.dev0"
+fallback_version = "0.0.0"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -59,16 +59,9 @@ include = ["code_annotations*"]
 
 [tool.semantic_release]
 build_command = "python -m pip install --upgrade build && SETUPTOOLS_SCM_PRETEND_VERSION=$NEW_VERSION python -m build"
+tag_format = "v{version}"
 major_on_zero = false
 allow_zero_version = true
-
-[tool.semantic_release.changelog]
-mode = "update"
-insertion_flag = ".. changelog-insertion-marker"
-
-[tool.semantic_release.changelog.default_templates]
-changelog_file = "CHANGELOG.rst"
-output_format = "rst"
 
 [dependency-groups]
 test-base = [
@@ -79,11 +72,10 @@ test = [{include-group = "test-base"}, "Django>=5.2,<5.3"]
 django42 = [{include-group = "test-base"}, "Django>=4.2,<4.3"]
 quality = [
     {include-group = "test"},
-    "edx-lint<6",
+    "edx-lint",
     "isort",
     "pycodestyle",
     "pydocstyle",
-    "setuptools<81",
 ]
 doc = [
     {include-group = "test"},
@@ -112,6 +104,9 @@ conflicts = [[{group = "test"}, {group = "django42"}]]
 constraint-dependencies = [
     "Django<6.0",
     "elasticsearch<7.14.0",
+    "social-auth-app-django<6.0.0",
+    "social-auth-core<5.0.0",
+    "pip<26.2.1",
 ]
 
 [tool.isort]
