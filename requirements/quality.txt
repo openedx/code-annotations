@@ -12,7 +12,7 @@ astroid==4.3.4
     # via
     #   pylint
     #   pylint-celery
-click==8.5.0
+click==8.5.1
     # via
     #   -r requirements/test.txt
     #   click-log
@@ -22,13 +22,13 @@ click-log==0.4.0
     # via edx-lint
 code-annotations==3.0.0
     # via edx-lint
-coverage[toml]==7.17.0
+coverage[toml]==7.17.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
 dill==0.4.1
     # via pylint
-django==5.2.18
+django==5.2.19
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -54,13 +54,13 @@ mccabe==0.7.0
     # via pylint
 mock==5.2.0
     # via -r requirements/test.txt
-mypy-extensions==1.1.0
+mypy-extensions==1.2.0
     # via isort
 packaging==26.3
     # via
     #   -r requirements/test.txt
     #   pytest
-platformdirs==4.14.3
+platformdirs==4.14.5
     # via pylint
 pluggy==1.7.0
     # via

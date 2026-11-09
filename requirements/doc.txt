@@ -24,15 +24,15 @@ cffi==2.1.1
     # via cryptography
 charset-normalizer==3.5.2
     # via requests
-click==8.5.0
+click==8.5.1
     # via -r requirements/test.txt
-coverage[toml]==7.17.0
+coverage[toml]==7.17.2
     # via
     #   -r requirements/test.txt
     #   pytest-cov
 cryptography==50.0.2
     # via secretstorage
-django==5.2.18
+django==5.2.19
     # via
     #   -c requirements/common_constraints.txt
     #   -r requirements/test.txt
@@ -145,7 +145,7 @@ secretstorage==3.5.0
     # via keyring
 snowballstemmer==3.1.1
     # via sphinx
-soupsieve==3.0.4
+soupsieve==4.0.1
     # via beautifulsoup4
 sphinx==9.1.1
     # via
