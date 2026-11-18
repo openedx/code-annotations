@@ -13,32 +13,16 @@ serve to show the default.
 """
 
 
-import io
 import os
-import re
 import sys
 from datetime import datetime
+from importlib.metadata import version as get_version
 from subprocess import check_call
-
-
-
-
-def get_version(*file_paths):
-    """
-    Extract the version string from the file at the given relative path fragments.
-    """
-    filename = os.path.join(os.path.dirname(__file__), *file_paths)
-    version_file = open(filename).read()
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError('Unable to find version string.')
-
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(REPO_ROOT)
 
-VERSION = get_version('../code_annotations', '__init__.py')
+VERSION = get_version("code-annotations")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -518,8 +502,8 @@ def on_init(app):  # pylint: disable=unused-argument
         # If we are, assemble the path manually
         bin_path = os.path.abspath(os.path.join(sys.prefix, 'bin'))
         apidoc_path = os.path.join(bin_path, apidoc_path)
-    check_call([apidoc_path, '-o', docs_path, os.path.join(root_path, 'code_annotations'),
-                os.path.join(root_path, 'code_annotations/migrations')])
+    check_call([apidoc_path, '-o', docs_path, os.path.join(root_path, 'src', 'code_annotations'),
+                os.path.join(root_path, 'src', 'code_annotations', 'migrations')])
 
 
 def setup(app):
