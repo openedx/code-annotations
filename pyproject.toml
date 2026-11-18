@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Extensible tools for parsing annotations in codebases"
 readme = "README.rst"
 license = "Apache-2.0"
-license-files = ["LICENSE.txt"]
+license-files = ["LICENSE.txt", "NOTICE.txt"]
 requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -72,7 +72,7 @@ test = [{include-group = "test-base"}, "Django>=5.2,<5.3"]
 django42 = [{include-group = "test-base"}, "Django>=4.2,<4.3"]
 quality = [
     {include-group = "test"},
-    "edx-lint",
+    "edx-lint>=6.2",
     "isort",
     "pycodestyle",
     "pydocstyle",
@@ -82,13 +82,15 @@ doc = [
     "doc8",
     "sphinx-book-theme",
     "Sphinx",
-    "twine",
 ]
+build = ["build", "twine"]
 ci = ["tox", "tox-uv>=1"]
 dev = [
     {include-group = "quality"},
     {include-group = "doc"},
+    {include-group = "build"},
     {include-group = "ci"},
+    "diff-cover",
 ]
 
 [tool.uv]
